@@ -1,3 +1,8 @@
+" Pathogen, for easy git based vimrc management
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect()
+
+" General settings
 filetype on
 filetype plugin on
 filetype plugin indent on
@@ -18,15 +23,15 @@ set nowrap
 inoremap jj <ESC>
 colors evening
 
-" Cursor Line
+" Cursor line settings
 hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 set cul
 
-" Enable Local .vimrc
+" Enable local .vimrc settings
 set exrc
 set secure
 
-" Clang Complete
+" Clang complete settings
 set conceallevel=2
 set concealcursor=vin
 let g:clang_snippets=1
@@ -35,8 +40,8 @@ let g:clang_snippets_engine='clang_complete'
 set completeopt=menu,menuone
 set pumheight=20
 
+" Cscope additional settings
 if has("cscope")
-    source ~/.vim/plugin/cscope_maps.vim
     set nocscopeverbose
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
 
@@ -57,8 +62,7 @@ if has("cscope")
     endif
 endif
 
-source ~/.vim/plugin/taglist.vim
-
+" Eclim settings
 if has("autocmd") 
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
 endif 
