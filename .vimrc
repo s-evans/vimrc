@@ -22,6 +22,7 @@ set history=500
 set nowrap
 inoremap jj <ESC>
 colors evening
+set complete-=i
 
 " Cursor line settings
 hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
