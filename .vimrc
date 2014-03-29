@@ -33,13 +33,12 @@ set exrc
 set secure
 
 " Clang complete settings
-set conceallevel=2
-set concealcursor=vin
-let g:clang_snippets=1
-let g:clang_conceal_snippets=1
-let g:clang_snippets_engine='clang_complete'
+"set conceallevel=2
+"set concealcursor=vin
+"let g:clang_snippets=1
+"let g:clang_conceal_snippets=1
+"let g:clang_snippets_engine='clang_complete'
 set completeopt=menu,menuone
-set pumheight=20
 
 " Cscope additional settings
 if has("cscope")
