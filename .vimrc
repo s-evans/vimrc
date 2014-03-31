@@ -31,6 +31,11 @@ inoremap jj <ESC>
 " Fix slow completion
 set complete-=i
 
+" Fix stupid comment behavior
+if has("autocmd") 
+    autocmd FileType c,cpp setlocal comments-=:// comments+=f://
+endif
+
 " Cursor line settings
 hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 set cul
