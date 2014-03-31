@@ -1,6 +1,6 @@
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
-call pathogen#infect()
+execute pathogen#infect()
 
 " General settings
 filetype on
@@ -20,8 +20,15 @@ set wildmenu
 set wildmode=list:longest,full
 set history=500
 set nowrap
-inoremap jj <ESC>
 colors evening
+
+" Maps
+nnoremap <C-K><C-G> :grep! "\b<C-R><C-W>\b" **<CR>:cw<CR>
+nnoremap <C-K><C-S> :%!astyle --style=kr<CR>
+nnoremap <C-K><C-R> :redraw!<CR>
+inoremap jj <ESC>
+
+" Fix slow completion
 set complete-=i
 
 " Cursor line settings
@@ -33,11 +40,6 @@ set exrc
 set secure
 
 " Clang complete settings
-"set conceallevel=2
-"set concealcursor=vin
-"let g:clang_snippets=1
-"let g:clang_conceal_snippets=1
-"let g:clang_snippets_engine='clang_complete'
 set completeopt=menu,menuone
 
 " Cscope additional settings
