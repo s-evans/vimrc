@@ -23,7 +23,7 @@ set nowrap
 colors evening
 
 " Maps
-nnoremap <C-K><C-G> :grep! "\b<C-R><C-W>\b" **<CR>:cw<CR>
+nnoremap <C-K><C-G> :grep! "<C-R><C-W>" **/*<CR>:cw<CR>
 nnoremap <C-K><C-S> :%!astyle --style=kr<CR>
 nnoremap <C-K><C-R> :redraw!<CR>
 inoremap jj <ESC>
