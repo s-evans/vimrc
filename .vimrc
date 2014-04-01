@@ -33,7 +33,8 @@ set complete-=i
 
 " Fix stupid comment behavior
 if has("autocmd") 
-    autocmd FileType c,cpp setlocal comments-=:// comments+=f://
+    autocmd FileType c,cpp,java setlocal comments-=:// comments+=f://
+    autocmd FileType vim setlocal comments-=:\" comments+=f:\"
 endif
 
 " Cursor line settings
@@ -73,3 +74,4 @@ endif
 if has("autocmd") 
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
 endif 
+
