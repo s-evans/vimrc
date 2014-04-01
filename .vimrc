@@ -26,6 +26,7 @@ colors evening
 nnoremap <C-K><C-G> :grep! "<C-R><C-W>" **/*<CR>:cw<CR>
 nnoremap <C-K><C-S> :%!astyle --style=kr<CR>
 nnoremap <C-K><C-R> :redraw!<CR>
+nnoremap <C-K><C-L> :source ~/.vimrc<CR>
 inoremap jj <ESC>
 
 " Fix slow completion
@@ -75,3 +76,24 @@ if has("autocmd")
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
 endif 
 
+" Mathematical functions
+if has("python")
+    function! EvalMathExpression(exp) 
+        execute "py sys.argv = [\"".a:exp."\"]"
+        py sys.argv[0] = eval(sys.argv[0])
+        py vim.command("let out = \"" + str(sys.argv[0]) + "\"")
+        return out
+    endfunction
+
+    function! ReplaceMathExpression() 
+        let exp = expand("<cWORD>")
+        let out = EvalMathExpression(exp)
+        execute "normal ciW".out
+    endfunction
+
+    py from math import * 
+    py import vim
+    py import sys
+
+    nnoremap <C-K><C-M> :call ReplaceMathExpression()<CR>
+endif
