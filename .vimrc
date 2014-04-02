@@ -23,10 +23,14 @@ set nowrap
 colors evening
 
 " Maps
-nnoremap <C-K><C-G> :grep! "<C-R><C-W>" **/*<CR>:cw<CR>
-nnoremap <C-K><C-S> :%!astyle --style=kr<CR>
+nnoremap <C-K><C-G> :grep! "<C-R><C-W>" **<CR>:cw<CR>
+nnoremap <C-K><C-Y> :%!astyle --style=kr<CR>
 nnoremap <C-K><C-R> :redraw!<CR>
+nnoremap <C-K><C-T> :grep! "TODO" **<CR><CR>:cw<CR>
 nnoremap <C-K><C-L> :source ~/.vimrc<CR>
+nnoremap <C-K><C-P> "_diwP
+vnoremap <C-K><C-P> "_d"0P
+inoremap <C-K><C-T> // TODO: 
 inoremap jj <ESC>
 
 " Fix slow completion
