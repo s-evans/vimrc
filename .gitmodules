@@ -52,3 +52,6 @@
 [submodule "bundle/cmake_indent"]
 	path = bundle/cmake_indent
 	url = https://github.com/vim-scripts/cmake.vim.git
+[submodule "bundle/camel_case_motion"]
+	path = bundle/camel_case_motion
+	url = https://github.com/bkad/CamelCaseMotion.git
