@@ -55,3 +55,6 @@
 [submodule "bundle/camel_case_motion"]
 	path = bundle/camel_case_motion
 	url = https://github.com/bkad/CamelCaseMotion.git
+[submodule "bundle/vim-abolish"]
+	path = bundle/vim-abolish
+	url = https://github.com/tpope/vim-abolish.git
