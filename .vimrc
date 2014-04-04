@@ -23,15 +23,17 @@ set nowrap
 colors evening
 
 " Maps
-nnoremap <C-K><C-G> :grep! "<C-R><C-W>" **<CR>:cw<CR>
-nnoremap <C-K><C-Y> :%!astyle --style=kr<CR>
-nnoremap <C-K><C-R> :redraw!<CR>
-nnoremap <C-K><C-T> :grep! "TODO" **<CR><CR>:cw<CR>
-nnoremap <C-K><C-L> :source ~/.vimrc<CR>
-nnoremap <C-K><C-P> "_diwP
-vnoremap <C-K><C-P> "_d"0P
-inoremap <C-K><C-T> // TODO: 
+nnoremap <C-K>g :grep! "<C-R><C-W>" **<CR>:cw<CR>
+nnoremap <C-K>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments --break-after-logical --max-code-length=80<CR>
+nnoremap <C-K>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
+nnoremap <C-K>r :redraw!<CR>
+nnoremap <C-K>t :grep! "TODO" **<CR><CR>:cw<CR>
+nnoremap <C-K>l :source ~/.vimrc<CR>
+nnoremap <C-K>p "_diwP
+vnoremap <C-K>p "_d"0P
+inoremap <C-K>t // TODO: 
 inoremap jj <ESC>
+let mapleader=","
 
 " Fix slow completion
 set complete-=i
