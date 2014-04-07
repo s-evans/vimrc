@@ -72,7 +72,7 @@
 	url = https://github.com/michaeljsmith/vim-indent-object.git
 [submodule "bundle/matchit"]
 	path = bundle/matchit
-	url = https://github.com/tmhedberg/matchit.git
+	url = https://github.com/vim-scripts/matchit.zip.git
 [submodule "bundle/a-vim"]
 	path = bundle/a-vim
 	url = https://github.com/vim-scripts/a.vim.git
