@@ -64,9 +64,6 @@
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
-[submodule "bundle/argtextobj"]
-	path = bundle/argtextobj
-	url = https://github.com/vim-scripts/argtextobj.vim.git
 [submodule "bundle/vim-indent-object"]
 	path = bundle/vim-indent-object
 	url = https://github.com/michaeljsmith/vim-indent-object.git
@@ -82,3 +79,12 @@
 [submodule "bundle/matchit"]
 	path = bundle/matchit
 	url = https://github.com/vim-scripts/matchit.zip.git
+[submodule "bundle/textobj-between"]
+	path = bundle/textobj-between
+	url = https://github.com/thinca/vim-textobj-between.git
+[submodule "bundle/textobj-parameter"]
+	path = bundle/textobj-parameter
+	url = https://github.com/sgur/vim-textobj-parameter.git
+[submodule "bundle/textobj-comment"]
+	path = bundle/textobj-comment
+	url = https://github.com/glts/vim-textobj-comment.git
