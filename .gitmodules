@@ -88,3 +88,12 @@
 [submodule "bundle/textobj-comment"]
 	path = bundle/textobj-comment
 	url = https://github.com/glts/vim-textobj-comment.git
+[submodule "bundle/textobj-camel"]
+	path = bundle/textobj-camel
+	url = https://github.com/Julian/vim-textobj-variable-segment.git
+[submodule "bundle/textobj-uri"]
+	path = bundle/textobj-uri
+	url = https://github.com/jceb/vim-textobj-uri.git
+[submodule "bundle/textobj-datetime"]
+	path = bundle/textobj-datetime
+	url = https://github.com/kana/vim-textobj-datetime.git
