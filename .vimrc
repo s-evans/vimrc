@@ -1,3 +1,11 @@
+" TODO: Improve spreadsheet functionality
+" TODO: Ag/Ack searching
+" TODO: Left/Right expression
+" TODO: Buffer wiper / buffer management plugin
+" TODO: Create multi-root functions for grep/cscope
+" let path=&path
+" execute 'silent grep! -r Client '.substitute(path,","," ", "")
+
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
@@ -22,12 +30,15 @@ set history=500
 set nowrap
 colors evening
 
+" Fix default grep settings
+set grepprg=grep\ -n\ -H\ $*
+
 " Maps
-nnoremap <C-K>g :grep! "<C-R><C-W>" **<CR>:cw<CR>
+nnoremap <C-K>g :silent grep! -r "<C-R><C-W>"<CR>:cw<CR>
 nnoremap <C-K>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments --break-after-logical --max-code-length=80<CR>
 nnoremap <C-K>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 nnoremap <C-K>r :redraw!<CR>
-nnoremap <C-K>t :grep! "TODO" **<CR><CR>:cw<CR>
+nnoremap <C-K>t :silent grep! -r "TODO"<CR>:cw<CR>
 nnoremap <C-K>l :source ~/.vimrc<CR>
 nnoremap <C-K>p "_diwP
 vnoremap <C-K>p "_d"0P
