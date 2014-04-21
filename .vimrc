@@ -1,5 +1,4 @@
 " TODO: Improve spreadsheet functionality
-" TODO: Ag/Ack searching
 " TODO: Left/Right expression
 " TODO: Improve custom mappings for consistency
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, etc.)
@@ -57,7 +56,7 @@ set secure
 " Clang complete settings
 set completeopt=menu,menuone
 
-" Cscope additional settings
+" Cscope settings
 if has("cscope")
     set nocscopeverbose
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
@@ -127,13 +126,6 @@ function! ForEachPath(command)
     endfor
 endfunction
 
-" Greps recursively for all directories in the path
-function! GrepPath(arg)
-    let plist = GetPathString()
-    silent execute "grep! -r \"".a:arg."\" ".plist
-    cw
-endfunction
-
 " Clears out the quickfix list
 function! ClearCw()
     call setqflist([]) 
@@ -162,16 +154,59 @@ function! GarbageCollection()
     call DeleteInactiveBufs()
 endfunction
 
+" Like bufdo, but returns to the original buffer when complete
+function! BufDo(command)
+    let currBuff=bufnr("%")
+    execute 'bufdo! ' . a:command
+    execute 'buffer ' . currBuff
+endfunction
+
+" Greps recursively from the current working directory
+function! GrepRecurse(arg)
+    silent execute "grep! -r ".a:arg
+    cw
+endfunction
+
+" Greps in the current window
+function! GrepCurrent(arg)
+    silent execute "grep! ".a:arg." % "
+    cw
+endfunction
+
+" Greps in all open windows
+function! GrepBuffers(arg)
+    call ClearCw()
+    call BufDo("silent grepadd! ".a:arg." %")
+    cw
+endfunction
+
+" Greps recursively for all directories in the path
+function! GrepPath(arg)
+    let plist = GetPathString()
+    silent execute "grep! -r \"".a:arg."\" ".plist
+    cw
+endfunction
+
+" Attempts to add a cscope database for each path element
+function! CscopeAddPath()
+    ForEachPath("cscope add %s %s")
+    cs reset
+endfunction
+
 " Maps
 let mapleader="\\"
-nnoremap <leader><leader>G :call GrepPath('<cWORD>')<CR>
-nnoremap <leader><leader>g :call GrepPath('<cword>')<CR>
-nnoremap <leader>G :silent grep! -r "<cWORD>"<CR>:cw<CR>
-nnoremap <leader>g :silent grep! -r "<cword>"<CR>:cw<CR>
-nnoremap <leader>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments --break-after-logical --max-code-length=80<CR>
+nnoremap <leader>gpiW :call GrepPath('<cWORD>')<CR>
+nnoremap <leader>gpiw :call GrepPath('<cword>')<CR>
+nnoremap <leader>griW :call GrepRecurse('<cWORD>')<CR>
+nnoremap <leader>griw :call GrepRecurse('<cword>')<CR>
+nnoremap <leader>gciW :call GrepCurrent('<cWORD>')<CR>
+nnoremap <leader>gciw :call GrepCurrent('<cword>')<CR>
+nnoremap <leader>gbiW :call GrepBuffers('<cWORD>')<CR>
+nnoremap <leader>gbiw :call GrepBuffers('<cword>')<CR>
+nnoremap <leader>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments<CR>
 nnoremap <leader>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 nnoremap <leader>r :redraw!<CR>
-nnoremap <leader>t :silent grep! -r "TODO"<CR>:cw<CR>
+nnoremap <leader>t :call GrepRecurse("TODO")<CR>
 nnoremap <leader>l :source ~/.vimrc<CR>
 nnoremap <leader>P "_diWP
 nnoremap <leader>p "_diwP
