@@ -1,10 +1,10 @@
 " TODO: Improve spreadsheet functionality
 " TODO: Ag/Ack searching
 " TODO: Left/Right expression
-" TODO: Buffer wiper / buffer management plugin
-" TODO: Create multi-root functions for grep/cscope
-" let path=&path
-" execute 'silent grep! -r Client '.substitute(path,","," ", "")
+" TODO: Improve custom mappings for consistency
+" TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, etc.)
+" TODO: Add shellescape calls for string sanitization
+" TODO: Add mappings for changing settings (ie. wrap, number)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -26,33 +26,21 @@ set bs=2
 set mouse=""
 set wildmenu
 set wildmode=list:longest,full
-set history=500
+set history=1000
 set nowrap
 colors evening
+set title
+set hidden
 
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ $*
-
-" Maps
-nnoremap <C-K>g :silent grep! -r "<C-R><C-W>"<CR>:cw<CR>
-nnoremap <C-K>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments --break-after-logical --max-code-length=80<CR>
-nnoremap <C-K>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-nnoremap <C-K>r :redraw!<CR>
-nnoremap <C-K>t :silent grep! -r "TODO"<CR>:cw<CR>
-nnoremap <C-K>l :source ~/.vimrc<CR>
-nnoremap <C-K>p "_diwP
-vnoremap <C-K>p "_d"0P
-inoremap <C-K>t // TODO: 
-inoremap jj <ESC>
-let mapleader=","
 
 " Fix slow completion
 set complete-=i
 
 " Fix stupid comment behavior
 if has("autocmd") 
-    autocmd FileType c,cpp,java setlocal comments-=:// comments+=f://
-    autocmd FileType vim setlocal comments-=:\" comments+=f:\"
+    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 endif
 
 " Cursor line settings
@@ -115,5 +103,81 @@ if has("python")
     py import vim
     py import sys
 
-    nnoremap <C-K><C-M> :call ReplaceMathExpression()<CR>
+    nnoremap <leader>m :call ReplaceMathExpression()<CR>
 endif
+
+" Returns a list containing strings contained in the path variable
+function! GetPathList() 
+    let p = &path
+    return split(p, ",")
+endfunction
+
+" Returns a space separated string of all elements in the path variable
+function! GetPathString() 
+    let plist = GetPathList()
+    return join(plist, " ")
+endfunction
+
+" Executes a command string for each path element, replacing all occurances of %s with the path element string
+function! ForEachPath(command)
+    let plist = GetPathList()
+    for p in plist 
+        let newCommand = substitute(a:command, "\%s", p, "g")
+        execute newCommand
+    endfor
+endfunction
+
+" Greps recursively for all directories in the path
+function! GrepPath(arg)
+    let plist = GetPathString()
+    silent execute "grep! -r \"".a:arg."\" ".plist
+    cw
+endfunction
+
+" Clears out the quickfix list
+function! ClearCw()
+    call setqflist([]) 
+    cclose
+endfunction
+
+" Closes out of all inactive buffers
+function! DeleteInactiveBufs()
+    " Get a list of all buffers in all tabs
+    let tablist = []
+    for i in range(tabpagenr('$'))
+        call extend(tablist, tabpagebuflist(i + 1))
+    endfor
+
+    for i in range(1, bufnr('$'))
+        if bufexists(i) && !getbufvar(i,"&mod") && index(tablist, i) == -1
+            " bufno exists AND isn't modified AND isn't in the list of buffers open in windows and tabs
+            silent exec 'bwipeout' i
+        endif
+    endfor
+endfunction
+
+" Clears up common sources of vim slowness
+function! GarbageCollection()
+    call ClearCw()
+    call DeleteInactiveBufs()
+endfunction
+
+" Maps
+let mapleader="\\"
+nnoremap <leader><leader>G :call GrepPath('<cWORD>')<CR>
+nnoremap <leader><leader>g :call GrepPath('<cword>')<CR>
+nnoremap <leader>G :silent grep! -r "<cWORD>"<CR>:cw<CR>
+nnoremap <leader>g :silent grep! -r "<cword>"<CR>:cw<CR>
+nnoremap <leader>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments --break-after-logical --max-code-length=80<CR>
+nnoremap <leader>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
+nnoremap <leader>r :redraw!<CR>
+nnoremap <leader>t :silent grep! -r "TODO"<CR>:cw<CR>
+nnoremap <leader>l :source ~/.vimrc<CR>
+nnoremap <leader>P "_diWP
+nnoremap <leader>p "_diwP
+nnoremap <leader>s :TScratch<CR>
+nnoremap <leader>q :call GarbageCollection()<CR>
+vnoremap <leader>p "_d"0P
+inoremap <leader>t // TODO: 
+inoremap jj <ESC>
+
