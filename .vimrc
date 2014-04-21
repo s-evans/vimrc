@@ -1,7 +1,7 @@
 " TODO: Improve spreadsheet functionality
 " TODO: Left/Right expression
 " TODO: Improve custom mappings for consistency
-" TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, etc.)
+" TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
 " TODO: Add mappings for changing settings (ie. wrap, number)
 
