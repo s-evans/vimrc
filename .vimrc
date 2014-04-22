@@ -60,6 +60,13 @@ if has("cscope")
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
 
     function! CscopeRescan()
+        " Special case for java; Get the list of java files;
+        let ft = &filetype
+        if ft == "java"
+            silent !find * -type f | grep "\.java$" > cscope.files
+        endif
+
+        " Execute Cscope rescan
         silent !cscope -Rbqk
     endfunction
 
@@ -115,22 +122,15 @@ if has("cscope")
         redraw!
     endfunction
 
-    function! ScanAndReset()
+    function! CscopeRescanRecurse()
         call CscopeRescan()
         cs reset
         redraw!
     endfunction
 
-    " TODO: Improve this for multi-path rescan
-    function! ScanAndResetJava()
-        silent !find * -type f | grep "\.java$" > cscope.files
-        call ScanAndReset()
-    endfunction
-
-    " TODO: Figure out map for multi-path rescan
     if has("autocmd") 
-        autocmd BufWritePre * nmap <C-\><C-\> :call ScanAndReset()<CR>
-        autocmd Filetype java nmap <C-\><C-\> :call ScanAndResetJava()<CR>
+        nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
+        nnoremap <C-\>p :call CscopeRescanAll()<CR>
     endif
 endif
 
