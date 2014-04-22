@@ -3,7 +3,6 @@
 " TODO: Improve custom mappings for consistency
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
-" TODO: Add mappings for changing settings (ie. wrap, number)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -29,7 +28,6 @@ set history=1000
 set nowrap
 colors evening
 set title
-set hidden
 
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ $*
@@ -61,17 +59,75 @@ if has("cscope")
     set nocscopeverbose
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
 
+    function! CscopeRescan()
+        silent !cscope -Rbqk
+    endfunction
+
+    function! CscopeRescanDir(dir)
+        cd a:dir
+        call CscopeRescan()
+        cd -
+    endfunction
+
+    function! CscopeGetDbLines()
+        redir =>cslist
+        silent! cs show
+        redir END
+        return split(cslist, '\n')
+    endfunction
+
+    function! CscopeGetDbPaths()
+        let dblines = CscopeGetDbLines()
+        let paths = []
+
+        for line in dblines
+            " Split the line into space separated tokens
+            let tok = split(line)
+
+            " Check that we got something
+            if empty(tok)
+                continue
+            endif
+
+            " Check if the first element is a number
+            if match(tok[0], "[0-9]") == -1
+                continue
+            endif
+
+            " Get that path
+            let tmppath = system("dirname ".tok[2])
+
+            " Add to the path list
+            call add(paths, tmppath)
+        endfor
+
+        return paths
+    endfunction
+
+    function! CscopeRescanAll()
+        let paths = CscopeGetDbPaths()
+
+        for pth in paths
+            call CscopeRescanDir(pth)
+        endfor
+
+        cs reset
+        redraw!
+    endfunction
+
     function! ScanAndReset()
-        :silent !cscope -Rbq
-        :cs reset
-        :echo "Done!"
+        call CscopeRescan()
+        cs reset
+        redraw!
     endfunction
 
+    " TODO: Improve this for multi-path rescan
     function! ScanAndResetJava()
-        :silent !find * -type f | grep "\.java$" > cscope.files
-        :call ScanAndReset()
+        silent !find * -type f | grep "\.java$" > cscope.files
+        call ScanAndReset()
     endfunction
 
+    " TODO: Figure out map for multi-path rescan
     if has("autocmd") 
         autocmd BufWritePre * nmap <C-\><C-\> :call ScanAndReset()<CR>
         autocmd Filetype java nmap <C-\><C-\> :call ScanAndResetJava()<CR>
@@ -173,10 +229,17 @@ function! GrepCurrent(arg)
     cw
 endfunction
 
-" Greps in all open windows
+" Greps in all buffers 
 function! GrepBuffers(arg)
     call ClearCw()
     call BufDo("silent grepadd! ".a:arg." %")
+    cw
+endfunction
+
+" Greps in all windows
+function! GrepWindows(arg) 
+    call ClearCw()
+    windo silent execute "grepadd! ".a:arg." %"
     cw
 endfunction
 
@@ -193,25 +256,74 @@ function! CscopeAddPath()
     cs reset
 endfunction
 
-" Maps
+" Returns the list of buffers in string format
+function! GetBufferList()
+    redir =>buflist
+    silent! ls
+    redir END
+    return buflist
+endfunction
+
+" Toggles the specified window
+function! ToggleList(bufname, pfx)
+    let buflist = GetBufferList()
+
+    for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+        if bufwinnr(bufnum) != -1
+            exec(a:pfx.'close')
+            return
+        endif
+    endfor
+
+    if a:pfx == 'l' && len(getloclist(0)) == 0
+        echohl ErrorMsg
+        echo "Location List is Empty."
+        return
+    endif
+
+    let winnr = winnr()
+    exec(a:pfx.'open')
+
+    if winnr() != winnr
+        wincmd p
+    endif
+endfunction
+
 let mapleader="\\"
+
 nnoremap <leader>gpiW :call GrepPath('<cWORD>')<CR>
 nnoremap <leader>gpiw :call GrepPath('<cword>')<CR>
+
 nnoremap <leader>griW :call GrepRecurse('<cWORD>')<CR>
 nnoremap <leader>griw :call GrepRecurse('<cword>')<CR>
+
 nnoremap <leader>gciW :call GrepCurrent('<cWORD>')<CR>
 nnoremap <leader>gciw :call GrepCurrent('<cword>')<CR>
+
 nnoremap <leader>gbiW :call GrepBuffers('<cWORD>')<CR>
 nnoremap <leader>gbiw :call GrepBuffers('<cword>')<CR>
+
+nnoremap <leader>gwiW :call GrepWindows('<cWORD>')<CR>
+nnoremap <leader>gwiw :call GrepWindows('<cword>')<CR>
+
+nnoremap <leader>wn :NERDTreeToggle<CR>
+nnoremap <leader>wt :TlistToggle<CR>
+nnoremap <leader>ws :TScratch<CR>
+nnoremap <leader>wg :GundoToggle<CR>
+nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
+nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
+nnoremap <leader>wa :AS<CR>
+nnoremap <leader>wl :set number!<CR>
+nnoremap <leader>ww :set wrap!<CR>
+nnoremap <leader>wr :redraw!<CR>
+" This breaks some things (NERDTree)
+nnoremap <leader>wq :call GarbageCollection()<CR> 
+
 nnoremap <leader>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments<CR>
 nnoremap <leader>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-nnoremap <leader>r :redraw!<CR>
-nnoremap <leader>t :call GrepRecurse("TODO")<CR>
 nnoremap <leader>l :source ~/.vimrc<CR>
 nnoremap <leader>P "_diWP
 nnoremap <leader>p "_diwP
-nnoremap <leader>s :TScratch<CR>
-nnoremap <leader>q :call GarbageCollection()<CR>
 vnoremap <leader>p "_d"0P
 inoremap <leader>t // TODO: 
 inoremap jj <ESC>
