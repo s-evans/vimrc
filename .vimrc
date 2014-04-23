@@ -3,6 +3,10 @@
 " TODO: Improve custom mappings for consistency
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
+" TODO: Maps for diff'ing 
+" TODO: Maps for transforms (xxd, md5sum, base64, dos2unix, unix2dos, astyle)
+" TODO: Try Buffer Explorer
+" TODO: Function for cd dir, exec, cd -
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
