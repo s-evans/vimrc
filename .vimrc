@@ -399,6 +399,9 @@ nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
 
+nnoremap <leader>wfn :call LockRow()<CR>
+nnoremap <leader>wfv :call LockColumn()<CR>
+
 nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
