@@ -3,6 +3,9 @@
 " TODO: Improve custom mappings for consistency
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
+" TODO: Faster paste'ing replace'ing
+" TODO: Overridable astyle using global variable
+" TODO: Re-open closed window
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -71,7 +74,7 @@ if has("cscope")
     endfunction
 
     function! CscopeRescanDir(dir)
-        cd a:dir
+        execute "cd " . a:dir
         call CscopeRescan()
         cd -
     endfunction
