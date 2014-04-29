@@ -1,11 +1,14 @@
 " TODO: Improve spreadsheet functionality
-" TODO: Left/Right expression
+" TODO: Left/Right expression text object
 " TODO: Improve custom mappings for consistency
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
-" TODO: Faster paste'ing replace'ing
+" TODO: Faster paste'ing replace'ing (textobjs)
 " TODO: Overridable astyle using global variable
 " TODO: Re-open closed window
+" TODO: Maps for transforms (md5sum, base64, other csums)
+" TODO: Function for cd dir, exec, cd -
+" TODO: Fork changes? (textobj-between, cctree)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -292,6 +295,86 @@ function! ToggleList(bufname, pfx)
     endif
 endfunction
 
+" helper function to toggle hex mode
+function! ToggleHex()
+    " hex mode should be considered a read-only operation
+    " save values for modified and read-only for restoration later,
+    " and clear the read-only flag for now
+    let l:modified=&mod
+    let l:oldreadonly=&readonly
+    let &readonly=0
+    let l:oldmodifiable=&modifiable
+    let &modifiable=1
+    if !exists("b:editHex") || !b:editHex
+        " save old options
+        let b:oldft=&ft
+        let b:oldbin=&bin
+        " set new options
+        setlocal binary " make sure it overrides any textwidth, etc.
+        let &ft="xxd"
+        " set status
+        let b:editHex=1
+        " switch to hex editor
+        %!xxd
+    else
+        " restore old options
+        let &ft=b:oldft
+        if !b:oldbin
+            setlocal nobinary
+        endif
+        " set status
+        let b:editHex=0
+        " return to normal editing
+        %!xxd -r
+    endif
+    " restore values for modified and read only state
+    let &mod=l:modified
+    let &readonly=l:oldreadonly
+    let &modifiable=l:oldmodifiable
+endfunction
+
+" Toggles diff on the current window
+function! ToggleDiff()
+    if &diff
+        diffoff
+    else
+        diffthis
+    endif
+endfunction
+
+" Define a default style that is overrideable by local project settings
+if !exists('g:astyle')
+    let g:astyle = "--style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments"
+endif
+
+" Calls astyle on the current window
+function! RunAstyle()
+    let lnum = line(".")
+    execute "%!astyle " . g:astyle
+    $delete
+    execute "normal " . lnum . "G"
+endfunction
+
+" Create a scroll locked column (cannot be used with a locked row)
+function! LockColumn()
+    set scrollbind
+    vsplit 
+    vertical resize 20
+    setlocal scrollopt=ver
+    set scrollbind
+    wincmd l
+endfunction
+
+" Create a scroll locked row (cannot be used with a locked column)
+function! LockRow()
+    set scrollbind
+    split 
+    resize 1
+    setlocal scrollopt=hor
+    set scrollbind
+    wincmd j
+endfunction
+
 let mapleader="\\"
 
 nnoremap <leader>gpiW :call GrepPath('<cWORD>')<CR>
@@ -313,21 +396,35 @@ nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TlistToggle<CR>
 nnoremap <leader>ws :TScratch<CR>
 nnoremap <leader>wg :GundoToggle<CR>
+nnoremap <leader>wx :call ToggleHex()<CR>
+nnoremap <leader>wd :call ToggleDiff()<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
+
+nnoremap <leader>wfn :call LockRow()<CR>
+nnoremap <leader>wfv :call LockColumn()<CR>
+
 nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
 " This breaks some things (NERDTree)
 nnoremap <leader>wq :call GarbageCollection()<CR> 
 
-nnoremap <leader>y :%!astyle --style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments<CR>
-nnoremap <leader>c :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-nnoremap <leader>l :source ~/.vimrc<CR>
+nnoremap <leader>ta :call RunAstyle()<CR>
+nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
+nnoremap <leader>tud :%!unix2dos -f<CR>
+nnoremap <leader>tdu :%!dos2unix -f<CR>
+nnoremap <leader>tmu :%!mac2unix -f<CR>
+nnoremap <leader>tum :%!unix2mac -f<CR>
+
+nnoremap <leader>lg :source ~/.vimrc<CR>
+nnoremap <leader>ll :source ./.vimrc<CR>
+
 nnoremap <leader>P "_diWP
 nnoremap <leader>p "_diwP
 vnoremap <leader>p "_d"0P
+
 inoremap <leader>t // TODO: 
 inoremap jj <ESC>
 
