@@ -4,7 +4,6 @@
 " TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
 " TODO: Faster paste'ing replace'ing (textobjs)
-" TODO: Overridable astyle using global variable
 " TODO: Re-open closed window
 " TODO: Maps for transforms (md5sum, base64, other csums)
 " TODO: Function for cd dir, exec, cd -
@@ -344,7 +343,7 @@ endfunction
 
 " Define a default style that is overrideable by local project settings
 if !exists('g:astyle')
-    let g:astyle = "--style=kr --break-blocks --pad-oper --pad-paren-in --align-pointer=type --indent-col1-comments"
+    let g:astyle = "--style=kr --break-blocks --pad-oper --unpad-paren --pad-paren-in --align-pointer=type --indent-col1-comments --add-brackets --pad-header"
 endif
 
 " Calls astyle on the current window
