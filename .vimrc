@@ -1,13 +1,16 @@
 " TODO: Improve spreadsheet functionality
 " TODO: Left/Right expression text object
 " TODO: Improve custom mappings for consistency
-" TODO: Add mappings for scope (ie. local recurse, path recurse, bufdo, windo, etc.)
 " TODO: Add shellescape calls for string sanitization
 " TODO: Faster paste'ing replace'ing (textobjs)
 " TODO: Re-open closed window
-" TODO: Maps for transforms (md5sum, base64, other csums)
-" TODO: Function for cd dir, exec, cd -
+" TODO: Maps for transforms (md5sum, base64, other csums, c++filt, mathematical expressions)
+" TODO: Function for cd dir, execute a:command_string, cd -
+" TODO: Function for linenum, execute a:command_string, linenum G
 " TODO: Fork changes? (textobj-between, cctree)
+" TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
+" TODO: Look into operator pending maps
+" TODO: Update comment update mapping to support more languages and comment styles
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -60,7 +63,7 @@ set secure
 set completeopt=menu,menuone
 
 " Cscope settings
-if has("cscope")
+if has("cscope") && executable("cscope")
     set nocscopeverbose
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
 
@@ -133,10 +136,8 @@ if has("cscope")
         redraw!
     endfunction
 
-    if has("autocmd") 
-        nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
-        nnoremap <C-\>p :call CscopeRescanAll()<CR>
-    endif
+    nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
+    nnoremap <C-\>p :call CscopeRescanAll()<CR>
 endif
 
 " Eclim settings
@@ -145,11 +146,11 @@ if has("autocmd")
 endif 
 
 " Mathematical functions
-if has("python")
+if has("python") && executable("python")
     function! EvalMathExpression(exp) 
         execute "py sys.argv = [\"".a:exp."\"]"
-        py sys.argv[0] = eval(sys.argv[0])
-        py vim.command("let out = \"" + str(sys.argv[0]) + "\"")
+        python sys.argv[0] = eval(sys.argv[0])
+        python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
         return out
     endfunction
 
@@ -159,11 +160,17 @@ if has("python")
         execute "normal ciW".out
     endfunction
 
-    py from math import * 
-    py import vim
-    py import sys
-
     nnoremap <leader>m :call ReplaceMathExpression()<CR>
+
+    " Configure the python instance
+    python << 
+try:
+    from math import * 
+    import vim
+    import sys
+except ImportError:
+    pass
+
 endif
 
 " Returns a list containing strings contained in the path variable
@@ -210,6 +217,7 @@ function! DeleteInactiveBufs()
 endfunction
 
 " Clears up common sources of vim slowness
+" This breaks some things (NERDTree)
 function! GarbageCollection()
     call ClearCw()
     call DeleteInactiveBufs()
@@ -294,7 +302,7 @@ function! ToggleList(bufname, pfx)
     endif
 endfunction
 
-" helper function to toggle hex mode
+" Helper function to toggle hex mode
 function! ToggleHex()
     " hex mode should be considered a read-only operation
     " save values for modified and read-only for restoration later,
@@ -304,6 +312,7 @@ function! ToggleHex()
     let &readonly=0
     let l:oldmodifiable=&modifiable
     let &modifiable=1
+
     if !exists("b:editHex") || !b:editHex
         " save old options
         let b:oldft=&ft
@@ -326,6 +335,7 @@ function! ToggleHex()
         " return to normal editing
         %!xxd -r
     endif
+
     " restore values for modified and read only state
     let &mod=l:modified
     let &readonly=l:oldreadonly
@@ -354,6 +364,13 @@ function! RunAstyle()
     execute "normal " . lnum . "G"
 endfunction
 
+" Calls xmllint on the current window
+function! RunXmlLint()
+    let lnum = line(".")
+    execute "%!xmllint --format -"
+    execute "normal " . lnum . "G"
+endfunction
+
 " Create a scroll locked column (cannot be used with a locked row)
 function! LockColumn()
     set scrollbind
@@ -374,23 +391,26 @@ function! LockRow()
     wincmd j
 endfunction
 
+" Override astyle map for xml
+if has("autocmd") 
+    autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
+endif
+
 let mapleader="\\"
 
+" Grep mappings
 nnoremap <leader>gpiW :call GrepPath('<cWORD>')<CR>
 nnoremap <leader>gpiw :call GrepPath('<cword>')<CR>
-
 nnoremap <leader>griW :call GrepRecurse('<cWORD>')<CR>
 nnoremap <leader>griw :call GrepRecurse('<cword>')<CR>
-
 nnoremap <leader>gciW :call GrepCurrent('<cWORD>')<CR>
 nnoremap <leader>gciw :call GrepCurrent('<cword>')<CR>
-
 nnoremap <leader>gbiW :call GrepBuffers('<cWORD>')<CR>
 nnoremap <leader>gbiw :call GrepBuffers('<cword>')<CR>
-
 nnoremap <leader>gwiW :call GrepWindows('<cWORD>')<CR>
 nnoremap <leader>gwiw :call GrepWindows('<cword>')<CR>
 
+" Window mappings
 nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TlistToggle<CR>
 nnoremap <leader>ws :TScratch<CR>
@@ -400,29 +420,29 @@ nnoremap <leader>wd :call ToggleDiff()<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
-
 nnoremap <leader>wfn :call LockRow()<CR>
 nnoremap <leader>wfv :call LockColumn()<CR>
-
 nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
-" This breaks some things (NERDTree)
 nnoremap <leader>wq :call GarbageCollection()<CR> 
 
+" Text transform mappings
 nnoremap <leader>ta :call RunAstyle()<CR>
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
+nnoremap <leader>tt :%!column -t<CR>
+nnoremap <leader>ts :%!column -s, -t<CR>
 nnoremap <leader>tud :%!unix2dos -f<CR>
 nnoremap <leader>tdu :%!dos2unix -f<CR>
 nnoremap <leader>tmu :%!mac2unix -f<CR>
 nnoremap <leader>tum :%!unix2mac -f<CR>
 
+" Project mappings
+nnoremap <leader>pm :make<CR>
+
+" vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
-
-nnoremap <leader>P "_diWP
-nnoremap <leader>p "_diwP
-vnoremap <leader>p "_d"0P
 
 inoremap <leader>t // TODO: 
 inoremap jj <ESC>
