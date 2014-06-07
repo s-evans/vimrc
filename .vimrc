@@ -79,14 +79,14 @@ if has("cscope") && executable("cscope")
     endfunction
 
     function! CscopeRescanDir(dir)
-        execute "cd " . a:dir
+        silent! execute "cd " . a:dir
         call CscopeRescan()
         cd -
     endfunction
 
     function! CscopeGetDbLines()
         redir =>cslist
-        silent! cs show
+        silent! cscope show
         redir END
         return split(cslist, '\n')
     endfunction
@@ -148,7 +148,7 @@ endif
 " Mathematical functions
 if has("python") && executable("python")
     function! EvalMathExpression(exp) 
-        execute "py sys.argv = [\"".a:exp."\"]"
+        execute "py sys.argv = [\"" . a:exp . "\"]"
         python sys.argv[0] = eval(sys.argv[0])
         python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
         return out
@@ -157,7 +157,7 @@ if has("python") && executable("python")
     function! ReplaceMathExpression() 
         let exp = expand("<cWORD>")
         let out = EvalMathExpression(exp)
-        execute "normal ciW".out
+        execute "normal ciW" . out
     endfunction
 
     nnoremap <leader>m :call ReplaceMathExpression()<CR>
@@ -211,7 +211,7 @@ function! DeleteInactiveBufs()
     for i in range(1, bufnr('$'))
         if bufexists(i) && !getbufvar(i,"&mod") && index(tablist, i) == -1
             " bufno exists AND isn't modified AND isn't in the list of buffers open in windows and tabs
-            silent exec 'bwipeout' i
+            silent execute 'bwipeout' i
         endif
     endfor
 endfunction
@@ -232,41 +232,41 @@ endfunction
 
 " Greps recursively from the current working directory
 function! GrepRecurse(arg)
-    silent execute "grep! -r ".a:arg
+    silent execute "grep! -r " . a:arg
     cw
 endfunction
 
 " Greps in the current window
 function! GrepCurrent(arg)
-    silent execute "grep! ".a:arg." % "
+    silent execute "grep! " . a:arg . " % "
     cw
 endfunction
 
 " Greps in all buffers 
 function! GrepBuffers(arg)
     call ClearCw()
-    call BufDo("silent grepadd! ".a:arg." %")
+    call BufDo("silent grepadd! " . a:arg . " %")
     cw
 endfunction
 
 " Greps in all windows
 function! GrepWindows(arg) 
     call ClearCw()
-    windo silent execute "grepadd! ".a:arg." %"
+    windo silent execute "grepadd! " . a:arg . " %"
     cw
 endfunction
 
 " Greps recursively for all directories in the path
 function! GrepPath(arg)
     let plist = GetPathString()
-    silent execute "grep! -r \"".a:arg."\" ".plist
+    silent execute "grep! -r \"" . a:arg . "\" " . plist
     cw
 endfunction
 
 " Attempts to add a cscope database for each path element
 function! CscopeAddPath()
     ForEachPath("cscope add %s %s")
-    cs reset
+    cscope reset
 endfunction
 
 " Returns the list of buffers in string format
@@ -396,19 +396,42 @@ if has("autocmd")
     autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
 endif
 
+function! OperatorWrapper(type) 
+    let sel_save = &selection
+    let &selection = "inclusive"
+    let reg_save = @@
+
+    if a:type ==# "v"
+        silent execute "normal! `<v`>y"
+    elseif a:type == 'line'
+        silent execute "normal! '[V']y"
+    elseif a:type == 'block'
+        silent execute "normal! `[\<C-V>`]y"
+    else
+        silent execute "normal! `[v`]y"
+    endif
+
+    let command = substitute(g:OperatorWrapperCb, "\%s", shellescape(@@), "g")
+    silent execute command
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
+
 let mapleader="\\"
 
-" Grep mappings
-nnoremap <leader>gpiW :call GrepPath('<cWORD>')<CR>
-nnoremap <leader>gpiw :call GrepPath('<cword>')<CR>
-nnoremap <leader>griW :call GrepRecurse('<cWORD>')<CR>
-nnoremap <leader>griw :call GrepRecurse('<cword>')<CR>
-nnoremap <leader>gciW :call GrepCurrent('<cWORD>')<CR>
-nnoremap <leader>gciw :call GrepCurrent('<cword>')<CR>
-nnoremap <leader>gbiW :call GrepBuffers('<cWORD>')<CR>
-nnoremap <leader>gbiw :call GrepBuffers('<cword>')<CR>
-nnoremap <leader>gwiW :call GrepWindows('<cWORD>')<CR>
-nnoremap <leader>gwiw :call GrepWindows('<cword>')<CR>
+" Grep operator mappings
+nnoremap <leader>gp :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepPath(%s)"<CR>g@
+nnoremap <leader>gr :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>g@
+nnoremap <leader>gc :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>g@
+nnoremap <leader>gb :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>g@
+nnoremap <leader>gw :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>g@
+
+vnoremap <leader>gp :<c-u>let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+vnoremap <leader>gr :<c-u>let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+vnoremap <leader>gc :<c-u>let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+vnoremap <leader>gb :<c-u>let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+vnoremap <leader>gw :<c-u>let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
 " Window mappings
 nnoremap <leader>wn :NERDTreeToggle<CR>
