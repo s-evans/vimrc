@@ -1,16 +1,12 @@
-" TODO: Improve spreadsheet functionality
-" TODO: Left/Right expression text object
-" TODO: Improve custom mappings for consistency
-" TODO: Add shellescape calls for string sanitization
 " TODO: Faster paste'ing replace'ing (textobjs)
-" TODO: Re-open closed window
-" TODO: Maps for transforms (md5sum, base64, other csums, c++filt, mathematical expressions)
+" TODO: Update filtering maps to operate on sub-line motions
+" TODO: Left/Right expression text object
+" TODO: Improve spreadsheet functionality
 " TODO: Function for cd dir, execute a:command_string, cd -
 " TODO: Function for linenum, execute a:command_string, linenum G
 " TODO: Fork changes? (textobj-between, cctree)
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
-" TODO: Look into operator pending maps
-" TODO: Update comment update mapping to support more languages and comment styles
+" TODO: Update comment changing mapping to support more languages and comment styles
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -21,6 +17,8 @@ filetype on
 filetype plugin on
 filetype plugin indent on
 syntax on
+colors evening
+set nocompatible
 set autoindent
 set expandtab
 set ruler
@@ -29,13 +27,15 @@ set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set bs=2
-set mouse=""
+set mouse=""  " No mouse
 set wildmenu
 set wildmode=list:longest,full
 set history=1000
 set nowrap
-colors evening
+set noincsearch
 set title
+set nojoinspaces
+set noshowmatch
 
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ $*
@@ -44,8 +44,13 @@ set grepprg=grep\ -n\ -H\ $*
 set complete-=i
 
 " Fix stupid comment behavior
-if has("autocmd") 
+if has("autocmd")
     autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+endif
+
+" Persistent undo
+if exists('+undofile')
+    set undofile
 endif
 
 " Cursor line settings
@@ -136,8 +141,6 @@ if has("cscope") && executable("cscope")
         redraw!
     endfunction
 
-    nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
-    nnoremap <C-\>p :call CscopeRescanAll()<CR>
 endif
 
 " Eclim settings
@@ -147,21 +150,6 @@ endif
 
 " Mathematical functions
 if has("python") && executable("python")
-    function! EvalMathExpression(exp) 
-        execute "py sys.argv = [\"" . a:exp . "\"]"
-        python sys.argv[0] = eval(sys.argv[0])
-        python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
-        return out
-    endfunction
-
-    function! ReplaceMathExpression() 
-        let exp = expand("<cWORD>")
-        let out = EvalMathExpression(exp)
-        execute "normal ciW" . out
-    endfunction
-
-    nnoremap <leader>m :call ReplaceMathExpression()<CR>
-
     " Configure the python instance
     python << 
 try:
@@ -172,6 +160,40 @@ except ImportError:
     pass
 
 endif
+
+" Solves the given mathemical expression and returns the result
+function! EvalMathExpression(exp) 
+    execute "python sys.argv = [\"" . a:exp . "\"]"
+    python sys.argv[0] = eval(sys.argv[0])
+    python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
+    return out
+endfunction
+
+" Replaces the mathematical expression defined by the motion with the result of the expression
+function! MathExpressionOperator(type) 
+    let sel_save = &selection
+    let &selection = "inclusive"
+    let reg_save = @@
+    let start = "`["
+
+    if a:type ==# "v"
+        silent execute "normal! `<v`>d"
+        let start = "`<"
+    elseif a:type == 'line'
+        silent execute "normal! `[V`]d"
+    elseif a:type == 'block'
+        silent execute "normal! `[`]d"
+    else
+        silent execute "normal! `[v`]d"
+    endif
+
+    let out = EvalMathExpression(@@)
+    let command = "normal " . start . "i" . out
+    silent execute command
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
 
 " Returns a list containing strings contained in the path variable
 function! GetPathList() 
@@ -232,34 +254,34 @@ endfunction
 
 " Greps recursively from the current working directory
 function! GrepRecurse(arg)
-    silent execute "grep! -r " . a:arg
+    silent execute "grep! -r " . shellescape(a:arg)
     cw
 endfunction
 
 " Greps in the current window
 function! GrepCurrent(arg)
-    silent execute "grep! " . a:arg . " % "
+    silent execute "grep! " . shellescape(a:arg) . " % "
     cw
 endfunction
 
 " Greps in all buffers 
 function! GrepBuffers(arg)
     call ClearCw()
-    call BufDo("silent grepadd! " . a:arg . " %")
+    call BufDo("silent grepadd! " . shellescape(a:arg) . " %")
     cw
 endfunction
 
 " Greps in all windows
 function! GrepWindows(arg) 
     call ClearCw()
-    windo silent execute "grepadd! " . a:arg . " %"
+    windo silent execute "grepadd! " . shellescape(a:arg) . " %"
     cw
 endfunction
 
 " Greps recursively for all directories in the path
 function! GrepPath(arg)
     let plist = GetPathString()
-    silent execute "grep! -r \"" . a:arg . "\" " . plist
+    silent execute "grep! -r \"" . shellescape(a:arg) . "\" " . plist
     cw
 endfunction
 
@@ -356,14 +378,6 @@ if !exists('g:astyle')
     let g:astyle = "--style=kr --break-blocks --pad-oper --unpad-paren --pad-paren-in --align-pointer=type --indent-col1-comments --add-brackets --pad-header"
 endif
 
-" Calls astyle on the current window
-function! RunAstyle()
-    let lnum = line(".")
-    execute "%!astyle " . g:astyle
-    $delete
-    execute "normal " . lnum . "G"
-endfunction
-
 " Calls xmllint on the current window
 function! RunXmlLint()
     let lnum = line(".")
@@ -396,6 +410,7 @@ if has("autocmd")
     autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
 endif
 
+" Wraps operator functions that rely on simple input text
 function! OperatorWrapper(type) 
     let sel_save = &selection
     let &selection = "inclusive"
@@ -406,7 +421,7 @@ function! OperatorWrapper(type)
     elseif a:type == 'line'
         silent execute "normal! '[V']y"
     elseif a:type == 'block'
-        silent execute "normal! `[\<C-V>`]y"
+        silent execute "normal! `[`]y"
     else
         silent execute "normal! `[v`]y"
     endif
@@ -418,19 +433,133 @@ function! OperatorWrapper(type)
     let @@ = reg_save
 endfunction
 
+" Based on the type of the motion, returns the associated range string
+function! GetRange(type)
+    if a:type ==# "V"
+        return "'<,'>"
+    elseif a:type ==# "v"
+        return "'<,'>"
+    else
+        return "'[,']"
+    endif
+endfunction
+
+" Creates a table from space separated arguments
+function! TableOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!column -t"
+endfunction
+
+" Creates a table from comma separated arguments
+function! CommaTableOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!column -s, -t"
+endfunction
+
+" Converts unix text to mac
+function! UnixToMacOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!unix2mac -f"
+endfunction
+
+" Converts mac text to unix
+function! MacToUnixOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!mac2unix -f"
+endfunction
+
+" Converts dos text to unix
+function! DosToUnixOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!dos2unix -f"
+endfunction
+
+" Converts unix text to dos
+function! UnixToDosOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!unix2dos -f"
+endfunction
+
+" Runs astyle on specified text
+function! AstyleOperator(type) 
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!astyle " . g:astyle
+endfunction
+
+" Converts cpp name mangled strings to their pretty counterparts
+function! CppFilterOperator(type)
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!c++filt"
+endfunction
+
+" TODO: Update output removing extra junk
+" Performs crc32 on selected text
+function! CrcOperator(type) 
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!cksum -"
+endfunction
+
+" TODO: Update output removing extra junk
+" Performs md5 on selected text
+function! Md5Operator(type) 
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!md5sum -"
+endfunction
+
+" Base64 encodes text
+function! Base64Operator(type) 
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!base64 -"
+endfunction
+
+" Base64 decodes text
+function! Base64DecodeOperator(type) 
+    let range = GetRange(a:type)
+    silent execute ":" . range . "!base64 -d -"
+endfunction
+
+" TODO: Fix awkwardness surrounding line endings
+" Replace the text selected by the motion with the unnamed buffer
+function! ReplaceText(type)
+    let sel_save = &selection
+    let &selection = "inclusive"
+    let reg_save = @@
+
+    if a:type ==# "v"
+        silent execute "normal! `<v`>\"_dp"
+        let start = "`<"
+    elseif a:type == 'line'
+        silent execute "normal! `[V`]\"_dp"
+    elseif a:type == 'block'
+        silent execute "normal! `[`]\"_dp"
+    else
+        silent execute "normal! `[v`]\"_dp"
+    endif
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
+
 let mapleader="\\"
+
+" Additional cscope mappings
+nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
+nnoremap <C-\>p :call CscopeRescanAll()<CR>
 
 " Grep operator mappings
 nnoremap <leader>gp :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepPath(%s)"<CR>g@
-nnoremap <leader>gr :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>g@
-nnoremap <leader>gc :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>g@
-nnoremap <leader>gb :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>g@
-nnoremap <leader>gw :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>g@
-
 vnoremap <leader>gp :<c-u>let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>gr :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>g@
 vnoremap <leader>gr :<c-u>let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>gc :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>g@
 vnoremap <leader>gc :<c-u>let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>gb :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>g@
 vnoremap <leader>gb :<c-u>let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>gw :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>g@
 vnoremap <leader>gw :<c-u>let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
 " Window mappings
@@ -451,22 +580,55 @@ nnoremap <leader>wr :redraw!<CR>
 nnoremap <leader>wq :call GarbageCollection()<CR> 
 
 " Text transform mappings
-nnoremap <leader>ta :call RunAstyle()<CR>
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-nnoremap <leader>tt :%!column -t<CR>
-nnoremap <leader>ts :%!column -s, -t<CR>
-nnoremap <leader>tud :%!unix2dos -f<CR>
-nnoremap <leader>tdu :%!dos2unix -f<CR>
-nnoremap <leader>tmu :%!mac2unix -f<CR>
-nnoremap <leader>tum :%!unix2mac -f<CR>
 
-" Project mappings
-nnoremap <leader>pm :make<CR>
+nnoremap <leader>ta :set operatorfunc=AstyleOperator<CR>g@
+vnoremap <leader>ta :<c-u>call AstyleOperator(visualmode())<CR>
+
+nnoremap <leader>tud :set operatorfunc=UnixToDosOperator<CR>g@
+vnoremap <leader>tud :<c-u>call UnixToDosOperator(visualmode())<CR>
+
+nnoremap <leader>tdu :set operatorfunc=DosToUnixOperator<CR>g@
+vnoremap <leader>tdu :<c-u>call DosToUnixOperator(visualmode())<CR>
+
+nnoremap <leader>tmu :set operatorfunc=MacToUnixOperator<CR>g@
+vnoremap <leader>tmu :<c-u>call MacToUnixOperator(visualmode())<CR>
+
+nnoremap <leader>tum :set operatorfunc=UnixToMacOperator<CR>g@
+vnoremap <leader>tum :<c-u>call UnixToMacOperator(visualmode())<CR>
+
+nnoremap <leader>tt :set operatorfunc=TableOperator<CR>g@
+vnoremap <leader>tt :<c-u>call TableOperator(visualmode())<CR>
+
+nnoremap <leader>ts :set operatorfunc=CommaTableOperator<CR>g@
+vnoremap <leader>ts :<c-u>call CommaTableOperator(visualmode())<CR>
+
+nnoremap <leader>tb :set operatorfunc=Base64Operator<CR>g@
+vnoremap <leader>tb :<c-u>call Base64Operator(visualmode())<CR>
+
+nnoremap <leader>tB :set operatorfunc=Base64DecodeOperator<CR>g@
+vnoremap <leader>tB :<c-u>call Base64DecodeOperator(visualmode())<CR>
+
+nnoremap <leader>t5 :set operatorfunc=Md5Operator<CR>g@
+vnoremap <leader>t5 :<c-u>call Md5Operator(visualmode())<CR>
+
+nnoremap <leader>tk :set operatorfunc=CrcOperator<CR>g@
+vnoremap <leader>tk :<c-u>call CrcOperator(visualmode())<CR>
+
+nnoremap <leader>tp :set operatorfunc=CppFilterOperator<CR>g@
+vnoremap <leader>tp :<c-u>call CppFilterOperator(visualmode())<CR>
+
+nnoremap <leader>tm :set operatorfunc=MathExpressionOperator<CR>g@
+vnoremap <leader>tm :<c-u>call MathExpressionOperator(visualmode())<CR>
 
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
+" Misc
+nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
+vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
+nnoremap <leader>k :make<CR>
 inoremap <leader>t // TODO: 
 inoremap jj <ESC>
 
