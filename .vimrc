@@ -1,4 +1,3 @@
-" TODO: Faster paste'ing replace'ing (textobjs)
 " TODO: Update filtering maps to operate on sub-line motions
 " TODO: Left/Right expression text object
 " TODO: Improve spreadsheet functionality
@@ -518,7 +517,6 @@ function! Base64DecodeOperator(type)
     silent execute ":" . range . "!base64 -d -"
 endfunction
 
-" TODO: Fix awkwardness surrounding line endings
 " Replace the text selected by the motion with the unnamed buffer
 function! ReplaceText(type)
     let sel_save = &selection
@@ -526,14 +524,14 @@ function! ReplaceText(type)
     let reg_save = @@
 
     if a:type ==# "v"
-        silent execute "normal! `<v`>\"_dp"
+        silent execute "normal! `<v`>p"
         let start = "`<"
     elseif a:type == 'line'
-        silent execute "normal! `[V`]\"_dp"
+        silent execute "normal! `[V`]\p"
     elseif a:type == 'block'
-        silent execute "normal! `[`]\"_dp"
+        silent execute "normal! `[`]\p"
     else
-        silent execute "normal! `[v`]\"_dp"
+        silent execute "normal! `[v`]\p"
     endif
 
     let &selection = sel_save
