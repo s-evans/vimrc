@@ -413,6 +413,7 @@ if has("autocmd")
     autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
 endif
 
+" TODO: Use multiple buffers to achieve this
 " Used as an operator function with a callback. Passes arguments via the unnamed buffer.
 function! TrueRangeOperatorWrapper(type) 
     let sel_save = &selection
