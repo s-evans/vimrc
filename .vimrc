@@ -1,4 +1,5 @@
 " TODO: Update filtering maps to operate on sub-line motions
+" TODO: Syntax highlighting for command line program output (readelf, nm, objdump)
 " TODO: Left/Right expression text object
 " TODO: Improve spreadsheet functionality
 " TODO: Function for cd dir, execute a:command_string, cd -
@@ -6,6 +7,7 @@
 " TODO: Fork changes? (textobj-between, cctree)
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
+" TODO: Text transform operators (split, transpose, rotate)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -17,6 +19,8 @@ filetype plugin on
 filetype plugin indent on
 syntax on
 colors evening
+set nolinebreak
+set textwidth=0
 set nocompatible
 set autoindent
 set expandtab
@@ -175,13 +179,13 @@ function! MathExpressionOperator(type)
     let reg_save = @@
     let start = "`["
 
-    if a:type ==# "v"
-        silent execute "normal! `<v`>d"
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>d"
         let start = "`<"
     elseif a:type == 'line'
         silent execute "normal! `[V`]d"
-    elseif a:type == 'block'
-        silent execute "normal! `[`]d"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]d"
     else
         silent execute "normal! `[v`]d"
     endif
@@ -409,18 +413,50 @@ if has("autocmd")
     autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
 endif
 
+" Used as an operator function with a callback. Passes arguments via the unnamed buffer.
+function! TrueRangeOperatorWrapper(type) 
+    let sel_save = &selection
+    let &selection = "inclusive"
+    let reg_save = @@
+
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>y"
+    elseif a:type == 'line'
+        silent execute "normal! `[V`]y"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]y"
+    else
+        silent execute "normal! `[v`]y"
+    endif
+
+    silent execute g:OperatorWrapperCb
+
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>p"
+    elseif a:type == 'line'
+        silent execute "normal! `[V`]p"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]p"
+    else
+        silent execute "normal! `[v`]p"
+    endif
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
+
 " Wraps operator functions that rely on simple input text
 function! OperatorWrapper(type) 
     let sel_save = &selection
     let &selection = "inclusive"
     let reg_save = @@
 
-    if a:type ==# "v"
-        silent execute "normal! `<v`>y"
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>y"
     elseif a:type == 'line'
-        silent execute "normal! '[V']y"
-    elseif a:type == 'block'
-        silent execute "normal! `[`]y"
+        silent execute "normal! `[V`]y"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]y"
     else
         silent execute "normal! `[v`]y"
     endif
@@ -491,14 +527,12 @@ function! CppFilterOperator(type)
     silent execute ":" . range . "!c++filt"
 endfunction
 
-" TODO: Update output removing extra junk
 " Performs crc32 on selected text
 function! CrcOperator(type) 
     let range = GetRange(a:type)
-    silent execute ":" . range . "!cksum -"
+    silent execute ":" . range . "!cksum | sed 's/\\(^[^ ]*\\).*/\\1/'"
 endfunction
 
-" TODO: Update output removing extra junk
 " Performs md5 on selected text
 function! Md5Operator(type) 
     let range = GetRange(a:type)
@@ -510,7 +544,7 @@ function! Base64Operator(type)
     let range = GetRange(a:type)
     silent execute ":" . range . "!base64 -"
 endfunction
-
+ 
 " Base64 decodes text
 function! Base64DecodeOperator(type) 
     let range = GetRange(a:type)
@@ -523,15 +557,14 @@ function! ReplaceText(type)
     let &selection = "inclusive"
     let reg_save = @@
 
-    if a:type ==# "v"
-        silent execute "normal! `<v`>p"
-        let start = "`<"
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>p"
     elseif a:type == 'line'
-        silent execute "normal! `[V`]\p"
-    elseif a:type == 'block'
-        silent execute "normal! `[`]\p"
+        silent execute "normal! `[V`]p"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]p"
     else
-        silent execute "normal! `[v`]\p"
+        silent execute "normal! `[v`]p"
     endif
 
     let &selection = sel_save
@@ -545,19 +578,19 @@ nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
 nnoremap <C-\>p :call CscopeRescanAll()<CR>
 
 " Grep operator mappings
-nnoremap <leader>gp :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepPath(%s)"<CR>g@
+nnoremap <leader>gp :let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
 vnoremap <leader>gp :<c-u>let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>gr :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>g@
+nnoremap <leader>gr :let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
 vnoremap <leader>gr :<c-u>let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>gc :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>g@
+nnoremap <leader>gc :let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
 vnoremap <leader>gc :<c-u>let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>gb :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>g@
+nnoremap <leader>gb :let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
 vnoremap <leader>gb :<c-u>let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>gw :set operatorfunc=OperatorWrapper<CR>:let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>g@
+nnoremap <leader>gw :let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
 vnoremap <leader>gw :<c-u>let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
 
 " Window mappings
