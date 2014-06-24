@@ -5,6 +5,7 @@
 " TODO: Function for cd dir, execute a:command_string, cd -
 " TODO: Function for linenum, execute a:command_string, linenum G
 " TODO: Fork changes? (textobj-between, cctree)
+" TODO: Update textobj-between mapping to avoid collisions
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Text transform operators (split, transpose, rotate)
@@ -12,6 +13,9 @@
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
+
+" TODO: Figure out how best to set this per system
+let g:clang_library_path="/usr/lib/llvm-3.4/lib"
 
 " General settings
 filetype on
