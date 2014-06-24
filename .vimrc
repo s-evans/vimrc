@@ -8,7 +8,7 @@
 " TODO: Update textobj-between mapping to avoid collisions
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Text transform operators (split, transpose, rotate)
+" TODO: Text transform operators (split, transpose, rotate, title case) (:s/\v<(.)(\w*)/\u\1\L\2/g)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
