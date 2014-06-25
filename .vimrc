@@ -1,4 +1,3 @@
-" TODO: Update filtering maps to operate on sub-line motions
 " TODO: Syntax highlighting for command line program output (readelf, nm, objdump)
 " TODO: Left/Right expression text object
 " TODO: Improve spreadsheet functionality
@@ -8,14 +7,12 @@
 " TODO: Update textobj-between mapping to avoid collisions
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Text transform operators (split, transpose, rotate, title case) (:s/\v<(.)(\w*)/\u\1\L\2/g)
+" TODO: Text transform operators (split, transpose, rotate)
+" TODO: Update text transforms removing extra output (newlines and junk values)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
-
-" TODO: Figure out how best to set this per system
-let g:clang_library_path="/usr/lib/llvm-3.4/lib"
 
 " General settings
 filetype on
@@ -174,32 +171,6 @@ function! EvalMathExpression(exp)
     python sys.argv[0] = eval(sys.argv[0])
     python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
     return out
-endfunction
-
-" Replaces the mathematical expression defined by the motion with the result of the expression
-function! MathExpressionOperator(type) 
-    let sel_save = &selection
-    let &selection = "inclusive"
-    let reg_save = @@
-    let start = "`["
-
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>d"
-        let start = "`<"
-    elseif a:type == 'line'
-        silent execute "normal! `[V`]d"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]d"
-    else
-        silent execute "normal! `[v`]d"
-    endif
-
-    let out = EvalMathExpression(@@)
-    let command = "normal " . start . "i" . out
-    silent execute command
-
-    let &selection = sel_save
-    let @@ = reg_save
 endfunction
 
 " Returns a list containing strings contained in the path variable
@@ -385,13 +356,6 @@ if !exists('g:astyle')
     let g:astyle = "--style=kr --break-blocks --pad-oper --unpad-paren --pad-paren-in --align-pointer=type --indent-col1-comments --add-brackets --pad-header"
 endif
 
-" Calls xmllint on the current window
-function! RunXmlLint()
-    let lnum = line(".")
-    execute "%!xmllint --format -"
-    execute "normal " . lnum . "G"
-endfunction
-
 " Create a scroll locked column (cannot be used with a locked row)
 function! LockColumn()
     set scrollbind
@@ -412,14 +376,28 @@ function! LockRow()
     wincmd j
 endfunction
 
-" Override astyle map for xml
-if has("autocmd") 
-    autocmd FileType xml nnoremap <buffer> <leader>ta :call RunXmlLint()<CR>
-endif
+" Replace the text selected by the motion with the unnamed buffer
+function! ReplaceText(type)
+    let sel_save = &selection
+    let &selection = "inclusive"
+    let reg_save = @@
 
-" TODO: Use multiple buffers to achieve this
+    if a:type ==# 'v' || a:type ==# 'V'
+        silent execute "normal! `<" . a:type . "`>p"
+    elseif a:type == 'line'
+        silent execute "normal! `[V`]p"
+    elseif a:type == 'block' || a:type == ''
+        silent execute "normal! `[\<c-v>`]p"
+    else
+        silent execute "normal! `[v`]p"
+    endif
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
+
 " Used as an operator function with a callback. Passes arguments via the unnamed buffer.
-function! TrueRangeOperatorWrapper(type) 
+function! UnnamedOperatorWrapper(type) 
     let sel_save = &selection
     let &selection = "inclusive"
     let reg_save = @@
@@ -473,107 +451,79 @@ function! OperatorWrapper(type)
     let @@ = reg_save
 endfunction
 
-" Based on the type of the motion, returns the associated range string
-function! GetRange(type)
-    if a:type ==# "V"
-        return "'<,'>"
-    elseif a:type ==# "v"
-        return "'<,'>"
-    else
-        return "'[,']"
-    endif
+" Evaluates mathematical expressions
+function! MathExpressionUnnamed() 
+    let @@ = EvalMathExpression(@@)
+endfunction
+
+" Makes XML prettier
+function! XmlLintUnnamed()
+    let @@ = system("xmllint --format -", @@)
+endfunction
+
+" Makes text title case
+function! TitleCaseUnnamed()
+    let @@ = substitute(@@, "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") 
 endfunction
 
 " Creates a table from space separated arguments
-function! TableOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!column -t"
+function! TableUnnamed()
+    let @@ = system("column -t", @@)
 endfunction
 
 " Creates a table from comma separated arguments
-function! CommaTableOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!column -s, -t"
+function! CommaTableUnnamed()
+    let @@ = system("column -s, -t", @@)
 endfunction
 
 " Converts unix text to mac
-function! UnixToMacOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!unix2mac -f"
+function! UnixToMacUnnamed()
+    let @@ = system("unix2mac -f", @@)
 endfunction
 
 " Converts mac text to unix
-function! MacToUnixOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!mac2unix -f"
+function! MacToUnixUnnamed()
+    let @@ = system("mac2unix -f", @@)
 endfunction
 
 " Converts dos text to unix
-function! DosToUnixOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!dos2unix -f"
+function! DosToUnixUnnamed()
+    let @@ = system("dos2unix -f", @@)
 endfunction
 
 " Converts unix text to dos
-function! UnixToDosOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!unix2dos -f"
+function! UnixToDosUnnamed()
+    let @@ = system("unix2dos -f", @@)
 endfunction
 
 " Runs astyle on specified text
-function! AstyleOperator(type) 
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!astyle " . g:astyle
+function! AstyleUnnamed() 
+    let @@ = system("astyle " . g:astyle, @@)
 endfunction
 
 " Converts cpp name mangled strings to their pretty counterparts
-function! CppFilterOperator(type)
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!c++filt"
+function! CppFilterUnnamed()
+    let @@ = system("c++filt", @@)
 endfunction
 
 " Performs crc32 on selected text
-function! CrcOperator(type) 
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!cksum | sed 's/\\(^[^ ]*\\).*/\\1/'"
+function! CrcUnnamed() 
+    let @@ = system("cksum | sed 's/\\(^[^ ]*\\).*/\\1/'", @@)
 endfunction
 
 " Performs md5 on selected text
-function! Md5Operator(type) 
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!md5sum -"
+function! Md5Unnamed() 
+    let @@ = system("md5sum -", @@)
 endfunction
 
 " Base64 encodes text
-function! Base64Operator(type) 
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!base64 -"
+function! Base64Unnamed() 
+    let @@ = system("base64 -", @@)
 endfunction
  
 " Base64 decodes text
-function! Base64DecodeOperator(type) 
-    let range = GetRange(a:type)
-    silent execute ":" . range . "!base64 -d -"
-endfunction
-
-" Replace the text selected by the motion with the unnamed buffer
-function! ReplaceText(type)
-    let sel_save = &selection
-    let &selection = "inclusive"
-    let reg_save = @@
-
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>p"
-    elseif a:type == 'line'
-        silent execute "normal! `[V`]p"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]p"
-    else
-        silent execute "normal! `[v`]p"
-    endif
-
-    let &selection = sel_save
-    let @@ = reg_save
+function! Base64DecodeUnnamed() 
+    let @@ = system("base64 -d -", @@)
 endfunction
 
 let mapleader="\\"
@@ -618,44 +568,53 @@ nnoremap <leader>wq :call GarbageCollection()<CR>
 " Text transform mappings
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 
-nnoremap <leader>ta :set operatorfunc=AstyleOperator<CR>g@
-vnoremap <leader>ta :<c-u>call AstyleOperator(visualmode())<CR>
+" Override astyle map for xml
+if has("autocmd") 
+    autocmd FileType xml nnoremap <buffer> <leader>ta :let g:OperatorWrapperCb="call XmlLintUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+    autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>let g:OperatorWrapperCb="call XmlLintUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+endif
 
-nnoremap <leader>tud :set operatorfunc=UnixToDosOperator<CR>g@
-vnoremap <leader>tud :<c-u>call UnixToDosOperator(visualmode())<CR>
+nnoremap <leader>ta :let g:OperatorWrapperCb="call AstyleUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>ta :<c-u>let g:OperatorWrapperCb="call AstyleUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tdu :set operatorfunc=DosToUnixOperator<CR>g@
-vnoremap <leader>tdu :<c-u>call DosToUnixOperator(visualmode())<CR>
+nnoremap <leader>tud :let g:OperatorWrapperCb="call UnixToDosUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tud :<c-u>let g:OperatorWrapperCb="call UnixToDosUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tmu :set operatorfunc=MacToUnixOperator<CR>g@
-vnoremap <leader>tmu :<c-u>call MacToUnixOperator(visualmode())<CR>
+nnoremap <leader>tdu :let g:OperatorWrapperCb="call DosToUnixUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tdu :<c-u>let g:OperatorWrapperCb="call DosToUnixUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tum :set operatorfunc=UnixToMacOperator<CR>g@
-vnoremap <leader>tum :<c-u>call UnixToMacOperator(visualmode())<CR>
+nnoremap <leader>tmu :let g:OperatorWrapperCb="call MacToUnixUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tmu :<c-u>let g:OperatorWrapperCb="call MacToUnixUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tt :set operatorfunc=TableOperator<CR>g@
-vnoremap <leader>tt :<c-u>call TableOperator(visualmode())<CR>
+nnoremap <leader>tum :let g:OperatorWrapperCb="call UnixToMacUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tum :<c-u>let g:OperatorWrapperCb="call UnixToMacUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>ts :set operatorfunc=CommaTableOperator<CR>g@
-vnoremap <leader>ts :<c-u>call CommaTableOperator(visualmode())<CR>
+nnoremap <leader>ts :let g:OperatorWrapperCb="call CommaTableUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>ts :<c-u>let g:OperatorWrapperCb="call CommaTableUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tb :set operatorfunc=Base64Operator<CR>g@
-vnoremap <leader>tb :<c-u>call Base64Operator(visualmode())<CR>
+nnoremap <leader>tb :let g:OperatorWrapperCb="call Base64Unnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tb :<c-u>let g:OperatorWrapperCb="call Base64Unnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tB :set operatorfunc=Base64DecodeOperator<CR>g@
-vnoremap <leader>tB :<c-u>call Base64DecodeOperator(visualmode())<CR>
+nnoremap <leader>tB :let g:OperatorWrapperCb="call Base64DecodeUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tB :<c-u>let g:OperatorWrapperCb="call Base64DecodeUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>t5 :set operatorfunc=Md5Operator<CR>g@
-vnoremap <leader>t5 :<c-u>call Md5Operator(visualmode())<CR>
+nnoremap <leader>t5 :let g:OperatorWrapperCb="call Md5Unnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>t5 :<c-u>let g:OperatorWrapperCb="call Md5Unnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tk :set operatorfunc=CrcOperator<CR>g@
-vnoremap <leader>tk :<c-u>call CrcOperator(visualmode())<CR>
+nnoremap <leader>tk :let g:OperatorWrapperCb="call CrcUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tk :<c-u>let g:OperatorWrapperCb="call CrcUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tp :set operatorfunc=CppFilterOperator<CR>g@
-vnoremap <leader>tp :<c-u>call CppFilterOperator(visualmode())<CR>
+nnoremap <leader>tp :let g:OperatorWrapperCb="call CppFilterUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tp :<c-u>let g:OperatorWrapperCb="call CppFilterUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
-nnoremap <leader>tm :set operatorfunc=MathExpressionOperator<CR>g@
-vnoremap <leader>tm :<c-u>call MathExpressionOperator(visualmode())<CR>
+nnoremap <leader>tm :let g:OperatorWrapperCb="call MathExpressionUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tm :<c-u>let g:OperatorWrapperCb="call MathExpressionUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>ti :let g:OperatorWrapperCb="call TitleCaseUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>ti :<c-u>let g:OperatorWrapperCb="call TitleCaseUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+
+nnoremap <leader>tt :let g:OperatorWrapperCb="call TableUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
+vnoremap <leader>tt :<c-u>let g:OperatorWrapperCb="call TableUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
 
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
