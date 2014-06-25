@@ -627,3 +627,8 @@ nnoremap <leader>k :make<CR>
 inoremap <leader>t // TODO: 
 inoremap jj <ESC>
 
+" Machine/user local vimrc settings & overrides
+if filereadable(glob("~/.local/.vimrc"))
+    source ~/.local/.vimrc
+endif
+
