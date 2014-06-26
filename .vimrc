@@ -1,14 +1,12 @@
-" TODO: Syntax highlighting for command line program output (readelf, nm, objdump)
 " TODO: Left/Right expression text object
+" TODO: Update textobj-between mapping to avoid collisions
 " TODO: Improve spreadsheet functionality
 " TODO: Function for cd dir, execute a:command_string, cd -
 " TODO: Function for linenum, execute a:command_string, linenum G
 " TODO: Fork changes? (textobj-between, cctree)
-" TODO: Update textobj-between mapping to avoid collisions
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Text transform operators (split, transpose, rotate)
-" TODO: Update text transforms removing extra output (newlines and junk values)
+" TODO: Syntax highlighting for command line program output (readelf, nm, objdump)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -71,86 +69,16 @@ set secure
 " Clang complete settings
 set completeopt=menu,menuone
 
-" Cscope settings
-if has("cscope") && executable("cscope")
-    set nocscopeverbose
-    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
-
-    function! CscopeRescan()
-        " Special case for java; Get the list of java files;
-        let ft = &filetype
-        if ft == "java"
-            silent !find * -type f | grep "\.java$" > cscope.files
-        endif
-
-        " Execute Cscope rescan
-        silent !cscope -Rbqk
-    endfunction
-
-    function! CscopeRescanDir(dir)
-        silent! execute "cd " . a:dir
-        call CscopeRescan()
-        cd -
-    endfunction
-
-    function! CscopeGetDbLines()
-        redir =>cslist
-        silent! cscope show
-        redir END
-        return split(cslist, '\n')
-    endfunction
-
-    function! CscopeGetDbPaths()
-        let dblines = CscopeGetDbLines()
-        let paths = []
-
-        for line in dblines
-            " Split the line into space separated tokens
-            let tok = split(line)
-
-            " Check that we got something
-            if empty(tok)
-                continue
-            endif
-
-            " Check if the first element is a number
-            if match(tok[0], "[0-9]") == -1
-                continue
-            endif
-
-            " Get that path
-            let tmppath = system("dirname ".tok[2])
-
-            " Add to the path list
-            call add(paths, tmppath)
-        endfor
-
-        return paths
-    endfunction
-
-    function! CscopeRescanAll()
-        let paths = CscopeGetDbPaths()
-
-        for pth in paths
-            call CscopeRescanDir(pth)
-        endfor
-
-        cs reset
-        redraw!
-    endfunction
-
-    function! CscopeRescanRecurse()
-        call CscopeRescan()
-        cs reset
-        redraw!
-    endfunction
-
-endif
-
 " Eclim settings
 if has("autocmd") 
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
 endif 
+
+" Cscope settings
+if has("cscope") && executable("cscope")
+    set nocscopeverbose
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+endif
 
 " Mathematical functions
 if has("python") && executable("python")
@@ -164,6 +92,81 @@ except ImportError:
     pass
 
 endif
+
+" Executes a cscope rescan on the current directory recursively
+function! CscopeRescan()
+    " Special case for java; Get the list of java files;
+    let ft = &filetype
+    if ft == "java"
+        silent !find * -type f | grep "\.java$" > cscope.files
+    endif
+
+    " Execute Cscope rescan
+    silent !cscope -Rbqk
+endfunction
+
+" Executes a cscope rescan on the given directory recursively
+function! CscopeRescanDir(dir)
+    silent! execute "cd " . a:dir
+    call CscopeRescan()
+    cd -
+endfunction
+
+" Returns a list of connected cscope databases
+function! CscopeGetDbLines()
+    redir =>cslist
+    silent! cscope show
+    redir END
+    return split(cslist, '\n')
+endfunction
+
+" Returns a list of paths of connected cscope databases
+function! CscopeGetDbPaths()
+    let dblines = CscopeGetDbLines()
+    let paths = []
+
+    for line in dblines
+        " Split the line into space separated tokens
+        let tok = split(line)
+
+        " Check that we got something
+        if empty(tok)
+            continue
+        endif
+
+        " Check if the first element is a number
+        if match(tok[0], "[0-9]") == -1
+            continue
+        endif
+
+        " Get that path
+        let tmppath = system("dirname ".tok[2])
+
+        " Add to the path list
+        call add(paths, tmppath)
+    endfor
+
+    return paths
+endfunction
+
+" Rescans all currently connected cscope databases for changes
+function! CscopeRescanAll()
+    let paths = CscopeGetDbPaths()
+
+    for pth in paths
+        call CscopeRescanDir(pth)
+    endfor
+
+    cs reset
+    redraw!
+endfunction
+
+" Rescans the cscope database in the current directory
+function! CscopeRescanRecurse()
+    call CscopeRescan()
+    cs reset
+    redraw!
+endfunction
 
 " Solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp) 
@@ -382,14 +385,14 @@ function! ReplaceText(type)
     let &selection = "inclusive"
     let reg_save = @@
 
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>p"
+    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+        normal! gvp
     elseif a:type == 'line'
-        silent execute "normal! `[V`]p"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]p"
+        normal! `[V`]p
+    elseif a:type == 'block' 
+        normal! `[\<C-V>`]p
     else
-        silent execute "normal! `[v`]p"
+        normal! `[v`]p
     endif
 
     let &selection = sel_save
@@ -402,26 +405,27 @@ function! UnnamedOperatorWrapper(type)
     let &selection = "inclusive"
     let reg_save = @@
 
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>y"
+    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+        normal! gvy
     elseif a:type == 'line'
-        silent execute "normal! `[V`]y"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]y"
+        normal! `[V`]y
+    elseif a:type == 'block'
+        normal! `[\<C-V>`]y
     else
-        silent execute "normal! `[v`]y"
+        normal! `[v`]y
     endif
 
     silent execute g:OperatorWrapperCb
 
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>p"
+    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+        call setreg("@@", getreg("@@"), a:type)
+        normal! gvp
     elseif a:type == 'line'
-        silent execute "normal! `[V`]p"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]p"
+        normal! `[V`]p
+    elseif a:type == 'block' 
+        normal! `[\<C-V>`]p
     else
-        silent execute "normal! `[v`]p"
+        normal! `[v`]p
     endif
 
     let &selection = sel_save
@@ -434,14 +438,14 @@ function! OperatorWrapper(type)
     let &selection = "inclusive"
     let reg_save = @@
 
-    if a:type ==# 'v' || a:type ==# 'V'
-        silent execute "normal! `<" . a:type . "`>y"
+    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+        normal! gvy
     elseif a:type == 'line'
-        silent execute "normal! `[V`]y"
-    elseif a:type == 'block' || a:type == ''
-        silent execute "normal! `[\<c-v>`]y"
+        normal! `[V`]y
+    elseif a:type == 'block' 
+        normal! `[\<C-V>`]y
     else
-        silent execute "normal! `[v`]y"
+        normal! `[v`]y
     endif
 
     let command = substitute(g:OperatorWrapperCb, "\%s", shellescape(@@), "g")
@@ -449,6 +453,22 @@ function! OperatorWrapper(type)
 
     let &selection = sel_save
     let @@ = reg_save
+endfunction
+
+" Splits up values
+function! SplitUnnamed()
+    let delimiter = input("Enter delimiter: ")
+    let @@ = join(split(@@, delimiter), "\n")
+endfunction
+
+" Removes duplicates
+function! UniqueUnnamed()
+    let @@ = join(uniq(sort(split(@@, "\n"))), "\n")
+endfunction
+
+" Sorts the given text
+function! SortUnnamed()
+    let @@ = join(sort(split(@@, "\n")), "\n")
 endfunction
 
 " Evaluates mathematical expressions
@@ -508,22 +528,40 @@ endfunction
 
 " Performs crc32 on selected text
 function! CrcUnnamed() 
-    let @@ = system("cksum | sed 's/\\(^[^ ]*\\).*/\\1/'", @@)
+    let @@ = system("cksum", @@)
+    let @@ = substitute(@@, "\\n", "", "g")
+    let @@ = substitute(@@, " .*", "", "g")
 endfunction
 
 " Performs md5 on selected text
 function! Md5Unnamed() 
-    let @@ = system("md5sum -", @@)
+    let @@ = system("md5sum", @@)
+    let @@ = substitute(@@, "\\n", "", "g")
+    let @@ = substitute(@@, " .*", "", "g")
 endfunction
 
 " Base64 encodes text
 function! Base64Unnamed() 
-    let @@ = system("base64 -", @@)
+    let @@ = system("base64", @@)
+    let @@ = substitute(@@, "\\n", "", "g")
 endfunction
  
 " Base64 decodes text
 function! Base64DecodeUnnamed() 
-    let @@ = system("base64 -d -", @@)
+    let @@ = system("base64 -d", @@)
+    let @@ = substitute(@@, "\\n", "", "g")
+endfunction
+
+" Used to set up a visual mode operator mapping
+function! VisualMapper(callbackString, operatorFunction)
+    let g:OperatorWrapperCb=a:callbackString
+    silent execute "call " . a:operatorFunction . "(visualmode())"
+endfunction
+
+" Used to set up a normal mode operator mapping
+function! NormalMapper(callbackString, operatorFunction)
+    let g:OperatorWrapperCb=a:callbackString
+    silent execute "set operatorfunc=" . a:operatorFunction
 endfunction
 
 let mapleader="\\"
@@ -533,20 +571,20 @@ nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
 nnoremap <C-\>p :call CscopeRescanAll()<CR>
 
 " Grep operator mappings
-nnoremap <leader>gp :let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
-vnoremap <leader>gp :<c-u>let g:OperatorWrapperCb="call GrepPath(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gp :<c-u>call VisualMapper("call GrepPath(%s)", "OperatorWrapper")<CR>
 
-nnoremap <leader>gr :let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
-vnoremap <leader>gr :<c-u>let g:OperatorWrapperCb="call GrepRecurse(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+nnoremap <leader>gr :call NormalMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gr :<c-u>call VisualMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>
 
-nnoremap <leader>gc :let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
-vnoremap <leader>gc :<c-u>let g:OperatorWrapperCb="call GrepCurrent(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+nnoremap <leader>gc :call NormalMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gc :<c-u>call VisualMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>
 
-nnoremap <leader>gb :let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
-vnoremap <leader>gb :<c-u>let g:OperatorWrapperCb="call GrepBuffers(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+nnoremap <leader>gb :call NormalMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>
 
-nnoremap <leader>gw :let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:set operatorfunc=OperatorWrapper<CR>g@
-vnoremap <leader>gw :<c-u>let g:OperatorWrapperCb="call GrepWindows(%s)"<CR>:<c-u>call OperatorWrapper(visualmode())<CR>
+nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
 " Window mappings
 nnoremap <leader>wn :NERDTreeToggle<CR>
@@ -570,51 +608,60 @@ nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 
 " Override astyle map for xml
 if has("autocmd") 
-    autocmd FileType xml nnoremap <buffer> <leader>ta :let g:OperatorWrapperCb="call XmlLintUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-    autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>let g:OperatorWrapperCb="call XmlLintUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+    autocmd FileType xml nnoremap <buffer> <leader>ta :call NormalMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+    autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>call VisualMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>
 endif
 
-nnoremap <leader>ta :let g:OperatorWrapperCb="call AstyleUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>ta :<c-u>let g:OperatorWrapperCb="call AstyleUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>ta :call NormalMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>ta :<c-u>call VisualMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tud :let g:OperatorWrapperCb="call UnixToDosUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tud :<c-u>let g:OperatorWrapperCb="call UnixToDosUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tud :call NormalMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tud :<c-u>call VisualMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tdu :let g:OperatorWrapperCb="call DosToUnixUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tdu :<c-u>let g:OperatorWrapperCb="call DosToUnixUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tdu :call NormalMapper("call DosToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tdu :<c-u>call VisualMapper("call DosToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tmu :let g:OperatorWrapperCb="call MacToUnixUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tmu :<c-u>let g:OperatorWrapperCb="call MacToUnixUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tmu :call NormalMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tmu :<c-u>call VisualMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tum :let g:OperatorWrapperCb="call UnixToMacUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tum :<c-u>let g:OperatorWrapperCb="call UnixToMacUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tum :call NormalMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tum :<c-u>call VisualMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>ts :let g:OperatorWrapperCb="call CommaTableUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>ts :<c-u>let g:OperatorWrapperCb="call CommaTableUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>ts :call NormalMapper("call CommaTableUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>ts :<c-u>call VisualMapper("call CommaTableUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tb :let g:OperatorWrapperCb="call Base64Unnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tb :<c-u>let g:OperatorWrapperCb="call Base64Unnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tb :call NormalMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tb :<c-u>call VisualMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tB :let g:OperatorWrapperCb="call Base64DecodeUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tB :<c-u>let g:OperatorWrapperCb="call Base64DecodeUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tB :call NormalMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tB :<c-u>call VisualMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>t5 :let g:OperatorWrapperCb="call Md5Unnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>t5 :<c-u>let g:OperatorWrapperCb="call Md5Unnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>t5 :call NormalMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>t5 :<c-u>call VisualMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tk :let g:OperatorWrapperCb="call CrcUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tk :<c-u>let g:OperatorWrapperCb="call CrcUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tk :call NormalMapper("call CrcUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tk :<c-u>call VisualMapper("call CrcUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tp :let g:OperatorWrapperCb="call CppFilterUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tp :<c-u>let g:OperatorWrapperCb="call CppFilterUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tp :call NormalMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tp :<c-u>call VisualMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tm :let g:OperatorWrapperCb="call MathExpressionUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tm :<c-u>let g:OperatorWrapperCb="call MathExpressionUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tm :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tm :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>ti :let g:OperatorWrapperCb="call TitleCaseUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>ti :<c-u>let g:OperatorWrapperCb="call TitleCaseUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>ti :call NormalMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>ti :<c-u>call VisualMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tt :let g:OperatorWrapperCb="call TableUnnamed()"<CR>:set operatorfunc=UnnamedOperatorWrapper<CR>g@
-vnoremap <leader>tt :<c-u>let g:OperatorWrapperCb="call TableUnnamed()"<CR>:<c-u>call UnnamedOperatorWrapper(visualmode())<CR>
+nnoremap <leader>tt :call NormalMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tt :<c-u>call VisualMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tr :call NormalMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
