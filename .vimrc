@@ -1,3 +1,4 @@
+" TODO: set operations: set compliment (A minus B), set symmetric difference (A delta B), reverse sort, min, max, mean, median, mode, sum
 " TODO: Left/Right expression text object
 " TODO: Update textobj-between mapping to avoid collisions
 " TODO: Improve spreadsheet functionality
@@ -386,6 +387,7 @@ function! ReplaceText(type)
     let reg_save = @@
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+        call setreg("@@", getreg("@@"), a:type)
         normal! gvp
     elseif a:type == 'line'
         normal! `[V`]p
@@ -461,9 +463,24 @@ function! SplitUnnamed()
     let @@ = join(split(@@, delimiter), "\n")
 endfunction
 
-" Removes duplicates
+" Removes duplicate values
 function! UniqueUnnamed()
     let @@ = join(uniq(sort(split(@@, "\n"))), "\n")
+endfunction
+
+" Checks if adjacent values are the same
+function! DuplicateFunction(arg1, arg2) 
+    return a:arg1 ==# a:arg2 
+endfunction
+
+" Removes unique values (set intersection) 
+" Also: 
+" join <(sort -n A) <(sort -n B)
+" sort -n A B | uniq -d
+" grep -xF -f A B
+" comm -12 <(sort -n A) <(sort -n B)
+function! DuplicateUnnamed()
+    let @@ = join(uniq(sort(split(@@, "\n")), "DuplicateFunction"), "\n")
 endfunction
 
 " Sorts the given text
@@ -662,6 +679,9 @@ vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOper
 
 nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>td :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>td :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
