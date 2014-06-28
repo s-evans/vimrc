@@ -461,9 +461,6 @@ function! SplitUnnamed()
     let @@ = join(split(@@, delimiter), "\n")
 endfunction
 
-<<<<<<< HEAD
-" Removes duplicate values
-=======
 " Executes and replaces given commands
 function! ExternalUnnamed()
     let @@ = system("bash", @@)
