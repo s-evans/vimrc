@@ -1,13 +1,10 @@
-" TODO: set operations: set compliment (A minus B), set symmetric difference (A delta B), reverse sort, min, max, mean, median, mode, sum
+" TODO: set operations: set symmetric difference (A delta B), min, max, mean, median, mode, sum
 " TODO: Left/Right expression text object
 " TODO: Update textobj-between mapping to avoid collisions
 " TODO: Improve spreadsheet functionality
-" TODO: Function for cd dir, execute a:command_string, cd -
-" TODO: Function for linenum, execute a:command_string, linenum G
 " TODO: Fork changes? (textobj-between, cctree)
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Syntax highlighting for command line program output (readelf, nm, objdump)
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -39,6 +36,7 @@ set noincsearch
 set title
 set nojoinspaces
 set noshowmatch
+set nohlsearch
 
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ $*
@@ -463,7 +461,36 @@ function! SplitUnnamed()
     let @@ = join(split(@@, delimiter), "\n")
 endfunction
 
+<<<<<<< HEAD
 " Removes duplicate values
+=======
+" Executes and replaces given commands
+function! ExternalUnnamed()
+    let @@ = system("bash", @@)
+    let @@ = substitute(@@, "^\n", "", "") 
+    let @@ = substitute(@@, "\n$", "", "") 
+endfunction
+
+" Gets the set compliment 
+function! ComplimentUnnamed()
+    let A = split(@@, "\n")
+    let B = split(getreg(input("Enter register: ")), "\n")
+    call filter(A, 'index(B, v:val) < 0')
+    let @@ = join(A, "\n")
+endfunction
+
+" Joins newline separated values with spaces
+function! JoinUnnamed()
+    let @@ = join(split(@@, "\n"), " ")
+endfunction
+
+" Joins newline separated values with user specified delimiter
+function! JoinSeparatorUnnamed()
+    let delimiter = input("Enter delimiter: ")
+    let @@ = join(split(@@, "\n"), delimiter)
+endfunction
+
+" Removes duplicates
 function! UniqueUnnamed()
     let @@ = join(uniq(sort(split(@@, "\n"))), "\n")
 endfunction
@@ -488,6 +515,11 @@ function! SortUnnamed()
     let @@ = join(sort(split(@@, "\n")), "\n")
 endfunction
 
+" Reverse sorts the given text
+function! SortReverseUnnamed()
+    let @@ = join(reverse(sort(split(@@, "\n"))), "\n")
+endfunction
+
 " Evaluates mathematical expressions
 function! MathExpressionUnnamed() 
     let @@ = EvalMathExpression(@@)
@@ -509,8 +541,9 @@ function! TableUnnamed()
 endfunction
 
 " Creates a table from comma separated arguments
-function! CommaTableUnnamed()
-    let @@ = system("column -s, -t", @@)
+function! TableSeparatorUnnamed()
+    let delimiter = input("Enter delimiter: ")
+    let @@ = system("column -s" . shellescape(delimiter) ." -t", @@)
 endfunction
 
 " Converts unix text to mac
@@ -581,27 +614,17 @@ function! NormalMapper(callbackString, operatorFunction)
     silent execute "set operatorfunc=" . a:operatorFunction
 endfunction
 
+" Misc
 let mapleader="\\"
+inoremap jj <ESC>
+nnoremap <leader>lg :source ~/.vimrc<CR>
+nnoremap <leader>ll :source ./.vimrc<CR>
+nnoremap <leader>k :make<CR>
+inoremap <leader>t // TODO: 
 
 " Additional cscope mappings
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
 nnoremap <C-\>p :call CscopeRescanAll()<CR>
-
-" Grep operator mappings
-nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gp :<c-u>call VisualMapper("call GrepPath(%s)", "OperatorWrapper")<CR>
-
-nnoremap <leader>gr :call NormalMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gr :<c-u>call VisualMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>
-
-nnoremap <leader>gc :call NormalMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gc :<c-u>call VisualMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>
-
-nnoremap <leader>gb :call NormalMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>
-
-nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
 " Window mappings
 nnoremap <leader>wn :NERDTreeToggle<CR>
@@ -619,6 +642,22 @@ nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
 nnoremap <leader>wq :call GarbageCollection()<CR> 
+
+" Grep operator mappings
+nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gp :<c-u>call VisualMapper("call GrepPath(%s)", "OperatorWrapper")<CR>
+
+nnoremap <leader>gr :call NormalMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gr :<c-u>call VisualMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>
+
+nnoremap <leader>gc :call NormalMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gc :<c-u>call VisualMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>
+
+nnoremap <leader>gb :call NormalMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>
+
+nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
+vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
 " Text transform mappings
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
@@ -639,13 +678,10 @@ nnoremap <leader>tdu :call NormalMapper("call DosToUnixUnnamed()", "UnnamedOpera
 vnoremap <leader>tdu :<c-u>call VisualMapper("call DosToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tmu :call NormalMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tmu :<c-u>call VisualMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>
+vnoremap <leader>tmu :<c-u>call VisualMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR> 
 
 nnoremap <leader>tum :call NormalMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tum :<c-u>call VisualMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>ts :call NormalMapper("call CommaTableUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>ts :<c-u>call VisualMapper("call CommaTableUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tb :call NormalMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tb :<c-u>call VisualMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>
@@ -671,28 +707,40 @@ vnoremap <leader>ti :<c-u>call VisualMapper("call TitleCaseUnnamed()", "UnnamedO
 nnoremap <leader>tt :call NormalMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tt :<c-u>call VisualMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>tT :call NormalMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tT :<c-u>call VisualMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
+
 nnoremap <leader>tr :call NormalMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tR :call NormalMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tR :<c-u>call VisualMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
+nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tj :call NormalMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tj :<c-u>call VisualMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>td :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>td :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>t- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>t- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+" Other operators
+nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
+vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
+
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
-
-" Misc
-nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
-vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
-nnoremap <leader>k :make<CR>
-inoremap <leader>t // TODO: 
-inoremap jj <ESC>
 
 " Machine/user local vimrc settings & overrides
 if filereadable(glob("~/.local/.vimrc"))
