@@ -1,8 +1,5 @@
-" TODO: set operations: set symmetric difference (A delta B), min, max, mean, median, mode, sum
+" TODO: set operations: mean, median, mode, sum
 " TODO: Left/Right expression text object
-" TODO: Update textobj-between mapping to avoid collisions
-" TODO: Improve spreadsheet functionality
-" TODO: Fork changes? (textobj-between, cctree)
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 
@@ -79,9 +76,8 @@ if has("cscope") && executable("cscope")
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
 endif
 
-" Mathematical functions
+" Configure the python instance
 if has("python") && executable("python")
-    " Configure the python instance
     python << 
 try:
     from math import * 
@@ -468,12 +464,17 @@ function! ExternalUnnamed()
     let @@ = substitute(@@, "\n$", "", "") 
 endfunction
 
-" Gets the set compliment 
+" Gets the compliment of two sets
 function! ComplimentUnnamed()
-    let A = split(@@, "\n")
-    let B = split(getreg(input("Enter register: ")), "\n")
+    let A = uniq(sort(split(@@, "\n")))
+    let B = uniq(sort(split(getreg(input("Enter register: ")), "\n")))
     call filter(A, 'index(B, v:val) < 0')
     let @@ = join(A, "\n")
+endfunction
+
+" Gets the symmetric difference of two sets
+function! SymmetricDifferenceUnnamed()
+    let @@ = join(uniq(sort(split(@@, "\n")), "DuplicateBlockFunction"), "\n")
 endfunction
 
 " Joins newline separated values with spaces
@@ -497,6 +498,15 @@ function! DuplicateFunction(arg1, arg2)
     return a:arg1 ==# a:arg2 
 endfunction
 
+" Finds blocks of adjacent values that are the same
+function! DuplicateBlockFunction(arg1, arg2)
+    if a:arg1 ==# a:arg2 || a:arg1 ==# g:DuplicateValue 
+        let g:DuplicateValue = a:arg1
+        return 0 
+    endif
+    return 1
+endfunction
+
 " Removes unique values (set intersection) 
 " Also: 
 " join <(sort -n A) <(sort -n B)
@@ -515,6 +525,14 @@ endfunction
 " Reverse sorts the given text
 function! SortReverseUnnamed()
     let @@ = join(reverse(sort(split(@@, "\n"))), "\n")
+endfunction
+
+" Performs a regex substitution on the given text
+function! SubstituteUnnamed()
+    let pat = input("Enter pattern: ")
+    let sub = input("Enter substitution: ")
+    let flags = input("Enter flags: ")
+    let @@ = substitute(@@, pat, sub, flags)
 endfunction
 
 " Evaluates mathematical expressions
@@ -713,8 +731,14 @@ vnoremap <leader>tr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperat
 nnoremap <leader>tR :call NormalMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tR :<c-u>call VisualMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>ts :call NormalMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>ts :<c-u>call VisualMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>
+
 nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
@@ -728,6 +752,9 @@ vnoremap <leader>td :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedO
 nnoremap <leader>t- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>t- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>t+ :call NormalMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>t+ :<c-u>call VisualMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>
+
 nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
 
@@ -738,6 +765,21 @@ vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
+
+" Order conflicting mappings
+call textobj#user#plugin('between', {
+\      '-': {
+\        'select-a': 'a/',  '*select-a-function*': 'textobj#between#select_a',
+\        'select-i': 'i/',  '*select-i-function*': 'textobj#between#select_i',
+\      }
+\    })
+
+call textobj#user#plugin('function', {
+\   'a': {'select': 'af', 'select-function': 'textobj#function#select_a'},
+\   'i': {'select': 'if', 'select-function': 'textobj#function#select_i'},
+\   'A': {'select': 'aF', 'select-function': 'textobj#function#select_A'},
+\   'I': {'select': 'iF', 'select-function': 'textobj#function#select_I'},
+\ })
 
 " Machine/user local vimrc settings & overrides
 if filereadable(glob("~/.local/.vimrc"))
