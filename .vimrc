@@ -541,7 +541,14 @@ function! SubstituteUnnamed()
     let pat = input("Enter pattern: ")
     let sub = input("Enter substitution: ")
     let flags = input("Enter flags: ")
-    let @@ = substitute(@@, pat, sub, flags)
+    let list = split(@@, "\n")
+    let size = len(list)
+    let i = 0 
+    while i < size
+        let list[i] = substitute(list[i], pat, sub, flags)
+        let i += 1
+    endwhile
+    let @@ = join(list, "\n")
 endfunction
 
 " Evaluates mathematical expressions
