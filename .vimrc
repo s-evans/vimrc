@@ -2,6 +2,7 @@
 " TODO: Left/Right expression text object
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
+" TODO: Consider using getchar() instead of input()
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -528,6 +529,14 @@ function! SortReverseUnnamed()
 endfunction
 
 " Performs a regex substitution on the given text
+function! SubstituteRegisterUnnamed()
+    let pat = getreg(getchar("Enter pattern: "))
+    let sub = getreg(getchar("Enter substitution: "))
+    let flags = input("Enter flags: ")
+    let @@ = substitute(@@, pat, sub, flags)
+endfunction
+
+" Performs a regex substitution on the given text
 function! SubstituteUnnamed()
     let pat = input("Enter pattern: ")
     let sub = input("Enter substitution: ")
@@ -733,6 +742,9 @@ vnoremap <leader>tR :<c-u>call VisualMapper("call SortReverseUnnamed()", "Unname
 
 nnoremap <leader>ts :call NormalMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>ts :<c-u>call VisualMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tS :call NormalMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tS :<c-u>call VisualMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
