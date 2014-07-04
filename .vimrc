@@ -2,7 +2,6 @@
 " TODO: Left/Right expression text object
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Consider using getchar() instead of input()
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -630,6 +629,11 @@ function! CppFilterUnnamed()
     let @@ = system("c++filt", @@)
 endfunction
 
+" Performs a topological sort
+function! TopologicalSortUnnamed()
+    let @@ = system("tsort", @@)
+endfunction
+
 " Performs crc32 on selected text
 function! CrcUnnamed() 
     let @@ = system("cksum", @@)
@@ -753,8 +757,8 @@ vnoremap <leader>tk :<c-u>call VisualMapper("call CrcUnnamed()", "UnnamedOperato
 nnoremap <leader>tp :call NormalMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tp :<c-u>call VisualMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tm :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tm :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
+nnoremap <leader>tP :call NormalMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tP :<c-u>call VisualMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>ti :call NormalMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>ti :<c-u>call VisualMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>
@@ -806,6 +810,9 @@ vnoremap <leader>tE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed
 
 nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>m :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>m :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 " Other operators
 nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
