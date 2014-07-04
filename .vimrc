@@ -477,6 +477,21 @@ function! SymmetricDifferenceUnnamed()
     let @@ = join(uniq(sort(split(@@, "\n")), "DuplicateBlockFunction"), "\n")
 endfunction
 
+" Used for sorting based on string length
+function! LengthFunction(arg1, arg2)
+    return strlen(a:arg1) - strlen(a:arg2)
+endfunction
+
+" Sorts strings based on their length
+function! SortStringLengthUnnamed()
+    let @@ = join(sort(split(@@, "\n"), "LengthFunction"), "\n")
+endfunction
+
+" Reverse sorts strings based on their length
+function! ReverseSortStringLengthUnnamed()
+    let @@ = join(reverse(sort(split(@@, "\n"), "LengthFunction")), "\n")
+endfunction
+
 " Joins newline separated values with spaces
 function! JoinUnnamed()
     let @@ = join(split(@@, "\n"), " ")
@@ -514,7 +529,8 @@ endfunction
 " grep -xF -f A B
 " comm -12 <(sort -n A) <(sort -n B)
 function! DuplicateUnnamed()
-    let @@ = join(uniq(sort(split(@@, "\n")), "DuplicateFunction"), "\n")
+    let g:DuplicateValue = ""
+    let @@ = join(uniq(uniq(sort(add(split(@@, "\n"), "")), "DuplicateFunction")), "\n")
 endfunction
 
 " Sorts the given text
@@ -653,6 +669,7 @@ nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TlistToggle<CR>
 nnoremap <leader>ws :TScratch<CR>
 nnoremap <leader>wg :GundoToggle<CR>
+nnoremap <leader>we :CCTreeWindowToggle<CR>
 nnoremap <leader>wx :call ToggleHex()<CR>
 nnoremap <leader>wd :call ToggleDiff()<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
@@ -744,23 +761,29 @@ vnoremap <leader>ts :<c-u>call VisualMapper("call SubstituteUnnamed()", "Unnamed
 nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>tU :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tU :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
+
 nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tj :call NormalMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tj :<c-u>call VisualMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>td :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>td :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
+nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>t- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>t- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>t+ :call NormalMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>t+ :<c-u>call VisualMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>te :call NormalMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>te :<c-u>call VisualMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>tE :call NormalMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
