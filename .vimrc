@@ -9,6 +9,7 @@ runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
 " General settings
+set nocompatible
 filetype on
 filetype plugin on
 filetype plugin indent on
@@ -16,7 +17,6 @@ syntax on
 colors evening
 set nolinebreak
 set textwidth=0
-set nocompatible
 set autoindent
 set expandtab
 set ruler
@@ -814,6 +814,9 @@ vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOpe
 
 nnoremap <leader>m :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>m :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+vmap <leader>a <Plug>(EasyAlign)
+nmap <leader>a <Plug>(EasyAlign)
 
 " Other operators
 nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
