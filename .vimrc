@@ -52,11 +52,9 @@ if exists('+undofile')
     set undofile
 endif
 
-" Cursor line settings
+" Cursor settings
 hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-set cul
-
-" Cursor setting
+set cursorline
 set guicursor=n-v-c:block,o:hor50,i-ci:hor15,r-cr:hor30,sm:block
 
 " Enable local .vimrc settings
@@ -687,7 +685,7 @@ nnoremap <C-\>p :call CscopeRescanAll()<CR>
 
 " Window mappings
 nnoremap <leader>wn :NERDTreeToggle<CR>
-nnoremap <leader>wt :TlistToggle<CR>
+nnoremap <leader>wt :TagbarToggle<CR>
 nnoremap <leader>ws :TScratch<CR>
 nnoremap <leader>wg :GundoToggle<CR>
 nnoremap <leader>we :CCTreeWindowToggle<CR>
