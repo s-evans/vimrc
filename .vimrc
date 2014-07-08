@@ -1,3 +1,4 @@
+" TODO: Table mode
 " TODO: Refactoring operations
 " TODO: Set operations: mean, median, mode, sum
 " TODO: Left/Right expression text object
