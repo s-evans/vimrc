@@ -152,14 +152,14 @@ function! CscopeRescanAll()
         call CscopeRescanDir(pth)
     endfor
 
-    cs reset
+    cscope reset
     redraw!
 endfunction
 
 " Rescans the cscope database in the current directory
 function! CscopeRescanRecurse()
     call CscopeRescan()
-    cs reset
+    cscope reset
     redraw!
 endfunction
 
