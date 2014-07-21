@@ -351,7 +351,7 @@ endfunction
 
 " Define a default style that is overrideable by local project settings
 if !exists('g:astyle')
-    let g:astyle = "--style=kr --break-blocks --pad-oper --unpad-paren --pad-paren-in --align-pointer=type --indent-col1-comments --add-brackets --pad-header"
+    let g:astyle = ""
 endif
 
 " Create a scroll locked column (cannot be used with a locked row)
