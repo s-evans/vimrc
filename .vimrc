@@ -43,16 +43,6 @@ set grepprg=grep\ -n\ -H\ $*
 " Fix slow completion
 set complete-=i
 
-" Fix stupid comment behavior
-if has("autocmd")
-    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-endif
-
-" Persistent undo
-if exists('+undofile')
-    set undofile
-endif
-
 " Cursor settings
 hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 set cursorline
@@ -65,9 +55,20 @@ set secure
 " Clang complete settings
 set completeopt=menu,menuone
 
-" Eclim settings
+" Persistent undo
+if exists('+undofile')
+    set undofile
+endif
+
+" Auto-load ycm config file
+let g:ycm_confirm_extra_conf = 0
+
 if has("autocmd") 
+    " Eclim settings
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
+
+    " Fix stupid comment behavior
+    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 endif 
 
 " Cscope settings
