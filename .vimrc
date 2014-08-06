@@ -44,7 +44,7 @@ set grepprg=grep\ -n\ -H\ $*
 set complete-=i
 
 " Cursor settings
-hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 set cursorline
 set guicursor=n-v-c:block,o:hor50,i-ci:hor15,r-cr:hor30,sm:block
 
@@ -62,6 +62,10 @@ endif
 
 " Auto-load ycm config file
 let g:ycm_confirm_extra_conf = 0
+
+" Ultisnips
+let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 
 if has("autocmd") 
     " Eclim settings
