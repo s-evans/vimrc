@@ -555,8 +555,8 @@ endfunction
 
 " Performs a regex substitution on the given text
 function! SubstituteRegisterUnnamed()
-    let pat = getreg(getchar("Enter pattern: "))
-    let sub = getreg(getchar("Enter substitution: "))
+    let pat = getreg(input("Enter pattern register: "))
+    let sub = getreg(input("Enter substitution register: "))
     let flags = input("Enter flags: ")
     let list = split(@@, "\n")
     let size = len(list)
