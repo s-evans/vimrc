@@ -2,6 +2,7 @@
 " TODO: Refactoring operations
 " TODO: Set operations: mean, median, mode, sum
 " TODO: Left/Right expression text object
+" TODO: Url encode / decode
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 
