@@ -2,9 +2,14 @@
 " TODO: Refactoring operations
 " TODO: Set operations: mean, median, mode, sum
 " TODO: Left/Right expression text object
-" TODO: Url encode / decode
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
+" TODO: Multipath rsync svn git sed
+
+" TODO: Fork textobj-between
+" TODO: Fork cctree
+" TODO: Fork snippets
+" TODO: Add snippets / remove "todo" mapping
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -96,13 +101,12 @@ endif
 
 " Executes a cscope rescan on the current directory recursively
 function! CscopeRescan()
-    " Special case for java; Get the list of java files;
     let ft = &filetype
+
     if ft == "java"
         silent !find * -type f | grep "\.java$" > cscope.files
     endif
 
-    " Execute Cscope rescan
     silent !cscope -Rbqk
 endfunction
 
@@ -462,6 +466,80 @@ function! OperatorWrapper(type)
     let @@ = reg_save
 endfunction
 
+let g:urlRanges = [[0, 32], [34, 38], [43, 44], [47, 47], [58, 64], [91, 94], [96, 96], [123, 127], [128, 255]]
+let g:urlRangeCount = len(urlRanges)
+
+" Does a binary search for whether or not the current character is in the URL encoding range
+function! UrlEncodeCharInternal(charByte, lower, upper)
+    let idx = a:lower + (a:upper - a:lower) / 2
+
+    if a:lower > a:upper 
+        return 0
+    endif
+
+    if a:charByte < g:urlRanges[idx][0] 
+        return UrlEncodeCharInternal(a:charByte, a:lower, idx - 1)
+    elseif a:charByte > g:urlRanges[idx][1] 
+        return UrlEncodeCharInternal(a:charByte, idx + 1, a:upper)
+    endif
+
+    return 1
+endfunction
+
+" Returns whether or not a character needs to be URL encoded
+function! UrlEncodeChar(charByte)
+    return UrlEncodeCharInternal(a:charByte, 0, g:urlRangeCount - 1)
+endfunction
+
+" URL Encodes the unnamed register
+function! UrlEncodeUnnamed()
+    let newStr = ""
+    let i = 0
+
+    while 1
+        let newChar = @@[i]
+        let byteVal = char2nr(newChar)
+
+        if byteVal == 0
+            break
+        endif
+
+        if UrlEncodeChar(byteVal)  
+            let newChar = "%" . printf('%02X', byteVal)
+        endif
+
+        let newStr .= newChar
+        let i += 1
+    endwhile
+
+    let @@ = newStr
+endfunction
+
+" URL decodes the unnamed register
+function! UrlDecodeUnnamed()
+    let newStr = ""
+    let i = 0
+
+    while 1
+        let newChar = @@[i]
+        let byteVal = char2nr(newChar)
+
+        if byteVal == 0
+            break
+        endif
+
+        if newChar == "%"
+            let newChar = nr2char(str2nr(@@[i+1:i+2], 16))
+            let i += 2
+        endif
+
+        let newStr .= newChar
+        let i += 1
+    endwhile
+
+    let @@ = newStr
+endfunction
+
 " Splits up values
 function! SplitUnnamed()
     let delimiter = input("Enter delimiter: ")
@@ -729,14 +807,15 @@ vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWra
 nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
 vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
-" Text transform mappings
-nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-
-" Override astyle map for xml
+" Override astyle settings
 if has("autocmd") 
     autocmd FileType xml nnoremap <buffer> <leader>ta :call NormalMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>g@
     autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>call VisualMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>
+    autocmd FileType java let g:astyle="--mode=java"
 endif
+
+" Text transform mappings
+nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 
 nnoremap <leader>ta :call NormalMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>ta :<c-u>call VisualMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>
@@ -768,9 +847,6 @@ vnoremap <leader>tk :<c-u>call VisualMapper("call CrcUnnamed()", "UnnamedOperato
 nnoremap <leader>tp :call NormalMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tp :<c-u>call VisualMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tP :call NormalMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tP :<c-u>call VisualMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>
-
 nnoremap <leader>ti :call NormalMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>ti :<c-u>call VisualMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>
 
@@ -780,23 +856,11 @@ vnoremap <leader>tt :<c-u>call VisualMapper("call TableUnnamed()", "UnnamedOpera
 nnoremap <leader>tT :call NormalMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tT :<c-u>call VisualMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>tr :call NormalMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>tR :call NormalMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tR :<c-u>call VisualMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>
-
 nnoremap <leader>ts :call NormalMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>ts :<c-u>call VisualMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tS :call NormalMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tS :<c-u>call VisualMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>tu :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tu :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>tU :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tU :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
@@ -807,17 +871,11 @@ vnoremap <leader>tj :<c-u>call VisualMapper("call JoinUnnamed()", "UnnamedOperat
 nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>t- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>t- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
+nnoremap <leader>tr :call NormalMapper("call UrlEncodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tr :<c-u>call VisualMapper("call UrlEncodeUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-nnoremap <leader>t+ :call NormalMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>t+ :<c-u>call VisualMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>te :call NormalMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>te :<c-u>call VisualMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>tE :call NormalMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
+nnoremap <leader>tR :call NormalMapper("call UrlDecodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>tR :<c-u>call VisualMapper("call UrlDecodeUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
@@ -825,31 +883,43 @@ vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOpe
 nnoremap <leader>m :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>m :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
 
+nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
+vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
+
 vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
 
-" Other operators
-nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
-vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
+" Set operation mappings
+nnoremap <leader>sP :call NormalMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>sP :<c-u>call VisualMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>sr :call NormalMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>sr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>sR :call NormalMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>sR :<c-u>call VisualMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>su :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>su :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>sU :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>sU :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>s- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>s- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>s+ :call NormalMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>s+ :<c-u>call VisualMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>se :call NormalMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>se :<c-u>call VisualMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>sE :call NormalMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>sE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 " vimrc reload mappings
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
-
-" Order conflicting mappings
-call textobj#user#plugin('between', {
-\      '-': {
-\        'select-a': 'a/',  '*select-a-function*': 'textobj#between#select_a',
-\        'select-i': 'i/',  '*select-i-function*': 'textobj#between#select_i',
-\      }
-\    })
-
-call textobj#user#plugin('function', {
-\   'a': {'select': 'af', 'select-function': 'textobj#function#select_a'},
-\   'i': {'select': 'if', 'select-function': 'textobj#function#select_i'},
-\   'A': {'select': 'aF', 'select-function': 'textobj#function#select_A'},
-\   'I': {'select': 'iF', 'select-function': 'textobj#function#select_I'},
-\ })
 
 " Machine/user local vimrc settings & overrides
 if filereadable(glob("~/.local/.vimrc"))
