@@ -6,9 +6,6 @@
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
 
-" TODO: Fork textobj-between
-" TODO: Fork cctree
-" TODO: Fork snippets
 " TODO: Add snippets / remove "todo" mapping
 
 " Pathogen, for easy git based vimrc management
