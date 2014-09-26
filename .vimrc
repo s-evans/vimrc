@@ -6,8 +6,6 @@
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
 
-" TODO: Add snippets / remove "todo" mapping
-
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
@@ -764,7 +762,6 @@ inoremap jj <ESC>
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 nnoremap <leader>k :make<CR>
-inoremap <leader>t // TODO: 
 
 " Additional cscope mappings
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
