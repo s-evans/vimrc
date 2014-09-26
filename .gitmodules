@@ -73,9 +73,6 @@
 [submodule "bundle/matchit"]
 	path = bundle/matchit
 	url = https://github.com/vim-scripts/matchit.zip.git
-[submodule "bundle/textobj-between"]
-	path = bundle/textobj-between
-	url = https://github.com/thinca/vim-textobj-between.git
 [submodule "bundle/textobj-parameter"]
 	path = bundle/textobj-parameter
 	url = https://github.com/sgur/vim-textobj-parameter.git
@@ -121,3 +118,9 @@
 [submodule "bundle/ycm"]
 	path = bundle/ycm
 	url = https://github.com/Valloric/YouCompleteMe.git
+[submodule "bundle/cctree"]
+	path = bundle/cctree
+	url = git@github.com:s-evans/cctree.git
+[submodule "bundle/textobj-between"]
+	path = bundle/textobj-between
+	url = git@github.com:s-evans/vim-textobj-between.git
