@@ -5,6 +5,8 @@
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
+" TODO: Moar snippets
+" TODO: Unify snippets
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
@@ -37,6 +39,7 @@ set title
 set nojoinspaces
 set noshowmatch
 set nohlsearch
+set nofoldenable
 
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ $*
@@ -784,6 +787,7 @@ nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
 nnoremap <leader>wq :call GarbageCollection()<CR> 
+set pastetoggle=<leader>wp
 
 " Grep operator mappings
 nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
