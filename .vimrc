@@ -538,6 +538,11 @@ function! UrlDecodeUnnamed()
     let @@ = newStr
 endfunction
 
+" Creates SHA256 hash
+function! Sha256Unnamed()
+    let @@ = sha256( @@ )
+endfunction
+
 " Splits up values
 function! SplitUnnamed()
     let delimiter = input("Enter delimiter: ")
@@ -835,6 +840,9 @@ vnoremap <leader>tb :<c-u>call VisualMapper("call Base64Unnamed()", "UnnamedOper
 
 nnoremap <leader>tB :call NormalMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tB :<c-u>call VisualMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>
+
+nnoremap <leader>t2 :call NormalMapper("call Sha256Unnamed()", "UnnamedOperatorWrapper")<CR>g@
+vnoremap <leader>t2 :<c-u>call VisualMapper("call Sha256Unnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>t5 :call NormalMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>t5 :<c-u>call VisualMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>
