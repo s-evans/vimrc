@@ -25,6 +25,7 @@ set autoindent
 set expandtab
 set ruler
 set number
+set laststatus=2
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
@@ -66,6 +67,7 @@ endif
 
 " Auto-load ycm config file
 let g:ycm_confirm_extra_conf = 0
+let g:ycm_show_diagnostics_ui = 0
 
 " Ultisnips
 let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
