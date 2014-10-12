@@ -240,14 +240,14 @@ endfunction
 
 " Greps recursively from the current working directory
 function! GrepRecurse(arg)
-    silent! execute "silent! grep! -r " . shellescape(a:arg)
+    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """"
     cw
     redraw!
 endfunction
 
 " Greps in the current window
 function! GrepCurrent(arg)
-    silent! execute "silent! grep! " . shellescape(a:arg) . " % "
+    silent! execute "silent! grep! """ . shellescape(a:arg) . """ % "
     cw
     redraw!
 endfunction
@@ -255,7 +255,7 @@ endfunction
 " Greps in all buffers 
 function! GrepBuffers(arg)
     call ClearCw()
-    call BufDo("silent! grepadd! " . shellescape(a:arg) . " %")
+    call BufDo("silent! grepadd! """ . shellescape(a:arg) . """ %")
     cw
     redraw!
 endfunction
@@ -263,7 +263,7 @@ endfunction
 " Greps in all windows
 function! GrepWindows(arg) 
     call ClearCw()
-    windo silent! execute "silent! grepadd! " . shellescape(a:arg) . " %"
+    windo silent! execute "silent! grepadd! """ . shellescape(a:arg) . """ %"
     cw
     redraw!
 endfunction
@@ -271,7 +271,7 @@ endfunction
 " Greps recursively for all directories in the path
 function! GrepPath(arg)
     let plist = GetPathString()
-    silent! execute "silent! grep! -r \"" . shellescape(a:arg) . "\" " . plist
+    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """ " . plist
     cw
     redraw!
 endfunction
