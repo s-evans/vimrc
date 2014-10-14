@@ -43,22 +43,19 @@ set nohlsearch
 set nofoldenable
 
 " Fix default grep settings
-set grepprg=grep\ -n\ -H\ $*
+set grepprg=grep\ -n\ -H\ "$@"
 
-" Fix slow completion
+" Completion settings
 set complete-=i
+set completeopt=menu,menuone
 
 " Cursor settings
-highlight CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+highlight CursorLine cterm=reverse term=reverse gui=reverse
 set cursorline
-set guicursor=n-v-c:block,o:hor50,i-ci:hor15,r-cr:hor30,sm:block
 
 " Enable local .vimrc settings
 set exrc
 set secure
-
-" Clang complete settings
-set completeopt=menu,menuone
 
 " Persistent undo
 if exists('+undofile')
