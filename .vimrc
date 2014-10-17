@@ -5,7 +5,7 @@
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
-" TODO: Moar snippets
+" TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips, boost snips from hw project)
 " TODO: Unify snippets
 
 " Pathogen, for easy git based vimrc management
