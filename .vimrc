@@ -51,6 +51,10 @@ set completeopt=menu,menuone
 
 " Cursor settings
 highlight CursorLine cterm=reverse term=reverse gui=reverse
+highlight StatusLineNC ctermfg=Black ctermbg=Cyan guibg=Cyan cterm=none term=none gui=none
+highlight StatusLine ctermfg=Black ctermbg=Cyan guibg=Cyan cterm=none term=none gui=none
+highlight VertSplit ctermfg=Black ctermbg=Cyan guibg=Cyan cterm=none term=none gui=none
+set fillchars=vert:\|,fold:-,stl:\-,stlnc:\ 
 set cursorline
 
 " Enable local .vimrc settings
