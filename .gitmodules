@@ -39,10 +39,10 @@
 	url = https://github.com/tpope/vim-repeat.git
 [submodule "bundle/cmake_syntax"]
 	path = bundle/cmake_syntax
-	url = https://github.com/vim-scripts/cmake.vim-syntax.git
+	url = https://github.com/s-evans/cmake_syntax.git
 [submodule "bundle/cmake_indent"]
 	path = bundle/cmake_indent
-	url = https://github.com/vim-scripts/cmake.vim.git
+	url = https://github.com/s-evans/cmake_indent.git
 [submodule "bundle/camel_case_motion"]
 	path = bundle/camel_case_motion
 	url = https://github.com/bkad/CamelCaseMotion.git
