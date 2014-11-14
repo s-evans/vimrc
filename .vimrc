@@ -795,6 +795,7 @@ nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
 nnoremap <leader>wq :call GarbageCollection()<CR> 
+nnoremap <leader>wz :set spell!<CR> 
 set pastetoggle=<leader>wp
 
 " Grep operator mappings
