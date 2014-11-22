@@ -42,6 +42,14 @@ set noshowmatch
 set nohlsearch
 set nofoldenable
 
+if exists("&wildignorecase")
+    set wildignorecase
+endif
+
+if exists("&fileignorecase")
+    set fileignorecase
+endif
+
 " Fix default grep settings
 set grepprg=grep\ -n\ -H\ "$@"
 
