@@ -7,6 +7,7 @@
 " TODO: Multipath rsync svn git sed
 " TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips, boost snips from hw project)
 " TODO: Unify snippets
+" TODO: Add register support to mappings
 
 " Pathogen, for easy git based vimrc management
 runtime bundle/vim-pathogen/autoload/pathogen.vim
