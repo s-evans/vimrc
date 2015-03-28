@@ -5,7 +5,7 @@
 " TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
-" TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips, boost snips from hw project)
+" TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips)
 " TODO: Unify snippets
 " TODO: Add register support to mappings
 
@@ -782,6 +782,15 @@ inoremap jj <ESC>
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 nnoremap <leader>k :make<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-Up> ddkP
+nnoremap <C-Down> ddp
+vnoremap <C-Up> xkP`[V`]
+vnoremap <C-Down> xp`[V`]
+nnoremap <leader><C-O> :e#<CR>
 
 " Additional cscope mappings
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
