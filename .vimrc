@@ -790,7 +790,7 @@ nnoremap <C-Up> ddkP
 nnoremap <C-Down> ddp
 vnoremap <C-Up> xkP`[V`]
 vnoremap <C-Down> xp`[V`]
-nnoremap <leader><C-O> :e#<CR>
+nnoremap <leader><C-O> :ed#<CR>
 
 " Additional cscope mappings
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
