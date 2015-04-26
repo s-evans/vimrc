@@ -6,7 +6,6 @@
 " TODO: Update comment changing mapping to support more languages and comment styles
 " TODO: Multipath rsync svn git sed
 " TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips)
-" TODO: Unify snippets
 " TODO: Add register support to mappings
 
 " Pathogen, for easy git based vimrc management
