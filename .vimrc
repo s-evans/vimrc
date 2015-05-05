@@ -1,18 +1,34 @@
-" TODO: Table mode
-" TODO: Refactoring operations
-" TODO: Set operations: mean, median, mode, sum
-" TODO: Left/Right expression text object
-" TODO: Extraction function (clear out a register, input regex and scope, append matches into buffer)
-" TODO: Update comment changing mapping to support more languages and comment styles
-" TODO: Multipath rsync svn git sed
-" TODO: Moar snippets (template for a makefile, template for a local .vimrc, other local .vimrc-related snips)
-" TODO: Add register support to mappings
 
-" Pathogen, for easy git based vimrc management
+" -------------------------------
+" TODO List
+" -------------------------------
+
+" Table mode
+" Refactoring operations
+" Set operations: mean, median, mode, sum
+" Extraction function (clear out a register, input regex and scope, append matches into buffer)
+" Update comment changing mapping to support more languages and comment styles
+" Multiroot operations (rsync svn git sed cscope)
+" Add register support to mappings
+" Consider modifying cscope scan to always pull applicable file types into cscope.files
+" Left/Right expression text object
+" Column text object
+" Line text object
+" Consider using ack/ag
+" Easier help greping
+" Shell window mapping
+
+" -------------------------------
+" Pathogen
+" -------------------------------
+
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
-" General settings
+" -------------------------------
+" General Settings
+" -------------------------------
+
 set nocompatible
 filetype on
 filetype plugin on
@@ -41,6 +57,26 @@ set nojoinspaces
 set noshowmatch
 set nohlsearch
 set nofoldenable
+set lazyredraw
+set ignorecase
+set smartcase
+
+if has('multi_byte')
+    set encoding=utf-8
+endif
+
+" -------------------------------
+" Astyle Settings
+" -------------------------------
+
+" Define a default style that is overrideable by local project settings
+if !exists('g:astyle')
+    let g:astyle=""
+endif
+
+" -------------------------------
+" Ignorecase
+" -------------------------------
 
 if exists("&wildignorecase")
     set wildignorecase
@@ -50,14 +86,23 @@ if exists("&fileignorecase")
     set fileignorecase
 endif
 
-" Fix default grep settings
+" -------------------------------
+" Grep Settings
+" -------------------------------
+
 set grepprg=grep\ -n\ -H\ "$@"
 
-" Completion settings
+" -------------------------------
+" Completion Settings
+" -------------------------------
+
 set complete-=i
 set completeopt=menu,menuone
 
-" Cursor settings
+" -------------------------------
+" Cursor Settings
+" -------------------------------
+
 highlight CursorLine cterm=reverse term=reverse gui=reverse
 highlight StatusLineNC ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none term=none gui=none
 highlight StatusLine ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none term=none gui=none
@@ -65,38 +110,107 @@ highlight VertSplit ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none ter
 set fillchars=vert:\|,fold:-,stl:\-,stlnc:\ 
 set cursorline
 
-" Enable local .vimrc settings
+" -------------------------------
+" Directory .vimrc Settings
+" -------------------------------
+
 set exrc
 set secure
 
-" Persistent undo
+" -------------------------------
+" Persistent Undo Settings
+" -------------------------------
+
 if exists('+undofile')
     set undofile
 endif
+
+" -------------------------------
+" YouCompleteMe Settings
+" -------------------------------
 
 " Auto-load ycm config file
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_show_diagnostics_ui = 0
 
-" Ultisnips
+" -------------------------------
+" Ultisnips Settings
+" -------------------------------
+
 let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 
-if has("autocmd") 
-    " Eclim settings
-    autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
+" -------------------------------
+" Easy Align Settings
+" -------------------------------
 
-    " Fix stupid comment behavior
+let g:easy_align_delimiters = {
+\ '>': { 'pattern': '>>\|=>\|>' },
+\ '<': { 'pattern': '<<\|=<\|<' },
+\ '\': { 'pattern': '\\' },
+\ '/': { 'pattern': '//\+\|/\*\|\*/', 'delimiter_align': 'l', 'ignore_groups': ['!Comment'] },
+\ '[': {
+\     'pattern':       '\[',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ ']': {
+\     'pattern':       '\]',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ '(': {
+\     'pattern':       '(',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ ')': {
+\     'pattern':       ')',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ 'f': {
+\     'pattern': ' \(\S\+(\)\@=',
+\     'left_margin': 0,
+\     'right_margin': 0
+\   },
+\ 'd': {
+\     'pattern': ' \(\S\+\s*[;=]\)\@=',
+\     'left_margin': 0,
+\     'right_margin': 0
+\   }
+\ }
+
+" -------------------------------
+" Eclim Settings
+" -------------------------------
+
+if has("autocmd") 
+    autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
+endif 
+
+" -------------------------------
+" Auto-format Settings
+" -------------------------------
+
+" Disable continuation commenting
+if has("autocmd") 
     autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 endif 
 
-" Cscope settings
-if has("cscope") && executable("cscope")
-    set nocscopeverbose
-    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+" Remove comment header when joining lines
+if has('patch-7.3.541')
+    set formatoptions+=j
 endif
 
-" Configure the python instance
+" -------------------------------
+" Configure Python Instance
+" -------------------------------
+
 if has("python") && executable("python")
     python << 
 try:
@@ -107,6 +221,54 @@ except ImportError:
     pass
 
 endif
+
+" -------------------------------
+" PATH Utilities
+" -------------------------------
+
+" Returns a list containing strings contained in the path variable
+function! GetPathList() 
+    let p = &path
+    return split(p, ",")
+endfunction
+
+" Returns a space separated string of all elements in the path variable
+function! GetPathString() 
+    let plist = GetPathList()
+    return join(plist, " ")
+endfunction
+
+" Executes a command string for each path element, replacing all occurances of %s with the path element string
+function! ForEachPath(command)
+    let plist = GetPathList()
+    for p in plist 
+        let newCommand = substitute(a:command, "\%s", p, "g")
+        execute newCommand
+    endfor
+endfunction
+
+" -------------------------------
+" Cscope Functions
+" -------------------------------
+
+function! CscopeAutoAdd()
+  " add any database in current directory
+  let db = findfile('cscope.out', '.;')
+  if !empty(db)
+    silent cscope reset
+    silent! execute 'cscope add' db
+  " else add database pointed to by environment
+  elseif !empty($CSCOPE_DB)
+    silent cscope reset
+    silent! execute 'cscope add' $CSCOPE_DB
+  endif
+endfunction
+
+" Attempts to add a cscope database for each path element
+function! CscopeAddPath()
+    ForEachPath("cscope add %s %s")
+    cscope reset
+endfunction
 
 " Executes a cscope rescan on the current directory recursively
 function! CscopeRescan()
@@ -182,6 +344,22 @@ function! CscopeRescanRecurse()
     redraw!
 endfunction
 
+" -------------------------------
+" Cscope Settings
+" -------------------------------
+
+if has("cscope") && executable("cscope")
+    set nocscopeverbose
+    set csto=0 " Try cscope first in tag search
+    set cst " Add cscope to tag search
+    set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+    call CscopeAutoAdd()
+endif
+
+" -------------------------------
+" Arbitrary Python Math
+" -------------------------------
+
 " Solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp) 
     execute "python sys.argv = [\"" . a:exp . "\"]"
@@ -190,26 +368,9 @@ function! EvalMathExpression(exp)
     return out
 endfunction
 
-" Returns a list containing strings contained in the path variable
-function! GetPathList() 
-    let p = &path
-    return split(p, ",")
-endfunction
-
-" Returns a space separated string of all elements in the path variable
-function! GetPathString() 
-    let plist = GetPathList()
-    return join(plist, " ")
-endfunction
-
-" Executes a command string for each path element, replacing all occurances of %s with the path element string
-function! ForEachPath(command)
-    let plist = GetPathList()
-    for p in plist 
-        let newCommand = substitute(a:command, "\%s", p, "g")
-        execute newCommand
-    endfor
-endfunction
+" -------------------------------
+" Buffer Management Functions
+" -------------------------------
 
 " Clears out the quickfix list
 function! ClearCw()
@@ -247,6 +408,10 @@ function! BufDo(command)
     execute 'buffer ' . currBuff
 endfunction
 
+" -------------------------------
+" Grep Functions
+" -------------------------------
+
 " Greps recursively from the current working directory
 function! GrepRecurse(arg)
     silent! execute "silent! grep! -r """ . shellescape(a:arg) . """"
@@ -283,12 +448,6 @@ function! GrepPath(arg)
     silent! execute "silent! grep! -r """ . shellescape(a:arg) . """ " . plist
     cw
     redraw!
-endfunction
-
-" Attempts to add a cscope database for each path element
-function! CscopeAddPath()
-    ForEachPath("cscope add %s %s")
-    cscope reset
 endfunction
 
 " Returns the list of buffers in string format
@@ -373,11 +532,6 @@ function! ToggleDiff()
     endif
 endfunction
 
-" Define a default style that is overrideable by local project settings
-if !exists('g:astyle')
-    let g:astyle = ""
-endif
-
 " Create a scroll locked column (cannot be used with a locked row)
 function! LockColumn()
     set scrollbind
@@ -418,6 +572,10 @@ function! ReplaceText(type)
     let &selection = sel_save
     let @@ = reg_save
 endfunction
+
+" -------------------------------
+" Operator Wrapping Functions
+" -------------------------------
 
 " Used as an operator function with a callback. Passes arguments via the unnamed buffer.
 function! UnnamedOperatorWrapper(type) 
@@ -474,6 +632,10 @@ function! OperatorWrapper(type)
     let &selection = sel_save
     let @@ = reg_save
 endfunction
+
+" -------------------------------
+" URL Encoding Functions
+" -------------------------------
 
 let g:urlRanges = [[0, 32], [34, 38], [43, 44], [47, 47], [58, 64], [91, 94], [96, 96], [123, 127], [128, 255]]
 let g:urlRangeCount = len(urlRanges)
@@ -567,6 +729,10 @@ function! ExternalUnnamed()
     let @@ = substitute(@@, "\n$", "", "") 
 endfunction
 
+" -------------------------------
+" Set Functions
+" -------------------------------
+
 " Gets the compliment of two sets
 function! ComplimentUnnamed()
     let A = uniq(sort(split(@@, "\n")))
@@ -645,6 +811,10 @@ endfunction
 function! SortReverseUnnamed()
     let @@ = join(reverse(sort(split(@@, "\n"))), "\n")
 endfunction
+
+" -------------------------------
+" Mappings
+" -------------------------------
 
 " Performs a regex substitution on the given text
 function! SubstituteRegisterUnnamed()
@@ -763,6 +933,10 @@ function! Base64DecodeUnnamed()
     let @@ = substitute(@@, "\\n", "", "g")
 endfunction
 
+" -------------------------------
+" Mapper Functions
+" -------------------------------
+
 " Used to set up a visual mode operator mapping
 function! VisualMapper(callbackString, operatorFunction)
     let g:OperatorWrapperCb=a:callbackString
@@ -775,27 +949,57 @@ function! NormalMapper(callbackString, operatorFunction)
     silent execute "set operatorfunc=" . a:operatorFunction
 endfunction
 
-" Misc mappings
+" -------------------------------
+" Miscellaneous Mappings
+" -------------------------------
+
+" Leader
 let mapleader="\\"
-inoremap jj <ESC>
+
+" Escape
+inoremap jj <Esc>
+
+" Reload .vimrc
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
+
+" Build
 nnoremap <leader>k :make<CR>
+
+" Make Y behave like other capitals
+nnoremap Y y$
+
+" Make command mode work like readline
+cnoremap <C-a> <Home>
+
+" -------------------------------
+" Window Navigation Mappings
+" -------------------------------
+
+" Navigate to Previous File
+nnoremap <leader><C-O> :ed#<CR>
+
+" Circular Window Navigation
+nnoremap <tab> <c-w>w
+nnoremap <S-tab> <c-w>W
+
+" Quick Window Navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-nnoremap <C-Up> ddkP
-nnoremap <C-Down> ddp
-vnoremap <C-Up> xkP`[V`]
-vnoremap <C-Down> xp`[V`]
-nnoremap <leader><C-O> :ed#<CR>
 
-" Additional cscope mappings
+" -------------------------------
+" Additional Cscope Mappings
+" -------------------------------
+
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
 nnoremap <C-\>p :call CscopeRescanAll()<CR>
 
-" Window mappings
+" -------------------------------
+" Window Mappings
+" -------------------------------
+
 nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TagbarToggle<CR>
 nnoremap <leader>ws :TScratch<CR>
@@ -815,7 +1019,10 @@ nnoremap <leader>wq :call GarbageCollection()<CR>
 nnoremap <leader>wz :set spell!<CR> 
 set pastetoggle=<leader>wp
 
-" Grep operator mappings
+" -------------------------------
+" Grep Operator Mappings
+" -------------------------------
+
 nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
 vnoremap <leader>gp :<c-u>call VisualMapper("call GrepPath(%s)", "OperatorWrapper")<CR>
 
@@ -831,14 +1038,20 @@ vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWra
 nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
 vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
-" Override astyle settings
+" -------------------------------
+" Override Astyle Settings
+" -------------------------------
+
 if has("autocmd") 
     autocmd FileType xml nnoremap <buffer> <leader>ta :call NormalMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>g@
     autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>call VisualMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>
     autocmd FileType java let g:astyle="--mode=java"
 endif
 
-" Text transform mappings
+" -------------------------------
+" Text Transformation Mappings
+" -------------------------------
+
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
 
 nnoremap <leader>ta :call NormalMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>g@
@@ -916,7 +1129,10 @@ vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
 vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
 
-" Set operation mappings
+" -------------------------------
+" Set Operation Mappings
+" -------------------------------
+
 nnoremap <leader>sP :call NormalMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>sP :<c-u>call VisualMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>
 
@@ -944,11 +1160,17 @@ vnoremap <leader>se :<c-u>call VisualMapper("call SortStringLengthUnnamed()", "U
 nnoremap <leader>sE :call NormalMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>sE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
 
-" vimrc reload mappings
+" -------------------------------
+" .vimrc Reload Mappings
+" -------------------------------
+
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
-" Machine/user local vimrc settings & overrides
+" -------------------------------
+" Local .vimrc Settings
+" -------------------------------
+
 if filereadable(glob("~/.local/.vimrc"))
     source ~/.local/.vimrc
 endif
