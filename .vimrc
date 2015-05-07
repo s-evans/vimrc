@@ -30,36 +30,57 @@ execute pathogen#infect()
 " -------------------------------
 
 set nocompatible
-filetype on
-filetype plugin on
-filetype plugin indent on
-syntax on
 colors evening
-set nolinebreak
-set textwidth=0
 set autoindent
+set bs=2
 set expandtab
-set ruler
-set number
+set history=1000
+set ignorecase
 set laststatus=2
+set lazyredraw
+set mouse=""  " No mouse
+set noincsearch
+set nojoinspaces
+set nolinebreak
+set noshowmatch
+set nowrap
+set number
 set shiftwidth=4
+set smartcase
 set softtabstop=4
 set tabstop=4
-set bs=2
-set mouse=""  " No mouse
-set wildmenu
-set wildmode=list:longest,full
-set history=1000
-set nowrap
-set noincsearch
-set title
-set nojoinspaces
-set noshowmatch
-set nohlsearch
-set nofoldenable
-set lazyredraw
-set ignorecase
-set smartcase
+set textwidth=0
+
+if has('extra_search')
+    set nohlsearch
+endif
+
+if has('cmdline_info')
+    set ruler
+endif
+
+if has('autocmd')
+    filetype on
+    filetype plugin on
+    filetype plugin indent on
+endif
+
+if has('syntax')
+    syntax on
+endif
+
+if has('folding')
+    set nofoldenable
+endif
+
+if has('title')
+    set title
+endif
+
+if exists('&wildmode')
+    set wildmenu
+    set wildmode=list:longest,full
+endif
 
 if has('multi_byte')
     set encoding=utf-8
@@ -96,8 +117,13 @@ set grepprg=grep\ -n\ -H\ "$@"
 " Completion Settings
 " -------------------------------
 
-set complete-=i
-set completeopt=menu,menuone
+if has('insert_expand')
+    " Don't scan includes for completion (slow)
+    set complete-=i
+
+    " Don't use the preview window
+    set completeopt=menu,menuone
+endif
 
 " -------------------------------
 " Cursor Settings
@@ -137,6 +163,7 @@ let g:ycm_show_diagnostics_ui = 0
 " Ultisnips Settings
 " -------------------------------
 
+" Deal with interactions between ycm and ultisnips
 let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 
@@ -144,6 +171,7 @@ let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 " Easy Align Settings
 " -------------------------------
 
+" Add some delimiters
 let g:easy_align_delimiters = {
 \ '>': { 'pattern': '>>\|=>\|>' },
 \ '<': { 'pattern': '<<\|=<\|<' },
@@ -189,6 +217,7 @@ let g:easy_align_delimiters = {
 " Eclim Settings
 " -------------------------------
 
+" Enable eclim completion only on java
 if has("autocmd") 
     autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
 endif 
@@ -251,6 +280,7 @@ endfunction
 " Cscope Functions
 " -------------------------------
 
+" Attempts to automatically find a cscope database to use
 function! CscopeAutoAdd()
   " add any database in current directory
   let db = findfile('cscope.out', '.;')
