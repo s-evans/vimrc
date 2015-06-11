@@ -50,6 +50,7 @@ set smartcase
 set softtabstop=4
 set tabstop=4
 set textwidth=0
+set matchpairs+=<:>
 
 if has('extra_search')
     set nohlsearch
