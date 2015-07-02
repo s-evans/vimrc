@@ -17,6 +17,7 @@
 " Consider using ack/ag
 " Easier help greping
 " Shell window mapping
+" Possibly use formatprg to reduce code required for each text transformation mapping
 
 " -------------------------------
 " Pathogen
@@ -54,47 +55,38 @@ set matchpairs+=<:>
 let g:load_doxygen_syntax=1
 
 if has('extra_search')
-    set nohlsearch
+  set nohlsearch
 endif
 
 if has('cmdline_info')
-    set ruler
+  set ruler
 endif
 
 if has('autocmd')
-    filetype on
-    filetype plugin on
-    filetype plugin indent on
+  filetype on
+  filetype plugin on
+  filetype plugin indent on
 endif
 
 if has('syntax')
-    syntax on
+  syntax on
 endif
 
 if has('folding')
-    set nofoldenable
+  set nofoldenable
 endif
 
 if has('title')
-    set title
+  set title
 endif
 
 if exists('&wildmode')
-    set wildmenu
-    set wildmode=list:longest,full
+  set wildmenu
+  set wildmode=list:longest,full
 endif
 
 if has('multi_byte')
-    set encoding=utf-8
-endif
-
-" -------------------------------
-" Astyle Settings
-" -------------------------------
-
-" Define a default style that is overrideable by local project settings
-if !exists('g:astyle')
-    let g:astyle=""
+  set encoding=utf-8
 endif
 
 " -------------------------------
@@ -102,11 +94,11 @@ endif
 " -------------------------------
 
 if exists("&wildignorecase")
-    set wildignorecase
+  set wildignorecase
 endif
 
 if exists("&fileignorecase")
-    set fileignorecase
+  set fileignorecase
 endif
 
 " -------------------------------
@@ -120,11 +112,11 @@ set grepprg=grep\ -n\ -H\ "$@"
 " -------------------------------
 
 if has('insert_expand')
-    " Don't scan includes for completion (slow)
-    set complete-=i
+  " Don't scan includes for completion (slow)
+  set complete-=i
 
-    " Don't use the preview window
-    set completeopt=menu,menuone
+  " Don't use the preview window
+  set completeopt=menu,menuone
 endif
 
 " -------------------------------
@@ -150,7 +142,7 @@ set secure
 " -------------------------------
 
 if exists('+undofile')
-    set undofile
+  set undofile
 endif
 
 " -------------------------------
@@ -225,23 +217,80 @@ let g:easy_align_delimiters = {
 " Eclim Settings
 " -------------------------------
 
-" Enable eclim completion only on java
+" Enable eclim completion only on java files
 if has("autocmd") 
-    autocmd Filetype java let g:EclimCompletionMethod = 'omnifunc'
+  augroup eclim_java_completion
+    autocmd!
+    autocmd BufEnter *.java let g:EclimCompletionMethod = 'omnifunc'
+    autocmd BufLeave *.java unlet g:EclimCompletionMethod
+  augroup END
 endif 
 
 " -------------------------------
 " Auto-format Settings
 " -------------------------------
 
-" Disable continuation commenting
-if has("autocmd") 
-    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-endif 
-
 " Remove comment header when joining lines
 if has('patch-7.3.541')
-    set formatoptions+=j
+  set formatoptions+=j
+endif
+
+" Records the current formatprg and sets a new formatprg
+function! SetFormatProgram( string )
+  let g:oldformatprg=&formatprg
+  exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
+endfunction
+
+" Sets the formatprg
+function! InitializeFormatProgram( string )
+  let g:oldformatprg=a:string
+  exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
+endfunction
+
+" Restores the formatprg to previous settings
+function! RestoreFormatProgram()
+  exec "set formatprg=" . substitute( g:oldformatprg, " ", "\\\\ ", "g" )
+endfunction
+
+" Set up default format program
+call InitializeFormatProgram("")
+
+" Use astyle by default for formatting if it exists
+if executable("astyle")
+  call InitializeFormatProgram("astyle")
+endif
+
+" Disable continuation commenting
+if has("autocmd") 
+  augroup comment_format
+    autocmd!
+    autocmd FileType * set formatoptions-=cro
+  augroup END
+endif 
+
+" For other file types, use other format programs
+if has("autocmd") 
+  " set formatprg for xml files
+  if executable("xmllint")
+    augroup xml_format
+      autocmd!
+      autocmd BufEnter *.xml,*.xsd call SetFormatProgram("xmllint --format -")
+    augroup END
+  endif
+
+  " set formatprg for java files
+  if executable("astyle")
+    augroup java_format
+      autocmd!
+      autocmd BufEnter *.java call SetFormatProgram("astyle --mode=java")
+    augroup END
+  endif
+
+  " restore formatprg when leaving a buffer
+  augroup restore_format
+    autocmd!
+    autocmd BufLeave * call RestoreFormatProgram()
+  augroup END
 endif
 
 " -------------------------------
@@ -249,7 +298,7 @@ endif
 " -------------------------------
 
 if has("python") && executable("python")
-    python << 
+  python << 
 try:
     from math import * 
     import vim
@@ -290,16 +339,16 @@ endfunction
 
 " Attempts to automatically find a cscope database to use
 function! CscopeAutoAdd()
-  " add any database in current directory
-  let db = findfile('cscope.out', '.;')
-  if !empty(db)
-    silent cscope reset
-    silent! execute 'cscope add' db
-  " else add database pointed to by environment
-  elseif !empty($CSCOPE_DB)
-    silent cscope reset
-    silent! execute 'cscope add' $CSCOPE_DB
-  endif
+    " add any database in current directory
+    let db = findfile('cscope.out', '.;')
+    if !empty(db)
+        silent cscope reset
+        silent! execute 'cscope add' db
+        " else add database pointed to by environment
+    elseif !empty($CSCOPE_DB)
+        silent cscope reset
+        silent! execute 'cscope add' $CSCOPE_DB
+    endif
 endfunction
 
 " Attempts to add a cscope database for each path element
@@ -889,11 +938,6 @@ function! MathExpressionUnnamed()
     let @@ = EvalMathExpression(@@)
 endfunction
 
-" Makes XML prettier
-function! XmlLintUnnamed()
-    let @@ = system("xmllint --format -", @@)
-endfunction
-
 " Makes text title case
 function! TitleCaseUnnamed()
     let @@ = substitute(@@, "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") 
@@ -930,11 +974,6 @@ function! UnixToDosUnnamed()
     let @@ = system("unix2dos -f", @@)
 endfunction
 
-" Runs astyle on specified text
-function! AstyleUnnamed() 
-    let @@ = system("astyle " . g:astyle, @@)
-endfunction
-
 " Converts cpp name mangled strings to their pretty counterparts
 function! CppFilterUnnamed()
     let @@ = system("c++filt", @@)
@@ -964,7 +1003,7 @@ function! Base64Unnamed()
     let @@ = system("base64", @@)
     let @@ = substitute(@@, "\\n", "", "g")
 endfunction
- 
+
 " Base64 decodes text
 function! Base64DecodeUnnamed() 
     let @@ = system("base64 -d", @@)
@@ -1104,23 +1143,10 @@ nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper"
 vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
 
 " -------------------------------
-" Override Astyle Settings
-" -------------------------------
-
-if has("autocmd") 
-    autocmd FileType xml nnoremap <buffer> <leader>ta :call NormalMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-    autocmd FileType xml vnoremap <buffer> <leader>ta :<c-u>call VisualMapper("call XmlLintUnnamed()", "UnnamedOperatorWrapper")<CR>
-    autocmd FileType java let g:astyle="--mode=java"
-endif
-
-" -------------------------------
 " Text Transformation Mappings
 " -------------------------------
 
 nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
-
-nnoremap <leader>ta :call NormalMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>ta :<c-u>call VisualMapper("call AstyleUnnamed()", "UnnamedOperatorWrapper")<CR>
 
 nnoremap <leader>tud :call NormalMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>g@
 vnoremap <leader>tud :<c-u>call VisualMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>
