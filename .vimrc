@@ -15,11 +15,53 @@
 " Easier help greping
 
 " -------------------------------
-" Pathogen
+" Plugin Setup
 " -------------------------------
 
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-execute pathogen#infect()
+call plug#begin('~/.vim/bundle')
+
+Plug 'a-vim'
+Plug 'bufexplorer'
+Plug 'camel_case_motion'
+Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
+Plug 'cmake_indent'
+Plug 'cmake_syntax'
+Plug 'dosbatch'
+Plug 'doxygen_toolkit'
+Plug 'easy-align'
+Plug 'gundo'
+Plug 'matchit'
+Plug 'nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'operator-replace'
+Plug 'operator-user'
+Plug 'rubyblock'
+Plug 'snipmate'
+Plug 'syntastic', { 'on': 'SyntasticCheck'}
+Plug 'tabular', { 'on': [ 'AddTabularPattern', 'Tabularize', 'AddTabularPipeline' ] }
+Plug 'tagbar' , { 'on': 'TagbarToggle' }
+Plug 'textobj-between'
+Plug 'textobj-camel'
+Plug 'textobj-comment'
+Plug 'textobj-datetime'
+Plug 'textobj-function'
+Plug 'textobj-line'
+Plug 'textobj-parameter'
+Plug 'textobj-uri'
+Plug 'textobj-user'
+Plug 'tlib_vim'
+Plug 'vim-abolish'
+Plug 'vim-addon-mw-utils'
+Plug 'vim-commentary'
+Plug 'vim-fugitive', { 'on': [ 'Gcommit', 'Gdiff', 'Gedit', 'Git', 'Gsdiff', 'Gsplit', 'Gtabedit', 'Gvdiff', 'Gvsplit' ] }
+Plug 'vim-indent-object'
+Plug 'vim-repeat'
+Plug 'vim-snippets'
+Plug 'vim-surround'
+Plug 'vim-unimpaired'
+Plug 'visualrepeat'
+Plug 'ycm', {'for': [ 'cpp', 'c' ] }
+
+call plug#end()
 
 " -------------------------------
 " General Settings
@@ -147,6 +189,12 @@ endif
 " Auto-load ycm config file
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_show_diagnostics_ui = 0
+
+" -------------------------------
+" Syntastic Settings
+" -------------------------------
+
+let g:syntastic_check_on_open = 0
 
 " -------------------------------
 " Ultisnips Settings
