@@ -7,17 +7,12 @@
 " Refactoring operations
 " Set operations: mean, median, mode, sum
 " Extraction function (clear out a register, input regex and scope, append matches into buffer)
-" Update comment changing mapping to support more languages and comment styles
 " Multiroot operations (rsync svn git sed cscope)
-" Add register support to mappings
 " Consider modifying cscope scan to always pull applicable file types into cscope.files
 " Left/Right expression text object
 " Column text object
-" Line text object
 " Consider using ack/ag
 " Easier help greping
-" Shell window mapping
-" Possibly use formatprg to reduce code required for each text transformation mapping
 
 " -------------------------------
 " Pathogen
@@ -500,42 +495,38 @@ endfunction
 " -------------------------------
 
 " Greps recursively from the current working directory
-function! GrepRecurse(arg)
-    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """"
+function! GrepRecurseRegister()
+    silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """"
     cw
     redraw!
 endfunction
 
 " Greps in the current window
-function! GrepCurrent(arg)
-    silent! execute "silent! grep! """ . shellescape(a:arg) . """ % "
-    cw
-    redraw!
-endfunction
-
-" Greps in all buffers 
-function! GrepBuffers(arg)
-    call ClearCw()
-    call BufDo("silent! grepadd! """ . shellescape(a:arg) . """ %")
+function! GrepCurrentRegister()
+    silent! execute "silent! grep! """ . shellescape(getreg(v:register)) . """ % "
     cw
     redraw!
 endfunction
 
 " Greps in all windows
-function! GrepWindows(arg) 
+function! GrepWindowRegister() 
     call ClearCw()
-    windo silent! execute "silent! grepadd! """ . shellescape(a:arg) . """ %"
+    windo silent! execute "silent! grepadd! """ . shellescape(getreg(v:register)) . """ %"
     cw
     redraw!
 endfunction
 
 " Greps recursively for all directories in the path
-function! GrepPath(arg)
+function! GrepPathRegister()
     let plist = GetPathString()
-    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """ " . plist
+    silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """ " . plist
     cw
     redraw!
 endfunction
+
+" -------------------------------
+" Window functions
+" -------------------------------
 
 " Returns the list of buffers in string format
 function! GetBufferList()
@@ -639,36 +630,16 @@ function! LockRow()
     wincmd j
 endfunction
 
-" Replace the text selected by the motion with the unnamed buffer
-function! ReplaceText(type)
-    let sel_save = &selection
-    let &selection = "inclusive"
-    let reg_save = @@
-
-    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
-        call setreg("@@", getreg("@@"), a:type)
-        normal! gvp
-    elseif a:type == 'line'
-        normal! `[V`]p
-    elseif a:type == 'block' 
-        normal! `[\<C-V>`]p
-    else
-        normal! `[v`]p
-    endif
-
-    let &selection = sel_save
-    let @@ = reg_save
-endfunction
-
 " -------------------------------
 " Operator Wrapping Functions
 " -------------------------------
 
-" Used as an operator function with a callback. Passes arguments via the unnamed buffer.
-function! UnnamedOperatorWrapper(type) 
+" Used as an operator function with a callback. Passes arguments via the current register.
+function! RegisterOperatorWrapper(type, callback) 
     let sel_save = &selection
     let &selection = "inclusive"
-    let reg_save = @@
+    let reg = v:register
+    let reg_save = getreg(reg)
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
         normal! gvy
@@ -680,10 +651,10 @@ function! UnnamedOperatorWrapper(type)
         normal! `[v`]y
     endif
 
-    silent execute g:OperatorWrapperCb
+    silent execute a:callback
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
-        call setreg("@@", getreg("@@"), a:type)
+        call setreg(reg, getreg(reg), a:type)
         normal! gvp
     elseif a:type == 'line'
         normal! `[V`]p
@@ -694,14 +665,14 @@ function! UnnamedOperatorWrapper(type)
     endif
 
     let &selection = sel_save
-    let @@ = reg_save
+    call setreg(reg, reg_save)
 endfunction
 
 " Wraps operator functions that rely on simple input text
-function! OperatorWrapper(type) 
+function! OperatorWrapper(type, callback)
     let sel_save = &selection
     let &selection = "inclusive"
-    let reg_save = @@
+    let reg_save = getreg(v:register)
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
         normal! gvy
@@ -713,11 +684,10 @@ function! OperatorWrapper(type)
         normal! `[v`]y
     endif
 
-    let command = substitute(g:OperatorWrapperCb, "\%s", shellescape(@@), "g")
-    silent execute command
+    silent execute a:callback
 
     let &selection = sel_save
-    let @@ = reg_save
+    call setreg(v:register, reg_save)
 endfunction
 
 " -------------------------------
@@ -749,13 +719,14 @@ function! UrlEncodeChar(charByte)
     return UrlEncodeCharInternal(a:charByte, 0, g:urlRangeCount - 1)
 endfunction
 
-" URL Encodes the unnamed register
-function! UrlEncodeUnnamed()
+" URL Encodes the current register
+function! UrlEncodeRegister()
     let newStr = ""
     let i = 0
+    let reg_val = getreg(v:register)
 
     while 1
-        let newChar = @@[i]
+        let newChar = reg_val[i]
         let byteVal = char2nr(newChar)
 
         if byteVal == 0
@@ -770,16 +741,17 @@ function! UrlEncodeUnnamed()
         let i += 1
     endwhile
 
-    let @@ = newStr
+    call setreg(v:register, newStr)
 endfunction
 
-" URL decodes the unnamed register
-function! UrlDecodeUnnamed()
+" URL decodes the current register
+function! UrlDecodeRegister()
     let newStr = ""
     let i = 0
+    let reg_val = getreg(v:register)
 
     while 1
-        let newChar = @@[i]
+        let newChar = reg_val[i]
         let byteVal = char2nr(newChar)
 
         if byteVal == 0
@@ -787,7 +759,7 @@ function! UrlDecodeUnnamed()
         endif
 
         if newChar == "%"
-            let newChar = nr2char(str2nr(@@[i+1:i+2], 16))
+            let newChar = nr2char(str2nr(reg_val[i+1:i+2], 16))
             let i += 2
         endif
 
@@ -795,42 +767,173 @@ function! UrlDecodeUnnamed()
         let i += 1
     endwhile
 
-    let @@ = newStr
-endfunction
-
-" Creates SHA256 hash
-function! Sha256Unnamed()
-    let @@ = sha256( @@ )
-endfunction
-
-" Splits up values
-function! SplitUnnamed()
-    let delimiter = input("Enter delimiter: ")
-    let @@ = join(split(@@, delimiter), "\n")
-endfunction
-
-" Executes and replaces given commands
-function! ExternalUnnamed()
-    let @@ = system("bash", @@)
-    let @@ = substitute(@@, "^\n", "", "") 
-    let @@ = substitute(@@, "\n$", "", "") 
+    call setreg(v:register, newStr)
 endfunction
 
 " -------------------------------
-" Set Functions
+" Operator Functions
 " -------------------------------
+
+function! GrepWindowOperator(type) 
+  call OperatorWrapper(a:type, "call GrepWindowRegister()")
+endfunction
+
+function! GrepRecurseOperator(type)
+  call OperatorWrapper(a:type, "call GrepRecurseRegister()")
+endfunction
+
+function! GrepCurrentOperator(type)
+  call OperatorWrapper(a:type, "call GrepCurrentRegister()")
+endfunction
+
+function! GrepPathOperator(type)
+  call OperatorWrapper(a:type, "call GrepPathRegister()")
+endfunction
+
+function! UrlEncodeOperator(type)
+  call RegisterOperatorWrapper(a:type, "call UrlEncodeRegister()")
+endfunction
+
+function! UrlDecodeOperator(type)
+  call RegisterOperatorWrapper(a:type, "call UrlDecodeRegister()")
+endfunction
+
+function! ExternalOperator(type)
+  call RegisterOperatorWrapper(a:type, "call ExternalRegister()")
+endfunction
+
+function! SortStringLengthOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SortStringLengthRegister()")
+endfunction
+
+function! ReverseSortStringLengthOperator(type)
+    call RegisterOperatorWrapper(a:type, "call ReverseSortStringLengthRegister()")
+endfunction
+
+function! ComplimentOperator(type)
+    call RegisterOperatorWrapper(a:type, "call ComplimentRegister()")
+endfunction
+
+function! SymmetricDifferenceOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SymmetricDifferenceRegister()")
+endfunction
+
+function! SplitOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SplitRegister()")
+endfunction
+
+function! JoinOperator(type)
+    call RegisterOperatorWrapper(a:type, "call JoinRegister()")
+endfunction
+
+function! JoinSeparatorOperator(type)
+    call RegisterOperatorWrapper(a:type, "call JoinSeparatorRegister()")
+endfunction
+
+function! UniqueOperator(type)
+    call RegisterOperatorWrapper(a:type, "call UniqueRegister()")
+endfunction
+
+function! DuplicateOperator(type)
+    call RegisterOperatorWrapper(a:type, "call DuplicateRegister()")
+endfunction
+
+function! SortOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SortRegister()")
+endfunction
+
+function! SortReverseOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SortReverseRegister()")
+endfunction
+
+function! TopologicalSortOperator()
+    call RegisterOperatorWrapper(a:type, "call TopologicalSortRegister()")
+endfunction
+
+function! MathExpressionOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call MathExpressionRegister()")
+endfunction
+
+function! Base64Operator(type) 
+    call RegisterOperatorWrapper(a:type, "call Base64Register()")
+endfunction
+
+function! Base64DecodeOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call Base64DecodeRegister()")
+endfunction
+
+function! Md5Operator(type) 
+    call RegisterOperatorWrapper(a:type, "call Md5Register()")
+endfunction
+
+function! CrcOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call CrcRegister()")
+endfunction
+
+function! CppFilterOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call CppFilterRegister()")
+endfunction
+
+function! UnixToDosOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call UnixToDosRegister()")
+endfunction
+
+function! TitleCaseOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call TitleCaseRegister()")
+endfunction
+
+function! TableOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call TableRegister()")
+endfunction
+
+function! DosToUnixOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call DosToUnixRegister()")
+endfunction
+
+function! MacToUnixOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call MacToUnixRegister()")
+endfunction
+
+function! UnixToMacOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call UnixToMacRegister()")
+endfunction
+
+function! TableSeparatorOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call TableSeparatorRegister()")
+endfunction
+
+function! SubstituteRegisterOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call SubstituteRegisterRegister()")
+endfunction
+
+function! SubstituteOperator(type) 
+    call RegisterOperatorWrapper(a:type, "call SubstituteRegister()")
+endfunction
+
+function! Sha256Operator(type)
+  call RegisterOperatorWrapper(a:type, "call Sha256Register()")
+endfunction
+
+" -------------------------------
+" Set Function Mappings
+" -------------------------------
+
+" Performs a topological sort
+function! TopologicalSortRegister()
+    call setreg(v:register, system("tsort", getreg(v:register)))
+endfunction
 
 " Gets the compliment of two sets
-function! ComplimentUnnamed()
-    let A = uniq(sort(split(@@, "\n")))
+function! ComplimentRegister()
+    let A = uniq(sort(split(getreg(v:register), "\n")))
     let B = uniq(sort(split(getreg(input("Enter register: ")), "\n")))
     call filter(A, 'index(B, v:val) < 0')
-    let @@ = join(A, "\n")
+    call setreg(v:register, join(A, "\n"))
 endfunction
 
 " Gets the symmetric difference of two sets
-function! SymmetricDifferenceUnnamed()
-    let @@ = join(uniq(sort(split(@@, "\n")), "DuplicateBlockFunction"), "\n")
+function! SymmetricDifferenceRegister()
+    call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n")), "DuplicateBlockFunction"), "\n"))
 endfunction
 
 " Used for sorting based on string length
@@ -839,29 +942,29 @@ function! LengthFunction(arg1, arg2)
 endfunction
 
 " Sorts strings based on their length
-function! SortStringLengthUnnamed()
-    let @@ = join(sort(split(@@, "\n"), "LengthFunction"), "\n")
+function! SortStringLengthRegister()
+    call setreg(v:register, join(sort(split(getreg(v:register), "\n"), "LengthFunction"), "\n"))
 endfunction
 
 " Reverse sorts strings based on their length
-function! ReverseSortStringLengthUnnamed()
-    let @@ = join(reverse(sort(split(@@, "\n"), "LengthFunction")), "\n")
+function! ReverseSortStringLengthRegister()
+    call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"), "LengthFunction")), "\n"))
 endfunction
 
 " Joins newline separated values with spaces
-function! JoinUnnamed()
-    let @@ = join(split(@@, "\n"), " ")
+function! JoinRegister()
+    call setreg(v:register, join(split(getreg(v:register), "\n"), " "))
 endfunction
 
 " Joins newline separated values with user specified delimiter
-function! JoinSeparatorUnnamed()
+function! JoinSeparatorRegister()
     let delimiter = input("Enter delimiter: ")
-    let @@ = join(split(@@, "\n"), delimiter)
+    call setreg(v:register, join(split(getreg(v:register), "\n"), delimiter))
 endfunction
 
 " Removes duplicates
-function! UniqueUnnamed()
-    let @@ = join(uniq(sort(split(@@, "\n"))), "\n")
+function! UniqueRegister()
+    call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n"))), "\n"))
 endfunction
 
 " Checks if adjacent values are the same
@@ -884,146 +987,144 @@ endfunction
 " sort -n A B | uniq -d
 " grep -xF -f A B
 " comm -12 <(sort -n A) <(sort -n B)
-function! DuplicateUnnamed()
+function! DuplicateRegister()
     let g:DuplicateValue = ""
-    let @@ = join(uniq(uniq(sort(add(split(@@, "\n"), "")), "DuplicateFunction")), "\n")
+    call setreg(v:register, join(uniq(uniq(sort(add(split(getreg(v:register), "\n"), "")), "DuplicateFunction")), "\n"))
 endfunction
 
 " Sorts the given text
-function! SortUnnamed()
-    let @@ = join(sort(split(@@, "\n")), "\n")
+function! SortRegister()
+    call setreg(v:register, join(sort(split(getreg(v:register), "\n")), "\n"))
 endfunction
 
 " Reverse sorts the given text
-function! SortReverseUnnamed()
-    let @@ = join(reverse(sort(split(@@, "\n"))), "\n")
+function! SortReverseRegister()
+    call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"))), "\n"))
 endfunction
 
 " -------------------------------
-" Mappings
+" Text Function Mappings
 " -------------------------------
 
+" Creates SHA256 hash
+function! Sha256Register()
+    call setreg(v:register, sha256(getreg(v:register)))
+endfunction
+
+" Splits up values
+function! SplitRegister()
+    let delimiter = input("Enter delimiter: ")
+    call setreg(v:register, join(split(getreg(v:register) delimiter), "\n"))
+endfunction
+
+" Executes and replaces given commands
+function! ExternalRegister()
+    call setreg(v:register, system("bash", getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "^\n", "", "") )
+    call setreg(v:register, substitute(getreg(v:register), "\n$", "", "") )
+endfunction
+
 " Performs a regex substitution on the given text
-function! SubstituteRegisterUnnamed()
+function! SubstituteRegisterRegister()
     let pat = getreg(input("Enter pattern register: "))
     let sub = getreg(input("Enter substitution register: "))
     let flags = input("Enter flags: ")
-    let list = split(@@, "\n")
+    let list = split(getreg(v:register), "\n")
     let size = len(list)
     let i = 0 
     while i < size
         let list[i] = substitute(list[i], pat, sub, flags)
         let i += 1
     endwhile
-    let @@ = join(list, "\n")
+    call setreg(v:register, join(list, "\n"))
 endfunction
 
 " Performs a regex substitution on the given text
-function! SubstituteUnnamed()
+function! SubstituteRegister()
     let pat = input("Enter pattern: ")
     let sub = input("Enter substitution: ")
     let flags = input("Enter flags: ")
-    let list = split(@@, "\n")
+    let list = split(getreg(v:register), "\n")
     let size = len(list)
     let i = 0 
     while i < size
         let list[i] = substitute(list[i], pat, sub, flags)
         let i += 1
     endwhile
-    let @@ = join(list, "\n")
+    call setreg(v:register, join(list, "\n"))
 endfunction
 
 " Evaluates mathematical expressions
-function! MathExpressionUnnamed() 
-    let @@ = EvalMathExpression(@@)
+function! MathExpressionRegister() 
+    call setreg(v:register, EvalMathExpression(getreg(v:register)))
 endfunction
 
 " Makes text title case
-function! TitleCaseUnnamed()
-    let @@ = substitute(@@, "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") 
+function! TitleCaseRegister()
+    call setreg(v:register, substitute(getreg(v:register), "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") )
 endfunction
 
 " Creates a table from space separated arguments
-function! TableUnnamed()
-    let @@ = system("column -t", @@)
+function! TableRegister()
+    " call setreg(v:register, system("column -t", getreg(v:register)))
+    call setreg(v:register, system("column -t", getreg(v:register)))
 endfunction
 
 " Creates a table from comma separated arguments
-function! TableSeparatorUnnamed()
+function! TableSeparatorRegister()
     let delimiter = input("Enter delimiter: ")
-    let @@ = system("column -s" . shellescape(delimiter) ." -t", @@)
+    call setreg(v:register, system("column -s" . shellescape(delimiter) ." -t", getreg(v:register)))
 endfunction
 
 " Converts unix text to mac
-function! UnixToMacUnnamed()
-    let @@ = system("unix2mac -f", @@)
+function! UnixToMacRegister()
+    call setreg(v:register, system("unix2mac -f", getreg(v:register)))
 endfunction
 
 " Converts mac text to unix
-function! MacToUnixUnnamed()
-    let @@ = system("mac2unix -f", @@)
+function! MacToUnixRegister()
+    call setreg(v:register, system("mac2unix -f", getreg(v:register)))
 endfunction
 
 " Converts dos text to unix
-function! DosToUnixUnnamed()
-    let @@ = system("dos2unix -f", @@)
+function! DosToUnixRegister()
+    call setreg(v:register, system("dos2unix -f", getreg(v:register)))
 endfunction
 
 " Converts unix text to dos
-function! UnixToDosUnnamed()
-    let @@ = system("unix2dos -f", @@)
+function! UnixToDosRegister()
+    call setreg(v:register, system("unix2dos -f", getreg(v:register)))
 endfunction
 
 " Converts cpp name mangled strings to their pretty counterparts
-function! CppFilterUnnamed()
-    let @@ = system("c++filt", @@)
-endfunction
-
-" Performs a topological sort
-function! TopologicalSortUnnamed()
-    let @@ = system("tsort", @@)
+function! CppFilterRegister()
+    call setreg(v:register, system("c++filt", getreg(v:register)))
 endfunction
 
 " Performs crc32 on selected text
-function! CrcUnnamed() 
-    let @@ = system("cksum", @@)
-    let @@ = substitute(@@, "\\n", "", "g")
-    let @@ = substitute(@@, " .*", "", "g")
+function! CrcRegister() 
+    call setreg(v:register, system("cksum", getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
+    call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
 " Performs md5 on selected text
-function! Md5Unnamed() 
-    let @@ = system("md5sum", @@)
-    let @@ = substitute(@@, "\\n", "", "g")
-    let @@ = substitute(@@, " .*", "", "g")
+function! Md5Register() 
+    call setreg(v:register, system("md5sum", getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
+    call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
 " Base64 encodes text
-function! Base64Unnamed() 
-    let @@ = system("base64", @@)
-    let @@ = substitute(@@, "\\n", "", "g")
+function! Base64Register() 
+    call setreg(v:register, system("base64", getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
 
 " Base64 decodes text
-function! Base64DecodeUnnamed() 
-    let @@ = system("base64 -d", @@)
-    let @@ = substitute(@@, "\\n", "", "g")
-endfunction
-
-" -------------------------------
-" Mapper Functions
-" -------------------------------
-
-" Used to set up a visual mode operator mapping
-function! VisualMapper(callbackString, operatorFunction)
-    let g:OperatorWrapperCb=a:callbackString
-    silent execute "call " . a:operatorFunction . "(visualmode())"
-endfunction
-
-" Used to set up a normal mode operator mapping
-function! NormalMapper(callbackString, operatorFunction)
-    let g:OperatorWrapperCb=a:callbackString
-    silent execute "set operatorfunc=" . a:operatorFunction
+function! Base64DecodeRegister() 
+    call setreg(v:register, system("base64 -d", getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
 
 " -------------------------------
@@ -1127,95 +1228,92 @@ set pastetoggle=<leader>wp
 " Grep Operator Mappings
 " -------------------------------
 
-nnoremap <leader>gp :call NormalMapper("call GrepPath(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gp :<c-u>call VisualMapper("call GrepPath(%s)", "OperatorWrapper")<CR>
+map <leader>gp <Plug>(operator-grep-path)
+call operator#user#define('grep-path', 'GrepPathOperator')
 
-nnoremap <leader>gr :call NormalMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gr :<c-u>call VisualMapper("call GrepRecurse(%s)", "OperatorWrapper")<CR>
+map <leader>gr <Plug>(operator-grep-recursive)
+call operator#user#define('grep-recursive', 'GrepRecurseOperator')
 
-nnoremap <leader>gc :call NormalMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gc :<c-u>call VisualMapper("call GrepCurrent(%s)", "OperatorWrapper")<CR>
+map <leader>gc <Plug>(operator-grep-current)
+call operator#user#define('grep-current', 'GrepCurrentOperator')
 
-nnoremap <leader>gb :call NormalMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gb :<c-u>call VisualMapper("call GrepBuffers(%s)", "OperatorWrapper")<CR>
+map <leader>gb <Plug>(operator-grep-buffer)
+call operator#user#define('grep-buffer', 'GrepBufferOperator')
 
-nnoremap <leader>gw :call NormalMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>g@
-vnoremap <leader>gw :<c-u>call VisualMapper("call GrepWindows(%s)", "OperatorWrapper")<CR>
+map <leader>gw <Plug>(operator-grep-window)
+call operator#user#define('grep-window', 'GrepWindowOperator')
 
 " -------------------------------
 " Text Transformation Mappings
 " -------------------------------
 
-nnoremap <leader>tc :%s/\/\/[ ]*\([^ ]\)/\/\/ \U\1/<CR>
+map <leader>tud <Plug>(operator-unix-to-dos)
+call operator#user#define('unix-to-dos', 'UnixToDosOperator')
 
-nnoremap <leader>tud :call NormalMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tud :<c-u>call VisualMapper("call UnixToDosUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tdu <Plug>(operator-dos-to-unix)
+call operator#user#define('dos-to-unix', 'DosToUnixOperator')
 
-nnoremap <leader>tdu :call NormalMapper("call DosToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tdu :<c-u>call VisualMapper("call DosToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tmu <Plug>(operator-mac-to-unix)
+call operator#user#define('mac-to-unix', 'MacToUnixOperator')
 
-nnoremap <leader>tmu :call NormalMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tmu :<c-u>call VisualMapper("call MacToUnixUnnamed()", "UnnamedOperatorWrapper")<CR> 
+map <leader>tum <Plug>(operator-unix-to-mac)
+call operator#user#define('unix-to-mac', 'UnixToMacOperator')
 
-nnoremap <leader>tum :call NormalMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tum :<c-u>call VisualMapper("call UnixToMacUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tb <Plug>(operator-base64)
+call operator#user#define('base64', 'Base64Operator')
 
-nnoremap <leader>tb :call NormalMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tb :<c-u>call VisualMapper("call Base64Unnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tB <Plug>(operator-base64-decode)
+call operator#user#define('base64-decode', 'Base64DecodeOperator')
 
-nnoremap <leader>tB :call NormalMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tB :<c-u>call VisualMapper("call Base64DecodeUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>t2 <Plug>(operator-sha256)
+call operator#user#define('sha256', 'Sha256Operator')
 
-nnoremap <leader>t2 :call NormalMapper("call Sha256Unnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>t2 :<c-u>call VisualMapper("call Sha256Unnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>t5 <Plug>(operator-md5)
+call operator#user#define('md5', 'Md5Operator')
 
-nnoremap <leader>t5 :call NormalMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>t5 :<c-u>call VisualMapper("call Md5Unnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tk <Plug>(operator-crc)
+call operator#user#define('crc', 'CrcOperator')
 
-nnoremap <leader>tk :call NormalMapper("call CrcUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tk :<c-u>call VisualMapper("call CrcUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tp <Plug>(operator-cpp-filter)
+call operator#user#define('cpp-filter', 'CppFilterOperator')
 
-nnoremap <leader>tp :call NormalMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tp :<c-u>call VisualMapper("call CppFilterUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>ti <Plug>(operator-title-case)
+call operator#user#define('title-case', 'TitleCaseOperator')
 
-nnoremap <leader>ti :call NormalMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>ti :<c-u>call VisualMapper("call TitleCaseUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tt <Plug>(operator-table)
+call operator#user#define('table', 'TableOperator')
 
-nnoremap <leader>tt :call NormalMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tt :<c-u>call VisualMapper("call TableUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tT <Plug>(operator-table-separator)
+call operator#user#define('table-separator', 'TableSeparatorOperator')
 
-nnoremap <leader>tT :call NormalMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tT :<c-u>call VisualMapper("call TableSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>ts <Plug>(operator-substitute)
+call operator#user#define('substitute', 'SubstituteOperator')
 
-nnoremap <leader>ts :call NormalMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>ts :<c-u>call VisualMapper("call SubstituteUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tS <Plug>(operator-substitute-register)
+call operator#user#define('substitute-register', 'SubstituteRegisterOperator')
 
-nnoremap <leader>tS :call NormalMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tS :<c-u>call VisualMapper("call SubstituteRegisterUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tl <Plug>(operator-split)
+call operator#user#define('split', 'SplitOperator')
 
-nnoremap <leader>tl :call NormalMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tl :<c-u>call VisualMapper("call SplitUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tj <Plug>(operator-join)
+call operator#user#define('join', 'JoinOperator')
 
-nnoremap <leader>tj :call NormalMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tj :<c-u>call VisualMapper("call JoinUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tJ <Plug>(operator-join-separator)
+call operator#user#define('join-separator', 'JoinSeparatorOperator')
 
-nnoremap <leader>tJ :call NormalMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tJ :<c-u>call VisualMapper("call JoinSeparatorUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tr <Plug>(operator-url-encode)
+call operator#user#define('url-encode', 'UrlEncodeOperator')
 
-nnoremap <leader>tr :call NormalMapper("call UrlEncodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tr :<c-u>call VisualMapper("call UrlEncodeUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>tR <Plug>(operator-url-decode)
+call operator#user#define('url-decode', 'UrlDecodeOperator')
 
-nnoremap <leader>tR :call NormalMapper("call UrlDecodeUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>tR :<c-u>call VisualMapper("call UrlDecodeUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>! <Plug>(operator-external)
+call operator#user#define('external', 'ExternalOperator')
 
-nnoremap <leader>! :call NormalMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>! :<c-u>call VisualMapper("call ExternalUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>m <Plug>(operator-math)
+call operator#user#define('math', 'MathExpressionOperator')
 
-nnoremap <leader>m :call NormalMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>m :<c-u>call VisualMapper("call MathExpressionUnnamed()", "UnnamedOperatorWrapper")<CR>
-
-nnoremap <leader>p :set operatorfunc=ReplaceText<CR>g@
-vnoremap <leader>p :<c-u>call ReplaceText(visualmode())<CR>
+map <leader>p <Plug>(operator-replace)
 
 vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
@@ -1224,32 +1322,32 @@ nmap <leader>a <Plug>(EasyAlign)
 " Set Operation Mappings
 " -------------------------------
 
-nnoremap <leader>sP :call NormalMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>sP :<c-u>call VisualMapper("call TopologicalSortUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>sP <Plug>(operator-topsort)
+call operator#user#define('topsort', 'TopologicalSortOperator')
 
-nnoremap <leader>sr :call NormalMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>sr :<c-u>call VisualMapper("call SortUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>sr <Plug>(operator-sort)
+call operator#user#define('sort', 'SortOperator')
 
-nnoremap <leader>sR :call NormalMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>sR :<c-u>call VisualMapper("call SortReverseUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>sR <Plug>(operator-sort-reverse)
+call operator#user#define('sort-reverse', 'SortReverseOperator')
 
-nnoremap <leader>su :call NormalMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>su :<c-u>call VisualMapper("call UniqueUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>su <Plug>(operator-unique)
+call operator#user#define('unique', 'UniqueOperator')
 
-nnoremap <leader>sU :call NormalMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>sU :<c-u>call VisualMapper("call DuplicateUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>sU <Plug>(operator-duplicate)
+call operator#user#define('duplicate', 'DuplicateOperator')
 
-nnoremap <leader>s- :call NormalMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>s- :<c-u>call VisualMapper("call ComplimentUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>s- <Plug>(operator-compliment)
+call operator#user#define('compliment', 'ComplimentOperator')
 
-nnoremap <leader>s+ :call NormalMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>s+ :<c-u>call VisualMapper("call SymmetricDifferenceUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>s+ <Plug>(operator-symmetric-difference)
+call operator#user#define('symmetric-difference', 'SymmetricDifferenceOperator')
 
-nnoremap <leader>se :call NormalMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>se :<c-u>call VisualMapper("call SortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>se <Plug>(operator-sort-string-length)
+call operator#user#define('sort-string-length', 'SortStringLengthOperator')
 
-nnoremap <leader>sE :call NormalMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>g@
-vnoremap <leader>sE :<c-u>call VisualMapper("call ReverseSortStringLengthUnnamed()", "UnnamedOperatorWrapper")<CR>
+map <leader>sE <Plug>(operator-reverse-sort-string-length)
+call operator#user#define('reverse-sort-string-length', 'ReverseSortStringLengthOperator')
 
 " -------------------------------
 " .vimrc Reload Mappings
