@@ -1,12 +1,6 @@
-[submodule "bundle/vim-pathogen"]
-	path = bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
 [submodule "bundle/nerdtree"]
 	path = bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
-[submodule "bundle/vim-fugitive"]
-	path = bundle/vim-fugitive
-	url = https://github.com/tpope/vim-fugitive.git
 [submodule "bundle/snipmate"]
 	path = bundle/snipmate
 	url = https://github.com/garbas/vim-snipmate.git
@@ -25,12 +19,6 @@
 [submodule "bundle/vim-surround"]
 	path = bundle/vim-surround
 	url = https://github.com/tpope/vim-surround.git
-[submodule "bundle/ctrlp"]
-	path = bundle/ctrlp
-	url = https://github.com/kien/ctrlp.vim.git
-[submodule "bundle/vim-dispatch"]
-	path = bundle/vim-dispatch
-	url = https://github.com/tpope/vim-dispatch.git
 [submodule "bundle/vim-repeat"]
 	path = bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
@@ -58,9 +46,6 @@
 [submodule "bundle/a-vim"]
 	path = bundle/a-vim
 	url = https://github.com/vim-scripts/a.vim.git
-[submodule "bundle/rubyblock"]
-	path = bundle/rubyblock
-	url = https://github.com/nelstrom/vim-textobj-rubyblock.git
 [submodule "bundle/textobj-user"]
 	path = bundle/textobj-user
 	url = https://github.com/kana/vim-textobj-user.git
@@ -76,18 +61,6 @@
 [submodule "bundle/textobj-camel"]
 	path = bundle/textobj-camel
 	url = https://github.com/Julian/vim-textobj-variable-segment.git
-[submodule "bundle/textobj-uri"]
-	path = bundle/textobj-uri
-	url = https://github.com/jceb/vim-textobj-uri.git
-[submodule "bundle/textobj-datetime"]
-	path = bundle/textobj-datetime
-	url = https://github.com/kana/vim-textobj-datetime.git
-[submodule "bundle/quicktask"]
-	path = bundle/quicktask
-	url = https://github.com/aaronbieber/vim-quicktask.git
-[submodule "bundle/pyclewn"]
-	path = bundle/pyclewn
-	url = https://github.com/xieyu/pyclewn.git
 [submodule "bundle/bufexplorer"]
 	path = bundle/bufexplorer
 	url = https://github.com/jlanzarotta/bufexplorer.git
@@ -106,9 +79,6 @@
 [submodule "bundle/visualrepeat"]
 	path = bundle/visualrepeat
 	url = https://github.com/vim-scripts/visualrepeat.git
-[submodule "bundle/tabular"]
-	path = bundle/tabular
-	url = https://github.com/godlygeek/tabular.git
 [submodule "bundle/ycm"]
 	path = bundle/ycm
 	url = https://github.com/Valloric/YouCompleteMe.git
