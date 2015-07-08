@@ -22,6 +22,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
 Plug 'bufexplorer'
+Plug 'delimitmate'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
 Plug 'cmake_indent' , { 'for': 'cmake' }
@@ -138,6 +139,16 @@ endif
 " -------------------------------
 
 set grepprg=grep\ -n\ -H\ "$@"
+
+if executable("ack")
+    set grepprg=ack\ -H\ --nocolor\ --nogroup\ --column
+    set grepformat=%f:%l:%c:%m
+endif
+
+if executable("ag")
+    set grepprg=ag\ --nogroup\ --nocolor\ --column
+    set grepformat=%f:%l:%c:%m
+endif
 
 " -------------------------------
 " Completion Settings
