@@ -22,7 +22,6 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
 Plug 'bufexplorer'
-Plug 'delimitmate'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
 Plug 'cmake_indent' , { 'for': 'cmake' }
@@ -133,6 +132,13 @@ endif
 if exists("&fileignorecase")
   set fileignorecase
 endif
+
+" -------------------------------
+" Compiler Settings
+" -------------------------------
+
+" gcc ld linker errors
+set errorformat+=%f:\(.text%*[^\ ]%m
 
 " -------------------------------
 " Grep Settings
@@ -1189,7 +1195,7 @@ endfunction
 let mapleader="\\"
 
 " Escape
-inoremap jj <Esc>
+inoremap jk <Esc>
 
 " Reload .vimrc
 nnoremap <leader>lg :source ~/.vimrc<CR>
