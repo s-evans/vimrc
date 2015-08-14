@@ -17,7 +17,8 @@
 " Plugin Setup
 " -------------------------------
 
-call plug#begin('~/.vim/bundle')
+let s:my_vim_dir=fnamemodify(resolve(expand('%')), ':h')
+call plug#begin(s:my_vim_dir . '/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
 Plug 'bufexplorer'
@@ -26,9 +27,9 @@ Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
 Plug 'cmake_indent' , { 'for': 'cmake' }
 Plug 'cmake_syntax' , { 'for': 'cmake' }
 Plug 'dosbatch' , { 'for': 'dosbatch' }
-Plug 'doxygen_toolkit'
-Plug 'easy-align'
-Plug 'gundo'
+Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
+Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
+Plug 'gundo' , { 'on': 'GundoToggle' }
 Plug 'matchit'
 Plug 'nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'operator-replace'
@@ -67,7 +68,6 @@ set autoindent
 set bs=2
 set expandtab
 set history=1000
-set ignorecase
 set laststatus=2
 set lazyredraw
 set mouse=""  " No mouse
@@ -83,6 +83,7 @@ set softtabstop=4
 set tabstop=4
 set textwidth=0
 set matchpairs+=<:>
+set shellcmdflag=-ci " Enable aliases in the shell
 let g:load_doxygen_syntax=1
 
 if has('extra_search')
@@ -123,6 +124,8 @@ endif
 " -------------------------------
 " Ignorecase
 " -------------------------------
+
+set ignorecase
 
 if exists("&wildignorecase")
   set wildignorecase
@@ -876,6 +879,14 @@ function! ReverseSortStringLengthOperator(type)
     call RegisterOperatorWrapper(a:type, "call ReverseSortStringLengthRegister()")
 endfunction
 
+function! ShuffleOperator(type)
+    call RegisterOperatorWrapper(a:type, "call ShuffleRegister()")
+endfunction
+
+function! SequenceOperator(type)
+    call RegisterOperatorWrapper(a:type, "call SequenceRegister()")
+endfunction
+
 function! ComplimentOperator(type)
     call RegisterOperatorWrapper(a:type, "call ComplimentRegister()")
 endfunction
@@ -1017,6 +1028,17 @@ function! ReverseSortStringLengthRegister()
     call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"), "LengthFunction")), "\n"))
 endfunction
 
+" Shuffle the input lines
+function! ShuffleRegister()
+    call setreg(v:register, system("shuf", getreg(v:register)))
+endfunction
+
+" Replace input lines with a sequence of numbers
+function! SequenceRegister()
+    let linecount=len(split(getreg(v:register), "\n"))
+    call setreg(v:register, system('seq ' . linecount, getreg(v:register)))
+endfunction
+
 " Joins newline separated values with spaces
 function! JoinRegister()
     call setreg(v:register, join(split(getreg(v:register), "\n"), " "))
@@ -1080,12 +1102,12 @@ endfunction
 " Splits up values
 function! SplitRegister()
     let delimiter = input("Enter delimiter: ")
-    call setreg(v:register, join(split(getreg(v:register) delimiter), "\n"))
+    call setreg(v:register, join(split(getreg(v:register), delimiter), "\n"))
 endfunction
 
 " Executes and replaces given commands
 function! ExternalRegister()
-    call setreg(v:register, system("bash", getreg(v:register)))
+    call setreg(v:register, system(&shell, getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "^\n", "", "") )
     call setreg(v:register, substitute(getreg(v:register), "\n$", "", "") )
 endfunction
@@ -1132,7 +1154,6 @@ endfunction
 
 " Creates a table from space separated arguments
 function! TableRegister()
-    " call setreg(v:register, system("column -t", getreg(v:register)))
     call setreg(v:register, system("column -t", getreg(v:register)))
 endfunction
 
@@ -1414,6 +1435,12 @@ call operator#user#define('sort-string-length', 'SortStringLengthOperator')
 
 map <leader>sE <Plug>(operator-reverse-sort-string-length)
 call operator#user#define('reverse-sort-string-length', 'ReverseSortStringLengthOperator')
+
+map <leader>sf <Plug>(operator-shuffle)
+call operator#user#define('shuffle', 'ShuffleOperator')
+
+map <leader>sq <Plug>(operator-sequence)
+call operator#user#define('sequence', 'SequenceOperator')
 
 " -------------------------------
 " .vimrc Reload Mappings
