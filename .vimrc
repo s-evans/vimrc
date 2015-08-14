@@ -11,7 +11,6 @@
 " Consider modifying cscope scan to always pull applicable file types into cscope.files
 " Left/Right expression text object
 " Column text object
-" Consider using ack/ag
 " Easier help greping
 
 " -------------------------------
@@ -553,6 +552,13 @@ endfunction
 " -------------------------------
 " Grep Functions
 " -------------------------------
+
+" Greps recursively from the current working directory
+function! GrepRecurse(arg)
+    silent! execute "silent! grep! -r """ . shellescape(getreg(a:arg)) . """"
+    cw
+    redraw!
+endfunction
 
 " Greps recursively from the current working directory
 function! GrepRecurseRegister()
