@@ -17,7 +17,7 @@
 " Plugin Setup
 " -------------------------------
 
-let s:my_vim_dir=fnamemodify(resolve(expand('%')), ':h')
+let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
