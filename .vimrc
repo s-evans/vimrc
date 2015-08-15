@@ -83,7 +83,6 @@ set softtabstop=4
 set tabstop=4
 set textwidth=0
 set matchpairs+=<:>
-set shellcmdflag=-ci " Enable aliases in the shell
 let g:load_doxygen_syntax=1
 
 if has('extra_search')
