@@ -1,20 +1,20 @@
 
 " -------------------------------
-" TODO List
+" TODO list
 " -------------------------------
 
-" Table mode
-" Refactoring operations
-" Set operations: mean, median, mode, sum
-" Extraction function (clear out a register, input regex and scope, append matches into buffer)
-" Multiroot operations (rsync svn git sed cscope)
-" Consider modifying cscope scan to always pull applicable file types into cscope.files
-" Left/Right expression text object
-" Column text object
-" Easier help greping
+" table mode
+" refactoring operations
+" set operations: mean, median, mode, sum
+" extraction function (clear out a register, input regex and scope, append matches into buffer)
+" multiroot operations (rsync svn git sed cscope)
+" consider modifying cscope scan to always pull applicable file types into cscope.files
+" left/right expression text object
+" column text object
+" easier help greping
 
 " -------------------------------
-" Plugin Setup
+" plugin setup
 " -------------------------------
 
 let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
@@ -26,15 +26,18 @@ Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
 Plug 'cmake_indent' , { 'for': 'cmake' }
 Plug 'cmake_syntax' , { 'for': 'cmake' }
+Plug 'dispatch'
 Plug 'dosbatch' , { 'for': 'dosbatch' }
 Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
 Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
 Plug 'matchit'
-Plug 'nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
+Plug 'obsession'
 Plug 'operator-replace'
 Plug 'operator-user'
 Plug 'snipmate'
+Plug 'startify'
 Plug 'syntastic', { 'on': 'SyntasticCheck'}
 Plug 'tagbar' , { 'on': 'TagbarToggle' }
 Plug 'textobj-between'
@@ -59,28 +62,24 @@ Plug 'ycm', {'for': [ 'cpp', 'c' ] }
 call plug#end()
 
 " -------------------------------
-" General Settings
+" general settings
 " -------------------------------
 
 set nocompatible
 colors evening
-set autoindent
 set bs=2
 set expandtab
 set history=1000
 set laststatus=2
 set lazyredraw
-set mouse=""  " No mouse
+set mouse=""  " no mouse
 set noincsearch
 set nojoinspaces
 set nolinebreak
 set noshowmatch
 set nowrap
 set number
-set shiftwidth=4
 set smartcase
-set softtabstop=4
-set tabstop=4
 set textwidth=0
 set matchpairs+=<:>
 let g:load_doxygen_syntax=1
@@ -121,7 +120,19 @@ if has('multi_byte')
 endif
 
 " -------------------------------
-" Ignorecase
+" indentation settings
+" -------------------------------
+
+set autoindent
+set softtabstop=4
+set shiftwidth=4
+set tabstop=4
+set cinoptions+=g0  " access specifiers left justified
+set cinoptions+=N-s " namespace content not indented
+set cinoptions+=:0  " case labels not indented
+
+" -------------------------------
+" ignorecase
 " -------------------------------
 
 set ignorecase
@@ -135,14 +146,14 @@ if exists("&fileignorecase")
 endif
 
 " -------------------------------
-" Compiler Settings
+" compiler settings
 " -------------------------------
 
 " gcc ld linker errors
 set errorformat+=%f:\(.text%*[^\ ]%m
 
 " -------------------------------
-" Grep Settings
+" grep settings
 " -------------------------------
 
 set grepprg=grep\ -n\ -H\ "$@"
@@ -158,19 +169,19 @@ if executable("ag")
 endif
 
 " -------------------------------
-" Completion Settings
+" completion settings
 " -------------------------------
 
 if has('insert_expand')
-  " Don't scan includes for completion (slow)
+  " don't scan includes for completion (slow)
   set complete-=i
 
-  " Don't use the preview window
+  " don't use the preview window
   set completeopt=menu,menuone
 endif
 
 " -------------------------------
-" Cursor Settings
+" cursor settings
 " -------------------------------
 
 highlight CursorLine cterm=reverse term=reverse gui=reverse
@@ -181,14 +192,14 @@ set fillchars=vert:\|,fold:-,stl:\-,stlnc:\
 set cursorline
 
 " -------------------------------
-" Directory .vimrc Settings
+" directory .vimrc settings
 " -------------------------------
 
 set exrc
 set secure
 
 " -------------------------------
-" Persistent Undo Settings
+" persistent undo settings
 " -------------------------------
 
 if exists('+undofile')
@@ -196,32 +207,32 @@ if exists('+undofile')
 endif
 
 " -------------------------------
-" YouCompleteMe Settings
+" youcompleteme settings
 " -------------------------------
 
-" Auto-load ycm config file
+" auto-load ycm config file
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_show_diagnostics_ui = 0
 
 " -------------------------------
-" Syntastic Settings
+" syntastic settings
 " -------------------------------
 
 let g:syntastic_check_on_open = 0
 
 " -------------------------------
-" Ultisnips Settings
+" ultisnips settings
 " -------------------------------
 
-" Deal with interactions between ycm and ultisnips
+" deal with interactions between ycm and ultisnips
 let g:ycm_key_list_select_completion = ['<C-TAB>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 
 " -------------------------------
-" Easy Align Settings
+" easy align settings
 " -------------------------------
 
-" Add some delimiters
+" add some delimiters
 let g:easy_align_delimiters = {
 \ '^': {
 \     'pattern':        '[^\w]',
@@ -270,10 +281,10 @@ let g:easy_align_delimiters = {
 \ }
 
 " -------------------------------
-" Eclim Settings
+" eclim settings
 " -------------------------------
 
-" Enable eclim completion only on java files
+" enable eclim completion only on java files
 if has("autocmd") 
   augroup eclim_java_completion
     autocmd!
@@ -283,40 +294,40 @@ if has("autocmd")
 endif 
 
 " -------------------------------
-" Auto-format Settings
+" auto-format settings
 " -------------------------------
 
-" Remove comment header when joining lines
+" remove comment header when joining lines
 if has('patch-7.3.541')
   set formatoptions+=j
 endif
 
-" Records the current formatprg and sets a new formatprg
+" records the current formatprg and sets a new formatprg
 function! SetFormatProgram( string )
   let g:oldformatprg=&formatprg
   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
 endfunction
 
-" Sets the formatprg
+" sets the formatprg
 function! InitializeFormatProgram( string )
   let g:oldformatprg=a:string
   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
 endfunction
 
-" Restores the formatprg to previous settings
+" restores the formatprg to previous settings
 function! RestoreFormatProgram()
   exec "set formatprg=" . substitute( g:oldformatprg, " ", "\\\\ ", "g" )
 endfunction
 
-" Set up default format program
+" set up default format program
 call InitializeFormatProgram("")
 
-" Use astyle by default for formatting if it exists
+" use astyle by default for formatting if it exists
 if executable("astyle")
   call InitializeFormatProgram("astyle")
 endif
 
-" Disable continuation commenting
+" disable continuation commenting
 if has("autocmd") 
   augroup comment_format
     autocmd!
@@ -324,7 +335,7 @@ if has("autocmd")
   augroup END
 endif 
 
-" For other file types, use other format programs
+" for other file types, use other format programs
 if has("autocmd") 
   " set formatprg for xml files
   if executable("xmllint")
@@ -350,7 +361,7 @@ if has("autocmd")
 endif
 
 " -------------------------------
-" Configure Python Instance
+" configure python instance
 " -------------------------------
 
 if has("python") && executable("python")
@@ -365,22 +376,22 @@ except ImportError:
 endif
 
 " -------------------------------
-" PATH Utilities
+" PATH utilities
 " -------------------------------
 
-" Returns a list containing strings contained in the path variable
+" returns a list containing strings contained in the path variable
 function! GetPathList() 
     let p = &path
     return split(p, ",")
 endfunction
 
-" Returns a space separated string of all elements in the path variable
+" returns a space separated string of all elements in the path variable
 function! GetPathString() 
     let plist = GetPathList()
     return join(plist, " ")
 endfunction
 
-" Executes a command string for each path element, replacing all occurances of %s with the path element string
+" executes a command string for each path element, replacing all occurances of %s with the path element string
 function! ForEachPath(command)
     let plist = GetPathList()
     for p in plist 
@@ -390,10 +401,10 @@ function! ForEachPath(command)
 endfunction
 
 " -------------------------------
-" Cscope Functions
+" cscope functions
 " -------------------------------
 
-" Attempts to automatically find a cscope database to use
+" attempts to automatically find a cscope database to use
 function! CscopeAutoAdd()
     " add any database in current directory
     let db = findfile('cscope.out', '.;')
@@ -407,13 +418,13 @@ function! CscopeAutoAdd()
     endif
 endfunction
 
-" Attempts to add a cscope database for each path element
+" attempts to add a cscope database for each path element
 function! CscopeAddPath()
     ForEachPath("cscope add %s %s")
     cscope reset
 endfunction
 
-" Executes a cscope rescan on the current directory recursively
+" executes a cscope rescan on the current directory recursively
 function! CscopeRescan()
     let ft = &filetype
 
@@ -424,14 +435,14 @@ function! CscopeRescan()
     silent !cscope -Rbqk
 endfunction
 
-" Executes a cscope rescan on the given directory recursively
+" executes a cscope rescan on the given directory recursively
 function! CscopeRescanDir(dir)
     silent! execute "cd " . a:dir
     call CscopeRescan()
     cd -
 endfunction
 
-" Returns a list of connected cscope databases
+" returns a list of connected cscope databases
 function! CscopeGetDbLines()
     redir =>cslist
     silent! cscope show
@@ -439,7 +450,7 @@ function! CscopeGetDbLines()
     return split(cslist, '\n')
 endfunction
 
-" Returns a list of paths of connected cscope databases
+" returns a list of paths of connected cscope databases
 function! CscopeGetDbPaths()
     let dblines = CscopeGetDbLines()
     let paths = []
@@ -468,7 +479,7 @@ function! CscopeGetDbPaths()
     return paths
 endfunction
 
-" Rescans all currently connected cscope databases for changes
+" rescans all currently connected cscope databases for changes
 function! CscopeRescanAll()
     let paths = CscopeGetDbPaths()
 
@@ -480,7 +491,7 @@ function! CscopeRescanAll()
     redraw!
 endfunction
 
-" Rescans the cscope database in the current directory
+" rescans the cscope database in the current directory
 function! CscopeRescanRecurse()
     call CscopeRescan()
     cscope reset
@@ -488,7 +499,7 @@ function! CscopeRescanRecurse()
 endfunction
 
 " -------------------------------
-" Cscope Settings
+" cscope settings
 " -------------------------------
 
 if has("cscope") && executable("cscope")
@@ -500,10 +511,10 @@ if has("cscope") && executable("cscope")
 endif
 
 " -------------------------------
-" Arbitrary Python Math
+" arbitrary math using python
 " -------------------------------
 
-" Solves the given mathemical expression and returns the result
+" solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp) 
     execute "python sys.argv = [\"" . a:exp . "\"]"
     python sys.argv[0] = eval(sys.argv[0])
@@ -512,16 +523,16 @@ function! EvalMathExpression(exp)
 endfunction
 
 " -------------------------------
-" Buffer Management Functions
+" buffer management functions
 " -------------------------------
 
-" Clears out the quickfix list
+" clears out the quickfix list
 function! ClearCw()
     call setqflist([]) 
     cclose
 endfunction
 
-" Closes out of all inactive buffers
+" closes out of all inactive buffers
 function! DeleteInactiveBufs()
     " Get a list of all buffers in all tabs
     let tablist = []
@@ -537,14 +548,14 @@ function! DeleteInactiveBufs()
     endfor
 endfunction
 
-" Clears up common sources of vim slowness
-" This breaks some things (NERDTree)
+" clears up common sources of vim slowness
+" this breaks some things (nerdtree)
 function! GarbageCollection()
     call ClearCw()
     call DeleteInactiveBufs()
 endfunction
 
-" Like bufdo, but returns to the original buffer when complete
+" like bufdo, but returns to the original buffer when complete
 function! BufDo(command)
     let currBuff=bufnr("%")
     execute 'bufdo! ' . a:command
@@ -552,31 +563,31 @@ function! BufDo(command)
 endfunction
 
 " -------------------------------
-" Grep Functions
+" grep functions
 " -------------------------------
 
-" Greps recursively from the current working directory
+" greps recursively from the current working directory
 function! GrepRecurse(arg)
     silent! execute "silent! grep! -r """ . shellescape(getreg(a:arg)) . """"
     cw
     redraw!
 endfunction
 
-" Greps recursively from the current working directory
+" greps recursively from the current working directory
 function! GrepRecurseRegister()
     silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """"
     cw
     redraw!
 endfunction
 
-" Greps in the current window
+" greps in the current window
 function! GrepCurrentRegister()
     silent! execute "silent! grep! """ . shellescape(getreg(v:register)) . """ % "
     cw
     redraw!
 endfunction
 
-" Greps in all windows
+" greps in all windows
 function! GrepWindowRegister() 
     call ClearCw()
     windo silent! execute "silent! grepadd! """ . shellescape(getreg(v:register)) . """ %"
@@ -584,7 +595,7 @@ function! GrepWindowRegister()
     redraw!
 endfunction
 
-" Greps recursively for all directories in the path
+" greps recursively for all directories in the path
 function! GrepPathRegister()
     let plist = GetPathString()
     silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """ " . plist
@@ -593,10 +604,10 @@ function! GrepPathRegister()
 endfunction
 
 " -------------------------------
-" Window functions
+" window functions
 " -------------------------------
 
-" Returns the list of buffers in string format
+" returns the list of buffers in string format
 function! GetBufferList()
     redir =>buflist
     silent! ls
@@ -604,7 +615,7 @@ function! GetBufferList()
     return buflist
 endfunction
 
-" Toggles the specified window
+" toggles the specified window
 function! ToggleList(bufname, pfx)
     let buflist = GetBufferList()
 
@@ -629,7 +640,7 @@ function! ToggleList(bufname, pfx)
     endif
 endfunction
 
-" Helper function to toggle hex mode
+" helper function to toggle hex mode
 function! ToggleHex()
     " hex mode should be considered a read-only operation
     " save values for modified and read-only for restoration later,
@@ -669,7 +680,7 @@ function! ToggleHex()
     let &modifiable=l:oldmodifiable
 endfunction
 
-" Toggles diff on the current window
+" toggles diff on the current window
 function! ToggleDiff()
     if &diff
         diffoff
@@ -678,7 +689,7 @@ function! ToggleDiff()
     endif
 endfunction
 
-" Create a scroll locked column (cannot be used with a locked row)
+" create a scroll locked column (cannot be used with a locked row)
 function! LockColumn()
     set scrollbind
     vsplit 
@@ -688,7 +699,7 @@ function! LockColumn()
     wincmd l
 endfunction
 
-" Create a scroll locked row (cannot be used with a locked column)
+" create a scroll locked row (cannot be used with a locked column)
 function! LockRow()
     set scrollbind
     split 
@@ -699,10 +710,10 @@ function! LockRow()
 endfunction
 
 " -------------------------------
-" Operator Wrapping Functions
+" operator wrapping functions
 " -------------------------------
 
-" Used as an operator function with a callback. Passes arguments via the current register.
+" used as an operator function with a callback. passes arguments via the current register.
 function! RegisterOperatorWrapper(type, callback) 
     let sel_save = &selection
     let &selection = "inclusive"
@@ -736,7 +747,7 @@ function! RegisterOperatorWrapper(type, callback)
     call setreg(reg, reg_save)
 endfunction
 
-" Wraps operator functions that rely on simple input text
+" wraps operator functions that rely on simple input text
 function! OperatorWrapper(type, callback)
     let sel_save = &selection
     let &selection = "inclusive"
@@ -759,13 +770,13 @@ function! OperatorWrapper(type, callback)
 endfunction
 
 " -------------------------------
-" URL Encoding Functions
+" url encoding functions
 " -------------------------------
 
 let g:urlRanges = [[0, 32], [34, 38], [43, 44], [47, 47], [58, 64], [91, 94], [96, 96], [123, 127], [128, 255]]
 let g:urlRangeCount = len(urlRanges)
 
-" Does a binary search for whether or not the current character is in the URL encoding range
+" does a binary search for whether or not the current character is in the url encoding range
 function! UrlEncodeCharInternal(charByte, lower, upper)
     let idx = a:lower + (a:upper - a:lower) / 2
 
@@ -782,12 +793,12 @@ function! UrlEncodeCharInternal(charByte, lower, upper)
     return 1
 endfunction
 
-" Returns whether or not a character needs to be URL encoded
+" returns whether or not a character needs to be url encoded
 function! UrlEncodeChar(charByte)
     return UrlEncodeCharInternal(a:charByte, 0, g:urlRangeCount - 1)
 endfunction
 
-" URL Encodes the current register
+" url encodes the current register
 function! UrlEncodeRegister()
     let newStr = ""
     let i = 0
@@ -812,7 +823,7 @@ function! UrlEncodeRegister()
     call setreg(v:register, newStr)
 endfunction
 
-" URL decodes the current register
+" url decodes the current register
 function! UrlDecodeRegister()
     let newStr = ""
     let i = 0
@@ -839,7 +850,7 @@ function! UrlDecodeRegister()
 endfunction
 
 " -------------------------------
-" Operator Functions
+" operator functions
 " -------------------------------
 
 function! GrepWindowOperator(type) 
@@ -991,15 +1002,15 @@ function! Sha256Operator(type)
 endfunction
 
 " -------------------------------
-" Set Function Mappings
+" set function mappings
 " -------------------------------
 
-" Performs a topological sort
+" performs a topological sort
 function! TopologicalSortRegister()
     call setreg(v:register, system("tsort", getreg(v:register)))
 endfunction
 
-" Gets the compliment of two sets
+" gets the compliment of two sets
 function! ComplimentRegister()
     let A = uniq(sort(split(getreg(v:register), "\n")))
     let B = uniq(sort(split(getreg(input("Enter register: ")), "\n")))
@@ -1007,17 +1018,17 @@ function! ComplimentRegister()
     call setreg(v:register, join(A, "\n"))
 endfunction
 
-" Gets the symmetric difference of two sets
+" gets the symmetric difference of two sets
 function! SymmetricDifferenceRegister()
     call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n")), "DuplicateBlockFunction"), "\n"))
 endfunction
 
-" Used for sorting based on string length
+" used for sorting based on string length
 function! LengthFunction(arg1, arg2)
     return strlen(a:arg1) - strlen(a:arg2)
 endfunction
 
-" Sorts strings based on their length
+" sorts strings based on their length
 function! SortStringLengthRegister()
     call setreg(v:register, join(sort(split(getreg(v:register), "\n"), "LengthFunction"), "\n"))
 endfunction
@@ -1027,39 +1038,39 @@ function! ReverseSortStringLengthRegister()
     call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"), "LengthFunction")), "\n"))
 endfunction
 
-" Shuffle the input lines
+" shuffle the input lines
 function! ShuffleRegister()
     call setreg(v:register, system("shuf", getreg(v:register)))
 endfunction
 
-" Replace input lines with a sequence of numbers
+" replace input lines with a sequence of numbers
 function! SequenceRegister()
     let linecount=len(split(getreg(v:register), "\n"))
     call setreg(v:register, system('seq ' . linecount, getreg(v:register)))
 endfunction
 
-" Joins newline separated values with spaces
+" joins newline separated values with spaces
 function! JoinRegister()
     call setreg(v:register, join(split(getreg(v:register), "\n"), " "))
 endfunction
 
-" Joins newline separated values with user specified delimiter
+" joins newline separated values with user specified delimiter
 function! JoinSeparatorRegister()
     let delimiter = input("Enter delimiter: ")
     call setreg(v:register, join(split(getreg(v:register), "\n"), delimiter))
 endfunction
 
-" Removes duplicates
+" removes duplicates
 function! UniqueRegister()
     call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n"))), "\n"))
 endfunction
 
-" Checks if adjacent values are the same
+" checks if adjacent values are the same
 function! DuplicateFunction(arg1, arg2) 
     return a:arg1 ==# a:arg2 
 endfunction
 
-" Finds blocks of adjacent values that are the same
+" finds blocks of adjacent values that are the same
 function! DuplicateBlockFunction(arg1, arg2)
     if a:arg1 ==# a:arg2 || a:arg1 ==# g:DuplicateValue 
         let g:DuplicateValue = a:arg1
@@ -1068,8 +1079,8 @@ function! DuplicateBlockFunction(arg1, arg2)
     return 1
 endfunction
 
-" Removes unique values (set intersection) 
-" Also: 
+" removes unique values (set intersection) 
+" also: 
 " join <(sort -n A) <(sort -n B)
 " sort -n A B | uniq -d
 " grep -xF -f A B
@@ -1079,39 +1090,39 @@ function! DuplicateRegister()
     call setreg(v:register, join(uniq(uniq(sort(add(split(getreg(v:register), "\n"), "")), "DuplicateFunction")), "\n"))
 endfunction
 
-" Sorts the given text
+" sorts the given text
 function! SortRegister()
     call setreg(v:register, join(sort(split(getreg(v:register), "\n")), "\n"))
 endfunction
 
-" Reverse sorts the given text
+" reverse sorts the given text
 function! SortReverseRegister()
     call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"))), "\n"))
 endfunction
 
 " -------------------------------
-" Text Function Mappings
+" text function mappings
 " -------------------------------
 
-" Creates SHA256 hash
+" creates sha256 hash
 function! Sha256Register()
     call setreg(v:register, sha256(getreg(v:register)))
 endfunction
 
-" Splits up values
+" splits up values
 function! SplitRegister()
     let delimiter = input("Enter delimiter: ")
     call setreg(v:register, join(split(getreg(v:register), delimiter), "\n"))
 endfunction
 
-" Executes and replaces given commands
+" executes and replaces given commands
 function! ExternalRegister()
     call setreg(v:register, system(&shell, getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "^\n", "", "") )
     call setreg(v:register, substitute(getreg(v:register), "\n$", "", "") )
 endfunction
 
-" Performs a regex substitution on the given text
+" performs a regex substitution on the given text
 function! SubstituteRegisterRegister()
     let pat = getreg(input("Enter pattern register: "))
     let sub = getreg(input("Enter substitution register: "))
@@ -1126,7 +1137,7 @@ function! SubstituteRegisterRegister()
     call setreg(v:register, join(list, "\n"))
 endfunction
 
-" Performs a regex substitution on the given text
+" performs a regex substitution on the given text
 function! SubstituteRegister()
     let pat = input("Enter pattern: ")
     let sub = input("Enter substitution: ")
@@ -1141,120 +1152,120 @@ function! SubstituteRegister()
     call setreg(v:register, join(list, "\n"))
 endfunction
 
-" Evaluates mathematical expressions
+" evaluates mathematical expressions
 function! MathExpressionRegister() 
     call setreg(v:register, EvalMathExpression(getreg(v:register)))
 endfunction
 
-" Makes text title case
+" makes text title case
 function! TitleCaseRegister()
     call setreg(v:register, substitute(getreg(v:register), "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") )
 endfunction
 
-" Creates a table from space separated arguments
+" creates a table from space separated arguments
 function! TableRegister()
     call setreg(v:register, system("column -t", getreg(v:register)))
 endfunction
 
-" Creates a table from comma separated arguments
+" creates a table from comma separated arguments
 function! TableSeparatorRegister()
     let delimiter = input("Enter delimiter: ")
     call setreg(v:register, system("column -s" . shellescape(delimiter) ." -t", getreg(v:register)))
 endfunction
 
-" Converts unix text to mac
+" converts unix text to mac
 function! UnixToMacRegister()
     call setreg(v:register, system("unix2mac -f", getreg(v:register)))
 endfunction
 
-" Converts mac text to unix
+" converts mac text to unix
 function! MacToUnixRegister()
     call setreg(v:register, system("mac2unix -f", getreg(v:register)))
 endfunction
 
-" Converts dos text to unix
+" converts dos text to unix
 function! DosToUnixRegister()
     call setreg(v:register, system("dos2unix -f", getreg(v:register)))
 endfunction
 
-" Converts unix text to dos
+" converts unix text to dos
 function! UnixToDosRegister()
     call setreg(v:register, system("unix2dos -f", getreg(v:register)))
 endfunction
 
-" Converts cpp name mangled strings to their pretty counterparts
+" converts cpp name mangled strings to their pretty counterparts
 function! CppFilterRegister()
     call setreg(v:register, system("c++filt", getreg(v:register)))
 endfunction
 
-" Performs crc32 on selected text
+" performs crc32 on selected text
 function! CrcRegister() 
     call setreg(v:register, system("cksum", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
     call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
-" Performs md5 on selected text
+" performs md5 on selected text
 function! Md5Register() 
     call setreg(v:register, system("md5sum", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
     call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
-" Base64 encodes text
+" base64 encodes text
 function! Base64Register() 
     call setreg(v:register, system("base64", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
 
-" Base64 decodes text
+" base64 decodes text
 function! Base64DecodeRegister() 
     call setreg(v:register, system("base64 -d", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
 
 " -------------------------------
-" Miscellaneous Mappings
+" miscellaneous mappings
 " -------------------------------
 
-" Leader
+" leader
 let mapleader="\\"
 
-" Escape
+" escape
 inoremap jk <Esc>
 
-" Reload .vimrc
+" reload .vimrc
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
-" Build
-nnoremap <leader>k :make<CR>
+" build
+nnoremap <leader>k :Make!<CR>
 
-" Make Y behave like other capitals
+" make y behave like other capitals
 nnoremap Y y$
 
-" Make command mode work like readline
+" make command mode work like readline
 cnoremap <C-a> <Home>
 
 " -------------------------------
-" Window Navigation Mappings
+" window navigation mappings
 " -------------------------------
 
-" Navigate to Previous File
+" navigate to previous file
 nnoremap <leader><C-O> :ed#<CR>
 
-" Circular Window Navigation
+" circular window navigation
 nnoremap <tab> <c-w>w
 nnoremap <S-tab> <c-w>W
 
-" Quick Window Navigation
+" quick window navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " -------------------------------
-" Cscope Mappings
+" cscope mappings
 " -------------------------------
 
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
@@ -1288,7 +1299,7 @@ nnoremap <C-@><C-@>i :vert scs find i <C-R>=expand("<cfile>")<CR><CR>
 nnoremap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
 " -------------------------------
-" Window Mappings
+" window mappings
 " -------------------------------
 
 nnoremap <leader>wn :NERDTreeToggle<CR>
@@ -1311,7 +1322,7 @@ nnoremap <leader>wz :set spell!<CR>
 set pastetoggle=<leader>wp
 
 " -------------------------------
-" Grep Operator Mappings
+" grep operator mappings
 " -------------------------------
 
 map <leader>gp <Plug>(operator-grep-path)
@@ -1330,7 +1341,7 @@ map <leader>gw <Plug>(operator-grep-window)
 call operator#user#define('grep-window', 'GrepWindowOperator')
 
 " -------------------------------
-" Text Transformation Mappings
+" text transformation mappings
 " -------------------------------
 
 map <leader>tud <Plug>(operator-unix-to-dos)
@@ -1405,7 +1416,7 @@ vmap <leader>a <Plug>(EasyAlign)
 nmap <leader>a <Plug>(EasyAlign)
 
 " -------------------------------
-" Set Operation Mappings
+" set operation mappings
 " -------------------------------
 
 map <leader>sP <Plug>(operator-topsort)
@@ -1442,14 +1453,14 @@ map <leader>sq <Plug>(operator-sequence)
 call operator#user#define('sequence', 'SequenceOperator')
 
 " -------------------------------
-" .vimrc Reload Mappings
+" .vimrc reload mappings
 " -------------------------------
 
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
 " -------------------------------
-" Local .vimrc Settings
+" local .vimrc settings
 " -------------------------------
 
 if filereadable(glob("~/.local/.vimrc"))
