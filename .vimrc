@@ -33,6 +33,7 @@ Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
 Plug 'matchit'
 Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
+Plug 'python-mode' , { 'for':  'python' }
 Plug 'obsession'
 Plug 'operator-replace'
 Plug 'operator-user'

@@ -1,114 +1,155 @@
 [submodule "bundle/nerdtree"]
+    ignore = dirty
 	path = bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
 [submodule "bundle/snipmate"]
+    ignore = dirty
 	path = bundle/snipmate
 	url = https://github.com/garbas/vim-snipmate.git
 [submodule "bundle/doxygen_toolkit"]
+    ignore = dirty
 	path = bundle/doxygen_toolkit
 	url = https://github.com/vim-scripts/DoxygenToolkit.vim.git
 [submodule "bundle/tlib_vim"]
+    ignore = dirty
 	path = bundle/tlib_vim
 	url = https://github.com/tomtom/tlib_vim.git
 [submodule "bundle/vim-addon-mw-utils"]
+    ignore = dirty
 	path = bundle/vim-addon-mw-utils
 	url = https://github.com/MarcWeber/vim-addon-mw-utils.git
 [submodule "bundle/gundo"]
+    ignore = dirty
 	path = bundle/gundo
 	url = https://github.com/sjl/gundo.vim.git
 [submodule "bundle/vim-surround"]
+    ignore = dirty
 	path = bundle/vim-surround
 	url = https://github.com/tpope/vim-surround.git
 [submodule "bundle/vim-repeat"]
+    ignore = dirty
 	path = bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
 [submodule "bundle/cmake_syntax"]
+    ignore = dirty
 	path = bundle/cmake_syntax
 	url = https://github.com/s-evans/cmake_syntax.git
 [submodule "bundle/cmake_indent"]
+    ignore = dirty
 	path = bundle/cmake_indent
 	url = https://github.com/s-evans/cmake_indent.git
 [submodule "bundle/camel_case_motion"]
+    ignore = dirty
 	path = bundle/camel_case_motion
 	url = https://github.com/bkad/CamelCaseMotion.git
 [submodule "bundle/vim-abolish"]
+    ignore = dirty
 	path = bundle/vim-abolish
 	url = https://github.com/tpope/vim-abolish.git
 [submodule "bundle/vim-unimpaired"]
+    ignore = dirty
 	path = bundle/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
 [submodule "bundle/syntastic"]
+    ignore = dirty
 	path = bundle/syntastic
 	url = https://github.com/scrooloose/syntastic.git
 [submodule "bundle/vim-indent-object"]
+    ignore = dirty
 	path = bundle/vim-indent-object
 	url = https://github.com/michaeljsmith/vim-indent-object.git
 [submodule "bundle/a-vim"]
+    ignore = dirty
 	path = bundle/a-vim
 	url = https://github.com/vim-scripts/a.vim.git
 [submodule "bundle/textobj-user"]
+    ignore = dirty
 	path = bundle/textobj-user
 	url = https://github.com/kana/vim-textobj-user.git
 [submodule "bundle/matchit"]
+    ignore = dirty
 	path = bundle/matchit
 	url = https://github.com/vim-scripts/matchit.zip.git
 [submodule "bundle/textobj-parameter"]
+    ignore = dirty
 	path = bundle/textobj-parameter
 	url = https://github.com/sgur/vim-textobj-parameter.git
 [submodule "bundle/textobj-comment"]
+    ignore = dirty
 	path = bundle/textobj-comment
 	url = https://github.com/glts/vim-textobj-comment.git
 [submodule "bundle/textobj-camel"]
+    ignore = dirty
 	path = bundle/textobj-camel
 	url = https://github.com/Julian/vim-textobj-variable-segment.git
 [submodule "bundle/bufexplorer"]
+    ignore = dirty
 	path = bundle/bufexplorer
 	url = https://github.com/jlanzarotta/bufexplorer.git
 [submodule "bundle/textobj-function"]
+    ignore = dirty
 	path = bundle/textobj-function
 	url = https://github.com/kana/vim-textobj-function.git
 [submodule "bundle/tagbar"]
+    ignore = dirty
 	path = bundle/tagbar
 	url = https://github.com/majutsushi/tagbar.git
 [submodule "bundle/vim-commentary"]
+    ignore = dirty
 	path = bundle/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
 [submodule "bundle/easy-align"]
+    ignore = dirty
 	path = bundle/easy-align
 	url = https://github.com/junegunn/vim-easy-align.git
 [submodule "bundle/visualrepeat"]
+    ignore = dirty
 	path = bundle/visualrepeat
 	url = https://github.com/vim-scripts/visualrepeat.git
 [submodule "bundle/ycm"]
+    ignore = dirty
 	path = bundle/ycm
 	url = https://github.com/Valloric/YouCompleteMe.git
 [submodule "bundle/cctree"]
+    ignore = dirty
 	path = bundle/cctree
 	url = git@github.com:s-evans/cctree.git
 [submodule "bundle/textobj-between"]
+    ignore = dirty
 	path = bundle/textobj-between
 	url = git@github.com:s-evans/vim-textobj-between.git
 [submodule "bundle/vim-snippets"]
 	path = bundle/vim-snippets
 	url = git@github.com:s-evans/vim-snippets.git
 [submodule "bundle/textobj-line"]
+    ignore = dirty
 	path = bundle/textobj-line
 	url = https://github.com/kana/vim-textobj-line.git
 [submodule "bundle/operator-user"]
+    ignore = dirty
 	path = bundle/operator-user
 	url = https://github.com/kana/vim-operator-user.git
 [submodule "bundle/operator-replace"]
+    ignore = dirty
 	path = bundle/operator-replace
 	url = https://github.com/kana/vim-operator-replace.git
 [submodule "bundle/delimitmate"]
+    ignore = dirty
 	path = bundle/delimitmate
 	url = https://github.com/Raimondi/delimitMate.git
 [submodule "bundle/startify"]
+    ignore = dirty
 	path = bundle/startify
 	url = git@github.com:mhinz/vim-startify.git
 [submodule "bundle/obsession"]
+    ignore = dirty
 	path = bundle/obsession
 	url = git@github.com:tpope/vim-obsession.git
 [submodule "bundle/dispatch"]
+    ignore = dirty
 	path = bundle/dispatch
 	url = git@github.com:tpope/vim-dispatch.git
+[submodule "bundle/python-mode"]
+    ignore = dirty
+	path = bundle/python-mode
+	url = git@github.com:klen/python-mode.git
