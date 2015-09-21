@@ -346,6 +346,14 @@ if has("autocmd")
     augroup END
   endif
 
+  " set formatprg for python files
+  if executable("autopep8")
+    augroup xml_format
+      autocmd!
+      autocmd BufEnter *.py call SetFormatProgram("autopep8 -")
+    augroup END
+  endif
+
   " set formatprg for java files
   if executable("astyle")
     augroup java_format
@@ -1254,10 +1262,6 @@ cnoremap <C-a> <Home>
 
 " navigate to previous file
 nnoremap <leader><C-O> :ed#<CR>
-
-" circular window navigation
-nnoremap <tab> <c-w>w
-nnoremap <S-tab> <c-w>W
 
 " quick window navigation
 nnoremap <C-h> <C-w>h
