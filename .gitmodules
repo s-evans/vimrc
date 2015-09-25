@@ -153,3 +153,11 @@
     ignore = dirty
 	path = bundle/python-mode
 	url = git@github.com:klen/python-mode.git
+[submodule "bundle/viewdoc"]
+    ignore = dirty
+	path = bundle/viewdoc
+	url = git@github.com:powerman/vim-plugin-viewdoc.git
+[submodule "bundle/autoformat"]
+    ignore = dirty
+	path = bundle/autoformat
+	url = git@github.com:Chiel92/vim-autoformat.git

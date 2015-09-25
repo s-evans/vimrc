@@ -11,7 +11,7 @@
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
 " column text object
-" easier help greping
+" easymotion / sneak
 
 " -------------------------------
 " plugin setup
@@ -21,6 +21,7 @@ let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
+Plug 'autoformat'
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
@@ -33,10 +34,10 @@ Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
 Plug 'matchit'
 Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
-Plug 'python-mode' , { 'for':  'python' }
 Plug 'obsession'
 Plug 'operator-replace'
 Plug 'operator-user'
+Plug 'python-mode' , { 'for':  'python' }
 Plug 'snipmate'
 Plug 'startify'
 Plug 'syntastic', { 'on': 'SyntasticCheck'}
@@ -49,6 +50,7 @@ Plug 'textobj-line'
 Plug 'textobj-parameter'
 Plug 'textobj-user'
 Plug 'tlib_vim'
+Plug 'viewdoc'
 Plug 'vim-abolish'
 Plug 'vim-addon-mw-utils'
 Plug 'vim-commentary'
@@ -295,37 +297,19 @@ if has("autocmd")
 endif 
 
 " -------------------------------
-" auto-format settings
+" viewdoc settings
+" -------------------------------
+
+" open in a new window
+let g:viewdoc_open='topleft new'
+
+" -------------------------------
+" autoformat settings
 " -------------------------------
 
 " remove comment header when joining lines
 if has('patch-7.3.541')
   set formatoptions+=j
-endif
-
-" records the current formatprg and sets a new formatprg
-function! SetFormatProgram( string )
-  let g:oldformatprg=&formatprg
-  exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
-endfunction
-
-" sets the formatprg
-function! InitializeFormatProgram( string )
-  let g:oldformatprg=a:string
-  exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
-endfunction
-
-" restores the formatprg to previous settings
-function! RestoreFormatProgram()
-  exec "set formatprg=" . substitute( g:oldformatprg, " ", "\\\\ ", "g" )
-endfunction
-
-" set up default format program
-call InitializeFormatProgram("")
-
-" use astyle by default for formatting if it exists
-if executable("astyle")
-  call InitializeFormatProgram("astyle")
 endif
 
 " disable continuation commenting
@@ -336,38 +320,14 @@ if has("autocmd")
   augroup END
 endif 
 
-" for other file types, use other format programs
-if has("autocmd") 
-  " set formatprg for xml files
-  if executable("xmllint")
-    augroup xml_format
-      autocmd!
-      autocmd BufEnter *.xml,*.xsd call SetFormatProgram("xmllint --format -")
-    augroup END
-  endif
+" add xmllint command line
+let g:formatdef_xmllint = '"xmllint --format -"'
 
-  " set formatprg for python files
-  if executable("autopep8")
-    augroup xml_format
-      autocmd!
-      autocmd BufEnter *.py call SetFormatProgram("autopep8 -")
-    augroup END
-  endif
+" add xmllint to the list of options
+let g:formatters_xml = ['tidy_xml', 'xmllint']
 
-  " set formatprg for java files
-  if executable("astyle")
-    augroup java_format
-      autocmd!
-      autocmd BufEnter *.java call SetFormatProgram("astyle --mode=java")
-    augroup END
-  endif
-
-  " restore formatprg when leaving a buffer
-  augroup restore_format
-    autocmd!
-    autocmd BufLeave * call RestoreFormatProgram()
-  augroup END
-endif
+" add a mapping for performing autoformatting
+noremap <F3> :Autoformat<CR>
 
 " -------------------------------
 " configure python instance
