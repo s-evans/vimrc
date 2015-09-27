@@ -30,14 +30,10 @@
     ignore = dirty
 	path = bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
-[submodule "bundle/cmake_syntax"]
+[submodule "bundle/cmake"]
     ignore = dirty
-	path = bundle/cmake_syntax
-	url = https://github.com/s-evans/cmake_syntax.git
-[submodule "bundle/cmake_indent"]
-    ignore = dirty
-	path = bundle/cmake_indent
-	url = https://github.com/s-evans/cmake_indent.git
+	path = bundle/cmake
+	url = https://github.com/s-evans/vim-cmake.git
 [submodule "bundle/camel_case_motion"]
     ignore = dirty
 	path = bundle/camel_case_motion

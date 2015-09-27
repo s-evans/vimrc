@@ -11,7 +11,6 @@
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
 " column text object
-" easymotion / sneak
 
 " -------------------------------
 " plugin setup
@@ -25,8 +24,7 @@ Plug 'autoformat'
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
-Plug 'cmake_indent' , { 'for': 'cmake' }
-Plug 'cmake_syntax' , { 'for': 'cmake' }
+Plug 'cmake' , { 'for': 'cmake' }
 Plug 'dispatch'
 Plug 'dosbatch' , { 'for': 'dosbatch' }
 Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
@@ -217,6 +215,10 @@ endif
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_show_diagnostics_ui = 0
 
+" CMAKE / YCM integration
+" $ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+" $ echo "compilation_database_folder = 'path/to/compile_commands.json'" >> .ycm_extra_conf.py
+
 " -------------------------------
 " syntastic settings
 " -------------------------------
@@ -300,8 +302,14 @@ endif
 " viewdoc settings
 " -------------------------------
 
-" open in a new window
+" open docs in a new window
 let g:viewdoc_open='topleft new'
+
+" don't open anything if the term is not found
+let g:viewdoc_openempty=0
+
+" enable documentation for cmake
+let g:ViewDoc_cmake='ViewDoc_help_custom'
 
 " -------------------------------
 " autoformat settings
@@ -1208,7 +1216,7 @@ nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
 " build
-nnoremap <leader>k :Make!<CR>
+nnoremap <leader>k :make<CR>
 
 " make y behave like other capitals
 nnoremap Y y$
