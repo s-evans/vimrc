@@ -30,10 +30,6 @@
     ignore = dirty
 	path = bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
-[submodule "bundle/cmake"]
-    ignore = dirty
-	path = bundle/cmake
-	url = https://github.com/s-evans/vim-cmake.git
 [submodule "bundle/camel_case_motion"]
     ignore = dirty
 	path = bundle/camel_case_motion
@@ -157,3 +153,6 @@
     ignore = dirty
 	path = bundle/autoformat
 	url = git@github.com:Chiel92/vim-autoformat.git
+[submodule "bundle/cmake"]
+	path = bundle/cmake
+	url = git@github.com:s-evans/vim-cmake.git
