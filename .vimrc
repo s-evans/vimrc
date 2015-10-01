@@ -30,6 +30,8 @@ Plug 'dosbatch' , { 'for': 'dosbatch' }
 Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
 Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
+Plug 'js-indent' , { 'for': 'javascript' }
+Plug 'js-syntax' , { 'for': 'javascript' }
 Plug 'matchit'
 Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
 Plug 'obsession'
@@ -310,6 +312,8 @@ let g:viewdoc_openempty=0
 
 " enable documentation for cmake
 let g:ViewDoc_cmake='ViewDoc_help_custom'
+let g:ViewDoc_tex='ViewDoc_help_custom'
+let g:ViewDoc_css='ViewDoc_help_custom'
 
 " -------------------------------
 " autoformat settings

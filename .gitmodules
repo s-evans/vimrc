@@ -156,3 +156,11 @@
 [submodule "bundle/cmake"]
 	path = bundle/cmake
 	url = git@github.com:s-evans/vim-cmake.git
+[submodule "bundle/js-indent"]
+    ignore = dirty
+	path = bundle/js-indent
+	url = git@github.com:vim-scripts/JavaScript-Indent.git
+[submodule "bundle/js-syntax"]
+    ignore = dirty
+	path = bundle/js-syntax
+	url = git@github.com:jelera/vim-javascript-syntax.git
