@@ -11,6 +11,8 @@
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
 " column text object
+" help: doxygen, asm, dosbatch
+"  let g:ViewDoc_dosbatch = %!cmd /C help <cword>
 
 " -------------------------------
 " plugin setup
@@ -74,6 +76,7 @@ set bs=2
 set expandtab
 set history=1000
 set laststatus=2
+set scrolloff=5
 set lazyredraw
 set mouse=""  " no mouse
 set noincsearch
@@ -310,7 +313,7 @@ let g:viewdoc_open='topleft new'
 " don't open anything if the term is not found
 let g:viewdoc_openempty=0
 
-" enable documentation for cmake
+" enable documentation for other filetypes
 let g:ViewDoc_cmake='ViewDoc_help_custom'
 let g:ViewDoc_tex='ViewDoc_help_custom'
 let g:ViewDoc_css='ViewDoc_help_custom'
