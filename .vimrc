@@ -38,6 +38,7 @@ Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
 Plug 'operator-user'
+Plug 'ps1'
 Plug 'python-mode' , { 'for':  'python' }
 Plug 'snipmate'
 Plug 'startify'
