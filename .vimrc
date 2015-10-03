@@ -11,8 +11,7 @@
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
 " column text object
-" help: doxygen, asm, dosbatch
-"  let g:ViewDoc_dosbatch = %!cmd /C help <cword>
+" help: doxygen, asm
 
 " -------------------------------
 " plugin setup
@@ -317,6 +316,22 @@ let g:viewdoc_openempty=0
 let g:ViewDoc_cmake='ViewDoc_help_custom'
 let g:ViewDoc_tex='ViewDoc_help_custom'
 let g:ViewDoc_css='ViewDoc_help_custom'
+
+" use the dos help command
+function! s:ViewDoc_doshelp(topic, filetype, synid, ctx)
+    let tmp_topic=shellescape(a:topic,1)
+    let output=system('cmd /C help '.tmp_topic)
+    if match(output, "This command is not supported by the help utility") != -1
+        return {}
+    else 
+        return { 'cmd': 'cmd /C help '.tmp_topic,
+            \ 'ft':	'dosbatch',
+            \ }
+    endif
+endfunction
+
+" define a custom handler for dosbatch
+let g:ViewDoc_dosbatch=[ function('s:ViewDoc_doshelp') ]
 
 " -------------------------------
 " autoformat settings
@@ -1443,7 +1458,7 @@ nnoremap <leader>ll :source ./.vimrc<CR>
 " local .vimrc settings
 " -------------------------------
 
-if filereadable(glob("~/.local/.vimrc"))
-    source ~/.local/.vimrc
+if filereadable(glob("~/.vimrc_local"))
+    source ~/.vimrc_local
 endif
 
