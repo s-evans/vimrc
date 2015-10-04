@@ -149,10 +149,6 @@
     ignore = dirty
 	path = bundle/viewdoc
 	url = git@github.com:powerman/vim-plugin-viewdoc.git
-[submodule "bundle/autoformat"]
-    ignore = dirty
-	path = bundle/autoformat
-	url = git@github.com:Chiel92/vim-autoformat.git
 [submodule "bundle/cmake"]
 	path = bundle/cmake
 	url = git@github.com:s-evans/vim-cmake.git

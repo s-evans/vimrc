@@ -11,7 +11,7 @@
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
 " column text object
-" help: doxygen, asm
+" help: doxygen, asm, msdn, boost
 
 " -------------------------------
 " plugin setup
@@ -21,7 +21,6 @@ let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
 Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
-Plug 'autoformat'
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
@@ -91,38 +90,38 @@ set matchpairs+=<:>
 let g:load_doxygen_syntax=1
 
 if has('extra_search')
-  set nohlsearch
+    set nohlsearch
 endif
 
 if has('cmdline_info')
-  set ruler
+    set ruler
 endif
 
 if has('autocmd')
-  filetype on
-  filetype plugin on
-  filetype plugin indent on
+    filetype on
+    filetype plugin on
+    filetype plugin indent on
 endif
 
 if has('syntax')
-  syntax on
+    syntax on
 endif
 
 if has('folding')
-  set nofoldenable
+    set nofoldenable
 endif
 
 if has('title')
-  set title
+    set title
 endif
 
 if exists('&wildmode')
-  set wildmenu
-  set wildmode=list:longest,full
+    set wildmenu
+    set wildmode=list:longest,full
 endif
 
 if has('multi_byte')
-  set encoding=utf-8
+    set encoding=utf-8
 endif
 
 " -------------------------------
@@ -144,11 +143,11 @@ set cinoptions+=:0  " case labels not indented
 set ignorecase
 
 if exists("&wildignorecase")
-  set wildignorecase
+    set wildignorecase
 endif
 
 if exists("&fileignorecase")
-  set fileignorecase
+    set fileignorecase
 endif
 
 " -------------------------------
@@ -179,11 +178,11 @@ endif
 " -------------------------------
 
 if has('insert_expand')
-  " don't scan includes for completion (slow)
-  set complete-=i
+    " don't scan includes for completion (slow)
+    set complete-=i
 
-  " don't use the preview window
-  set completeopt=menu,menuone
+    " don't use the preview window
+    set completeopt=menu,menuone
 endif
 
 " -------------------------------
@@ -209,7 +208,7 @@ set secure
 " -------------------------------
 
 if exists('+undofile')
-  set undofile
+    set undofile
 endif
 
 " -------------------------------
@@ -244,51 +243,51 @@ let g:ycm_key_list_previous_completion = ['<C-S-TAB>', '<Up>']
 
 " add some delimiters
 let g:easy_align_delimiters = {
-\ '^': {
-\     'pattern':        '[^\w]',
-\     'left_margin':    0,
-\     'right_margin':   0,
-\     'stick_to_left':  0
-\   },
-\ '>': { 'pattern': '>>\|=>\|>' },
-\ '<': { 'pattern': '<<\|=<\|<' },
-\ '\': { 'pattern': '\\' },
-\ '/': { 'pattern': '//\+\|/\*\|\*/', 'delimiter_align': 'l', 'ignore_groups': ['!Comment'] },
-\ '[': {
-\     'pattern':       '\[',
-\     'left_margin':   0,
-\     'right_margin':  0,
-\     'stick_to_left': 0
-\   },
-\ ']': {
-\     'pattern':       '\]',
-\     'left_margin':   0,
-\     'right_margin':  0,
-\     'stick_to_left': 0
-\   },
-\ '(': {
-\     'pattern':       '(',
-\     'left_margin':   0,
-\     'right_margin':  0,
-\     'stick_to_left': 0
-\   },
-\ ')': {
-\     'pattern':       ')',
-\     'left_margin':   0,
-\     'right_margin':  0,
-\     'stick_to_left': 0
-\   },
-\ 'f': {
-\     'pattern': ' \(\S\+(\)\@=',
-\     'left_margin': 0,
-\     'right_margin': 0
-\   },
-\ 'd': {
-\     'pattern': ' \(\S\+\s*[;=]\)\@=',
-\     'left_margin': 0,
-\     'right_margin': 0
-\   }
-\ }
+            \ '^': {
+            \     'pattern':        '[^\w]',
+            \     'left_margin':    0,
+            \     'right_margin':   0,
+            \     'stick_to_left':  0
+            \   },
+            \ '>': { 'pattern': '>>\|=>\|>' },
+            \ '<': { 'pattern': '<<\|=<\|<' },
+            \ '\': { 'pattern': '\\' },
+            \ '/': { 'pattern': '//\+\|/\*\|\*/', 'delimiter_align': 'l', 'ignore_groups': ['!Comment'] },
+            \ '[': {
+            \     'pattern':       '\[',
+            \     'left_margin':   0,
+            \     'right_margin':  0,
+            \     'stick_to_left': 0
+            \   },
+            \ ']': {
+            \     'pattern':       '\]',
+            \     'left_margin':   0,
+            \     'right_margin':  0,
+            \     'stick_to_left': 0
+            \   },
+            \ '(': {
+            \     'pattern':       '(',
+            \     'left_margin':   0,
+            \     'right_margin':  0,
+            \     'stick_to_left': 0
+            \   },
+            \ ')': {
+            \     'pattern':       ')',
+            \     'left_margin':   0,
+            \     'right_margin':  0,
+            \     'stick_to_left': 0
+            \   },
+            \ 'f': {
+            \     'pattern': ' \(\S\+(\)\@=',
+            \     'left_margin': 0,
+            \     'right_margin': 0
+            \   },
+            \ 'd': {
+            \     'pattern': ' \(\S\+\s*[;=]\)\@=',
+            \     'left_margin': 0,
+            \     'right_margin': 0
+            \   }
+            \ }
 
 " -------------------------------
 " eclim settings
@@ -296,11 +295,11 @@ let g:easy_align_delimiters = {
 
 " enable eclim completion only on java files
 if has("autocmd") 
-  augroup eclim_java_completion
-    autocmd!
-    autocmd BufEnter *.java let g:EclimCompletionMethod = 'omnifunc'
-    autocmd BufLeave *.java unlet g:EclimCompletionMethod
-  augroup END
+    augroup eclim_java_completion
+        autocmd!
+        autocmd BufEnter *.java let g:EclimCompletionMethod = 'omnifunc'
+        autocmd BufLeave *.java unlet g:EclimCompletionMethod
+    augroup END
 endif 
 
 " -------------------------------
@@ -326,8 +325,8 @@ function! s:ViewDoc_doshelp(topic, filetype, synid, ctx)
         return {}
     else 
         return { 'cmd': 'cmd /C help '.tmp_topic,
-            \ 'ft':	'dosbatch',
-            \ }
+                    \ 'ft':	'dosbatch',
+                    \ }
     endif
 endfunction
 
@@ -340,32 +339,110 @@ let g:ViewDoc_dosbatch=[ function('s:ViewDoc_doshelp') ]
 
 " remove comment header when joining lines
 if has('patch-7.3.541')
-  set formatoptions+=j
+    set formatoptions+=j
 endif
 
 " disable continuation commenting
 if has("autocmd") 
-  augroup comment_format
-    autocmd!
-    autocmd FileType * set formatoptions-=cro
-  augroup END
+    augroup comment_format
+        autocmd!
+        autocmd FileType * set formatoptions-=cro
+    augroup END
 endif 
 
-" add xmllint command line
-let g:formatdef_xmllint = '"xmllint --format -"'
+" initialize the format program dictionary
+let g:format_prg={}
 
-" add xmllint to the list of options
-let g:formatters_xml = ['tidy_xml', 'xmllint']
+" clang-format support
+if executable("clang-format")
+    let g:format_prg['c'] = 'clang-format -style=file'
+    let g:format_prg['cpp'] = 'clang-format -style=file'
+    let g:format_prg['objc'] = 'clang-format -style=file'
+    let g:format_prg['javascript'] = 'clang-format -style=file'
+endif
 
-" add a mapping for performing autoformatting
-noremap <F3> :Autoformat<CR>
+" astyle support
+if executable("astyle")
+    let g:format_prg['c'] = 'astyle'
+    let g:format_prg['cpp'] = 'astyle'
+    let g:format_prg['java'] = 'astyle --mode=java'
+    let g:format_prg['cs'] = 'astyle --mode=cs'
+endif
+
+" xmllint support
+if executable("xmllint")
+    let g:format_prg['xsd'] = 'xmllint --format -'
+    let g:format_prg['xslt'] = 'xmllint --format -'
+    let g:format_prg['xml'] = 'xmllint --format -'
+endif
+
+" python support
+if executable("autopep8")
+    let g:format_prg['python'] = 'autopep8 -'
+endif
+
+" js-beautify support
+if executable("js-beautify")
+    let g:format_prg['javascript'] = 'js-beautify -'
+    let g:format_prg['json'] = 'js-beautify -'
+endif
+
+" jscs support
+if executable("jscs")
+    let g:format_prg['javascript'] = 'jscs -x'
+endif
+
+" html-beautify support
+if executable("html-beautify")
+    let g:format_prg['html'] = 'html-beautify -f -'
+endif
+
+" tidy support
+if executable("tidy")
+    let g:format_prg['html'] = 'tidy -q --show-errors 0 --show-warnings 0 --force-output --indent auto --vertical-space yes --tidy-mark no'
+    let g:format_prg['xhtml'] = 'tidy -q --show-errors 0 --show-warnings 0 --force-output --indent auto --vertical-space yes --tidy-mark no'
+    let g:format_prg['xml'] = 'tidy -q -xml --show-errors 0 --show-warnings 0 --force-output --indent auto --vertical-space yes --tidy-mark no'
+endif
+
+" css-beautify support
+if executable("css-beautify")
+    let g:format_prg['css'] = 'css-beautify -f -'
+endif
+
+" rbeautify support
+if executable("rbeautify")
+    let g:format_prg['ruby'] = 'rbeautify'
+endif
+
+" sets the format program a little more easily
+function! SetFormatProgram(string)
+   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" ) 
+endfunction
+
+" gets the format program for the filetype specified
+function! GetFileTypeFormatProgram(filetype)
+    return get(g:format_prg, &ft, "")
+endfunction
+
+" set up auto commands to set the format program per buffer
+if has("autocmd") 
+    augroup auto_format
+        autocmd!
+
+        " on entering a buffer set the format program
+        autocmd BufEnter * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
+
+        " if the file type of a buffer changes, change the format program
+        autocmd FileType * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
+    augroup END
+endif
 
 " -------------------------------
 " configure python instance
 " -------------------------------
 
 if has("python") && executable("python")
-  python << 
+    python << 
 try:
     from math import * 
     import vim
@@ -854,31 +931,31 @@ endfunction
 " -------------------------------
 
 function! GrepWindowOperator(type) 
-  call OperatorWrapper(a:type, "call GrepWindowRegister()")
+    call OperatorWrapper(a:type, "call GrepWindowRegister()")
 endfunction
 
 function! GrepRecurseOperator(type)
-  call OperatorWrapper(a:type, "call GrepRecurseRegister()")
+    call OperatorWrapper(a:type, "call GrepRecurseRegister()")
 endfunction
 
 function! GrepCurrentOperator(type)
-  call OperatorWrapper(a:type, "call GrepCurrentRegister()")
+    call OperatorWrapper(a:type, "call GrepCurrentRegister()")
 endfunction
 
 function! GrepPathOperator(type)
-  call OperatorWrapper(a:type, "call GrepPathRegister()")
+    call OperatorWrapper(a:type, "call GrepPathRegister()")
 endfunction
 
 function! UrlEncodeOperator(type)
-  call RegisterOperatorWrapper(a:type, "call UrlEncodeRegister()")
+    call RegisterOperatorWrapper(a:type, "call UrlEncodeRegister()")
 endfunction
 
 function! UrlDecodeOperator(type)
-  call RegisterOperatorWrapper(a:type, "call UrlDecodeRegister()")
+    call RegisterOperatorWrapper(a:type, "call UrlDecodeRegister()")
 endfunction
 
 function! ExternalOperator(type)
-  call RegisterOperatorWrapper(a:type, "call ExternalRegister()")
+    call RegisterOperatorWrapper(a:type, "call ExternalRegister()")
 endfunction
 
 function! SortStringLengthOperator(type)
@@ -998,7 +1075,7 @@ function! SubstituteOperator(type)
 endfunction
 
 function! Sha256Operator(type)
-  call RegisterOperatorWrapper(a:type, "call Sha256Register()")
+    call RegisterOperatorWrapper(a:type, "call Sha256Register()")
 endfunction
 
 " -------------------------------
