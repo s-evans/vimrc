@@ -309,6 +309,9 @@ endif
 " open docs in a new window
 let g:viewdoc_open='topleft new'
 
+" disable abbreviations
+let g:no_viewdoc_abbrev=1
+
 " don't open anything if the term is not found
 let g:viewdoc_openempty=0
 
@@ -317,21 +320,53 @@ let g:ViewDoc_cmake='ViewDoc_help_custom'
 let g:ViewDoc_tex='ViewDoc_help_custom'
 let g:ViewDoc_css='ViewDoc_help_custom'
 
-" use the dos help command
-function! s:ViewDoc_doshelp(topic, filetype, synid, ctx)
-    let tmp_topic=shellescape(a:topic,1)
-    let output=system('cmd /C help '.tmp_topic)
-    if match(output, "This command is not supported by the help utility") != -1
-        return {}
-    else 
-        return { 'cmd': 'cmd /C help '.tmp_topic,
-                    \ 'ft':	'dosbatch',
-                    \ }
-    endif
-endfunction
+if executable("cmd")
+    " use the dos help command
+    function! s:ViewDoc_doshelp(topic, filetype, synid, ctx)
+        let tmp_topic=shellescape(a:topic,1)
+        let output=system('cmd /C help '.tmp_topic)
+        if match(output, "This command is not supported by the help utility") != -1
+            return {}
+        else 
+            return { 'cmd': 'cmd /C help '.tmp_topic,
+                        \ 'ft':	'dosbatch',
+                        \ }
+        endif
+    endfunction
 
-" define a custom handler for dosbatch
-let g:ViewDoc_dosbatch=[ function('s:ViewDoc_doshelp') ]
+    " define a custom handler for dosbatch
+    let g:ViewDoc_dosbatch=[ function('s:ViewDoc_doshelp') ]
+endif
+
+" define a custom help handler for sshconfig files
+function! s:ViewDoc_sshconfig(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man ssh_config',
+                \'ft':     'man',
+                \'search': '^     ' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_sshconfig=[ function('s:ViewDoc_sshconfig') ]
+
+" define a custom help handler for sshdconfig files
+function! s:ViewDoc_sshdconfig(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man sshd_config',
+                \'ft':     'man',
+                \'search': '^     ' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_sshdconfig=[ function('s:ViewDoc_sshdconfig') ]
+
+if executable("hlpviewer")
+    " TODO: support more than one visual studio version
+    " TODO: connect up to one of the help viewers (ie. DEFAULT)
+
+    " invoke the help viewer for visual studio
+    function! s:ViewDoc_hlpviewer(topic, filetype, synid, ctx)
+        return { 'cmd': 'hlpviewer /catalogName VisualStudio14 /helpQuery "method=f1&query=' . shellescape(a:topic,1) . '"' }
+    endfunction
+endif
 
 " -------------------------------
 " autoformat settings
