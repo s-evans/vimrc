@@ -118,11 +118,11 @@ used in LaTeX's standard document classes to control numbering.
  |subsubsection|
 
 
-\addtocounter{counter}{value}			*\addtocounter*
+\addtocounter{counter}{value}			*\addtocounter* *addtocounter*
 		Increments the {counter} by the amount specified by the
 		{value} argument. The {value} argument can be negative.
 
-\alph{counter}					*\alph* *\Alph*
+\alph{counter}					*\alph* *alph* *\Alph* *Alph*
 \Alph{counter}
 		This command causes the value of the counter to be printed in
 		alphabetic characters. |\alph| command uses lower case
@@ -130,46 +130,46 @@ used in LaTeX's standard document classes to control numbering.
 		|\Alph| command uses upper case alphabetic characters, i.e.,
 		A, B, C....
 
-\arabic{counter} 				*\arabic*
+\arabic{counter} 				*\arabic* *arabic*
 		Causes the value of the {counter} to be printed in Arabic
 		numbers, i.e., 3.
 
-\fnsymbol{counter} 				*\fnsymbol*
+\fnsymbol{counter} 				*\fnsymbol* *fnsymbol*
 		Causes the value of the {counter} to be printed in a specific
 		sequence of nine symbols that can be used for numbering
 		footnotes.
 		Note: counter must have a value between 1 and 9 inclusive.
 
-\newcounter{foo}[counter] 			*\newcounter*
+\newcounter{foo}[counter] 			*\newcounter* *newcounter*
 		Defines a new counter named {foo}. The counter is initialized
 		to zero.  The optional argument [counter] causes the counter
 		{foo} to be reset whenever the counter named in the optional
 		argument is incremented.
 
-\refstepcounter{counter}			*\refstepcounter*
+\refstepcounter{counter}			*\refstepcounter* *refstepcounter*
 		Command works like |\stepcounter|, except it also defines the
 		current |\ref| value to be the result of \thecounter.
 
-\roman{counter} 				*\roman* *\Roman*
+\roman{counter} 				*\roman* *roman* *\Roman* *Roman*
 \Roman{counter}
 		Causes the value of the {counter} to be printed in Roman
 		numerals.  The |\roman| command uses lower case Roman numerals,
 		i.e., i, ii, iii..., while the |\Roman| command uses upper case
 		Roman numerals, i.e., I, II, III....
 
-\stepcounter{counter}				*\stepcounter*
+\stepcounter{counter}				*\stepcounter* *stepcounter*
 		Adds one to the {counter} and resets all subsidiary counters.
 
-\setcounter{counter}{value}			*\setcounter*
+\setcounter{counter}{value}			*\setcounter* *setcounter*
 		Sets the value of the {counter} to that specified by the
 		{value} argument.
 
-\usecounter{counter} 				*\usecounter*
+\usecounter{counter} 				*\usecounter* *usecounter*
 		Command is used in the second argument of the |list|
 		environment to allow the {counter} specified to be used to
 		number the list items.
 
-\value{counter} 				*\value*
+\value{counter} 				*\value* *value*
 		Produces the value of the {counter} named in the mandatory
 		argument. It can be used where LaTeX expects an integer or
 		number, such as the second argument of a |\setcounter| or
@@ -188,7 +188,7 @@ reader to them, as in "See Figure 3 for more details."
 |\ref|			Refer to a section, figure or similar
 
 
-\label{key} 					*\label*
+\label{key} 					*\label* *label*
 		Command appearing in ordinary text assigns to the {key} the
 		number of the current sectional unit; one appearing inside a
 		numbered environment assigns that number to the {key}.
@@ -208,12 +208,12 @@ reader to them, as in "See Figure 3 for more details."
 		Thus, a label for a figure would look like: >
 			\label{fig:bandersnatch}
 
-\pageref{key} 					*\pageref*
+\pageref{key} 					*\pageref* *pageref*
 		Command produces the page number of the place in the text
 		where the corresponding |\label| command appears.  ie. where
 		\label{key} appears.
 
-\ref{key}					*\ref*
+\ref{key}					*\ref* *ref*
 		Command produces the number of the sectional unit, equation
 		number, ... of the corresponding |\label| command.
 
@@ -225,8 +225,9 @@ reader to them, as in "See Figure 3 for more details."
 |\newtheorem| 		Define a new theorem-like environment
 |\newfont| 		Define a new font name
 
-
-\newcommand{cmd}[args]{definition}		*\newcommand* *\renewcommand*
+                            *\newcommand* *newcommand* 
+                            *\renewcommand* *renewcommand*
+\newcommand{cmd}[args]{definition}		
 \newcommand{cmd}[args][default]{definition}
 \renewcommand{cmd}[args]{definition}
 \renewcommand{cmd}[args][default]{definition}
@@ -249,7 +250,8 @@ These commands define (or redefine) a command.
 		parameter of the form #n in {cmd} is replaced by the text of
 		the nth argument when this substitution takes place.
 
-       					*\newenvironment* *\renewenvironment*
+                                        *\newenvironment* *newenvironment*
+                                        *\renewenvironment* *renewenvironment*
 \newenvironment{nam}[args]{begdef}{enddef}
 \newenvironment{nam}[args][default]{begdef}{enddef}
 \renewenvironment{nam}[args]{begdef}{enddef}
@@ -275,7 +277,7 @@ These commands define or redefine an environment.
 		may not contain any argument parameters.
 
 
-\newtheorem{envname}{caption}[within]			*\newtheorem*
+\newtheorem{envname}{caption}[within]			*\newtheorem* *newtheorem*
 \newtheorem{envname}[numberedlike]{caption}
 
 This command defines a theorem-like environment.
@@ -296,7 +298,7 @@ This command defines a theorem-like environment.
 The |\newtheorem| command may have at most one optional argument.
 
 
-\newfont{cmd}{fontname} 				*\newfont*
+\newfont{cmd}{fontname} 				*\newfont* *newfont*
 		Defines the command name {cmd}, which must not be currently
 		defined, to be a declaration that selects the font named
 		{fontname} to be the current font.
@@ -305,7 +307,7 @@ The |\newtheorem| command may have at most one optional argument.
 5. Document Classes				*latex-classes*
 
 
-\documentclass[options]{class}			*\documentclass*
+\documentclass[options]{class}			*\documentclass* *documentclass*
 
 Valid LaTeX document classes include:
 	*article		*article-class*
@@ -356,7 +358,7 @@ openright, openany				*openright* *openany*
 		Determines if a chapter should start on a right-hand page.
 		Default is openright for book.
 
-onecolumn, twocolumn				*onecolumn* *twocolumn*
+onecolumn, twocolumn				|onecolumn| |twocolumn|
 		One or two columns.  Defaults to one column.
 
 The slides class offers the option clock for printing the time at the bottom
@@ -364,7 +366,7 @@ of each |\note|.
 
 If you specify more than one option, they must be separated by a comma.
 
-\usepackage[options]{pkg} 			*\usepackage*
+\usepackage[options]{pkg} 			*\usepackage* *usepackage*
 		Additional packages are loaded by this. If you
 		specify more than one package, they must be separated by a
 		comma.
@@ -382,19 +384,19 @@ Miscellaneous commands for controlling the general layout of the page.
 |\raggedbottom| 	Allow text pages of differing height.
 |\twocolumn| 		Use two-column layout.
 
-\flushbottom					*\flushbottom*
+\flushbottom					*\flushbottom* *flushbottom*
 		Makes all text pages the same height, adding extra vertical
 		space when necessary to fill out the page.  This is the
 		standard if twocolumn mode is selected.
 
-\onecolumn					*\onecolumn*
+\onecolumn					*\onecolumn* *onecolumn*
 		Starts a new page and produces single-column output.
 
-\raggedbottom					*\raggedbottom*
+\raggedbottom					*\raggedbottom* *raggedbottom*
 		Makes all pages the height of the text on that page.  No extra
 		vertical space is added.
 
-\twocolumn[text]				*\twocolumn*
+\twocolumn[text]				*\twocolumn* *twocolumn*
 		Starts a new page and produces two-column output.  If the
 		optional [text] argument is present, it is typeset in
 		one-column mode.
@@ -402,7 +404,7 @@ Miscellaneous commands for controlling the general layout of the page.
 ==============================================================================
 7. Environments					*latex-environments*
 
-						*\begin* *\end*
+						*\begin* *begin* *\end* *end*
 LaTeX provides a number of different paragraph-making environments. Each
 environment begins and ends in the same manner: >
 
@@ -475,7 +477,7 @@ The |\center| environment allows you to create a paragraph consisting of lines
 that are centred within the left and right margins on the current page. Each
 line must be terminated with the string |\\|.
 
-\centering					*\centering*
+\centering					*\centering* *centering*
 		This declaration corresponds to the |center| environment. This
 		declaration can be used inside an environment such as
 		|quote-l| or in a |\parbox|. The text of a |figure| or |table|
@@ -541,11 +543,11 @@ inequalities. It is very much like a three-column |array| environment, with
 consecutive rows separated by |\\| and consecutive items within a row separated
 by an |&|.
 
-\nonumber					*\nonumber*
+\nonumber					*\nonumber* *nonumber*
 		An equation number is placed on every line unless that
 		line has a |\nonumber| command.
 
-\lefteqn					*\lefteqn*
+\lefteqn					*\lefteqn* *lefteqn*
 		The command |\lefteqn| is used for splitting long
 		formulas across lines.  It typesets its argument in
 		display style flush left in a box of zero width.
@@ -605,7 +607,7 @@ The |flushleft| environment allows you to create a paragraph consisting of
 lines that are flushed left, to the left-hand margin. Each line must be
 terminated with the string |\\|.
 
-\raggedright					*\raggedright*
+\raggedright					*\raggedright* *raggedright*
 		This declaration corresponds to the |flushleft| environment.
 		This declaration can be used inside an environment such as
 		|quote-l| or in a |\parbox|.  Unlike the |flushleft|
@@ -630,7 +632,7 @@ The |flushright| environment allows you to create a paragraph consisting of
 lines that are flushed right, to the right-hand margin. Each line must be
 terminated with the string |\\|.
 
-\raggedleft					*\raggedleft*
+\raggedleft					*\raggedleft* *raggedleft*
 		This declaration corresponds to the |flushright| environment.
 		This declaration can be used inside an environment such as
 		|quote-l| or in a |\parbox|.  Unlike the |flushright|
@@ -655,7 +657,7 @@ The |itemize| environment produces a "bulleted" list.  Itemizations can be
 nested within one another, up to four levels deep.  They can also be nested
 within other paragraph-making environments.
 
-\item						*\item*
+\item						*\item* *item*
 		Each item of an itemized list begins with an |\item| command.
 		There must be at least one |\item| command within the
 		environment.
@@ -665,7 +667,7 @@ section |latex-counters|). The type of numbering can be changed by redefining
 \theitemi etc.
 
 ==============================================================================
-k. letter					*\letter*
+k. letter					*\letter* *letter*
 
 This environment is used for creating letters. See section |latex-letters|.
 
@@ -795,37 +797,37 @@ Picture commands:
 |\shortstack|		Make a pile of objects
 |\vector|		Draw a line with an arrow
 
-\circle[*]{diameter}				*\circle*
+\circle[*]{diameter}				*\circle* *circle*
 		Command produces a circle with a {diameter} as close to the
 		specified one as possible. If the *-form of the command is
 		used, LaTeX draws a solid circle.
 		Note: only circles up to 40 pt can be drawn.
 
 
-\dashbox{dashlength}(width,height){...} 	*\dashbox*
+\dashbox{dashlength}(width,height){...} 	*\dashbox* *dashbox*
 		Draws a box with a dashed line.  The |\dashbox| has an extra
 		argument which specifies the width of each dash.  A dashed box
 		looks best when the width and height are multiples of the
 		{dashlength}.
 
-\frame{...} 					*\frame*
+\frame{...} 					*\frame* *frame*
 		Puts a rectangular frame around the object specified in the
 		argument. The reference point is the bottom left corner of the
 		frame. No extra space is put between the frame and the object.
 
-\framebox(width,height)[position]{...}		*\picture-framebox*
+\framebox(width,height)[position]{...}		*\picture-framebox* *picture-framebox*
 		The |\framebox| command is exactly the same as the
 		|picture-makebox| command, except that it puts a frame around
 		the outside of the box that it creates.  The |\framebox|
 		command produces a rule of thickness |\fboxrule|, and leaves a
 		space |\fboxsep| between the rule and the contents of the box.
 
-\line(x slope,y slope){length} 			*\line*
+\line(x slope,y slope){length} 			*\line* *line*
 		Draws a line of the specified length and slope.
 		Note: LaTeX can only draw lines with slope = x/y, where x and
 		y have integer values from -6 through 6.
 
-\linethickness{dimension}			*\linethickness*
+\linethickness{dimension}			*\linethickness* *linethickness*
 		Declares the thickness of horizontal and vertical lines in a
 		|picture| environment to be dimension, which must be a
 		positive length. It does not affect the thickness of slanted
@@ -844,12 +846,12 @@ Picture commands:
 			l - Moves the item to the left
 			r - Moves the item to the right
 
-						*\multiput*
+						*\multiput* *multiput*
 \multiput(x coord,y coord)(delta x,delta y){no of copies}{object}
 		This command can be used when you are putting the same
 		object in a regular pattern across a picture.
 
-\oval(width,height)[portion] 			*\oval*
+\oval(width,height)[portion] 			*\oval* *oval*
 		Produces a rectangle with rounded corners. The optional
 		argument, [portion], allows you to select part of the oval.
 			t - top portion
@@ -860,18 +862,18 @@ Picture commands:
 		with a maximum radius of 20 pt, so large "ovals" will look
 		more like boxes with rounded corners.
 
-\put(x coord,y coord){ ... } 			*\put*
+\put(x coord,y coord){ ... } 			*\put* *put*
 		Places the item specified by the mandatory argument at the
 		given coordinates.
 
-\shortstack[position]{... \\ ... \\ ...} 	*\shortstack*
+\shortstack[position]{... \\ ... \\ ...} 	*\shortstack* *shortstack*
 		The |\shortstack| command produces a stack of objects.
 		The valid positions are:
 			r - right of the stack
 			l - left of the stack
 			c - centre of the stack (default)
 
-\vector(x slope,y slope){length} 		*\vector*
+\vector(x slope,y slope){length} 		*\vector* *vector*
 		Draws a line with an arrow of the specified length and slope.
 		The x and y values must lie between -4 and +4, inclusive.
 
@@ -954,14 +956,14 @@ The following commands can be used inside a tabbing enviroment:
 		(|tab>|) or \' (|tab'|) command between the \` (|tab`|) and
 		the command that ends the line.
 
-						*\kill*
+						*\kill* *kill*
 \kill 		Sets tab stops without producing text. Works just like |\\|
 		except that it throws away the current line instead of
 		producing output for it. The effect of any \= (|tab=|), \+
 		(|tab+|) or \- (|tab-|) commands in that line remain in
 		effect.
 
-						*\pushtabs*
+						*\pushtabs* *pushtabs*
 \pushtabs	Saves all current tab stop positions. Useful for temporarily
 		changing tab stop positions in the middle of a tabbing
 		environment. Also restores the tab stop positions saved by the
@@ -985,7 +987,7 @@ This example typesets a Pascal function in a traditional format:
         \end{tabbing}
 
 ==============================================================================
-r. table					*\table*
+r. table					*\table* *table*
 >
 	\begin{table}[placement]
 		body of the table
@@ -1094,17 +1096,17 @@ These commands can be used inside a tabular environment:
 |\vline|		Draw a vertical line.
 
 
-\cline{i-j}					*\cline*
+\cline{i-j}					*\cline* *cline*
 		The |\cline| command draws horizontal lines across the columns
 		specified, beginning in column i and ending in column j,
 		which are identified in the mandatory argument.
 
-\hline						*\hline*
+\hline						*\hline* *hline*
 		The |\hline| command will draw a horizontal line the width of
 		the table.  It's most commonly used to draw a line at the top,
 		bottom, and between the rows of the table.
 
-\multicolumn{cols}{pos}{text} 			*\multicolumn*
+\multicolumn{cols}{pos}{text} 			*\multicolumn* *multicolumn*
 		The |\multicolumn| is used to make an entry that spans several
 		columns.  The first mandatory argument, {cols}, specifies the
 		number of columns to span. The second mandatory argument,
@@ -1115,14 +1117,14 @@ These commands can be used inside a tabular environment:
 		The third mandatory argument, {text}, specifies what text is
 		to make up the entry.
 
-\vline						*\vline*
+\vline						*\vline* *vline*
 		The |\vline| command will draw a vertical line extending the
 		full height and depth of its row. An |\hfill| command can be
 		used to move the line to the edge of the column. It can also
 		be used in an @-expression.
 
 ==============================================================================
-t. thebibliography				*\thebibliography*
+t. thebibliography				*\thebibliography* *thebibliography*
 >
 	\begin{thebibliography}{widestlabel}
 		\bibitem[label]{cite_key}
@@ -1144,7 +1146,7 @@ In the |article-class|, this reference list is labelled "References"; in the
 |\nocite|		Include an item in the bibliography.
 |BibTeX|		Automatic generation of bibliographies.
 
-\bibitem					*\bibitem*
+\bibitem					*\bibitem* *bibitem*
 \bibitem[label]{citekey}
 		The |\bibitem| command generates an entry labelled by [label].
 		If the [label] argument is missing, a number is generated as
@@ -1157,7 +1159,7 @@ In the |article-class|, this reference list is labelled "References"; in the
 		reference to {citekey} by a |\cite| command to produce the
 		associated label.
 
-\cite						*\cite*
+\cite						*\cite* *cite*
 \cite[text]{keylist}
 		The {keylist} argument is a list of citation keys.  This
 		command generates an in-text citation to the references
@@ -1168,14 +1170,14 @@ In the |article-class|, this reference list is labelled "References"; in the
 			\cite[p.2]{knuth}
 <		might produce `[Knuth, p. 2]'.
 
-\nocite						*\nocite*
+\nocite						*\nocite* *nocite*
 \nocite{keylist}
 		The |\nocite| command produces no text, but writes
 		{keylist}, which is a list of one or more citation
 		keys, on the `.aux' file.
 
 BibTeX						*BibTeX* *bibtex*
-						*\bibliographystyle*
+						*\bibliographystyle* *bibliographystyle*
 If you use the BibTeX program by Oren Patashnik (highly recommended if you
 need a bibliography of more than a couple of titles) to maintain your
 bibliography, you don't use the |thebibliography| environment.  Instead, you
@@ -1196,7 +1198,7 @@ will look. The standard styles distributed with BibTeX are:
 In addition, numerous other BibTeX style files exist tailored to the demands
 of various publications.
 
-						*\bibliography*
+						*\bibliography* *bibliography*
 The argument to |\bibliography| refers to the file bibfile.bib, which should
 contain your database in BibTeX format. Only the entries referred to via
 |\cite| and |\nocite| will be listed in the bibliography.
@@ -1237,7 +1239,7 @@ to print exactly what you type in. It turns LaTeX into a typewriter with
 carriage returns and blanks having the same effect that they would on a
 typewriter.
 
-\verb						*\verb*
+\verb						*\verb* *verb*
 \verb char literal_text char
 \verb*char literal_text char
 		Typesets literal_text exactly as typed, including
@@ -1272,7 +1274,7 @@ information on why you would use one over the other.
 |\footnotemark|	Insert footnote mark only
 |\footnotetext|	Insert footnote text only
 
-\footnote[number]{text}				*\footnote*
+\footnote[number]{text}				*\footnote* *footnote*
 		Command places the numbered footnote text at the bottom of the
 		current page. The optional argument, number, is used to change
 		the default footnote number.  This command can only be used in
@@ -1280,7 +1282,7 @@ information on why you would use one over the other.
 		commands like |\chapter|, in |\figure|, |\table| or in a
 		|\tabular| environment.
 
-\footnotemark					*\footnotemark*
+\footnotemark					*\footnotemark* *footnotemark*
 		Command puts the footnote number in the text. This command can
 		be used in inner paragraph mode. The text of the footnote is
 		supplied by the |\footnotetext| command.
@@ -1291,7 +1293,7 @@ information on why you would use one over the other.
 <
 		after the first |\footnote| command.
 
-\footnotetext[number]{text}			*\footnotetext*
+\footnotetext[number]{text}			*\footnotetext* *footnotetext*
 		Command produces the text to be placed at the bottom of the
 		page. This command can come anywhere after the |\footnotemark|
 		command. The |\footnotetext| command must appear in outer
@@ -1312,40 +1314,40 @@ argument.
 |\settowidth|	Set a length to the width of something.
 |pre-lengths|	Lengths that are, like, predefined.
 
-\newlength{\gnat}				*\newlength*
+\newlength{\gnat}				*\newlength* *newlength*
 		The |\newlength| command defines the mandatory argument, \gnat,
 		as a length command with a value of 0in. An error occurs if a
 		\gnat command already exists.
 
-\setlength{\gnat}{length}			*\setlength*
+\setlength{\gnat}{length}			*\setlength* *setlength*
 		The |\setlength| command is used to set the value of a \gnat
 		command. The {length} argument can be expressed in any terms
 		of length LaTeX understands, i.e., inches (in), millimetres
 		(mm), points (pt), etc.
 
-\addtolength{\gnat}{length} 			*\addtolength*
+\addtolength{\gnat}{length} 			*\addtolength* *addtolength*
 		The |\addtolength| command increments a \gnat by the amount
 		specified in the {length} argument. It can be a negative
 		amount.
 
-\settodepth{\gnat}{text} 			*\settodepth*
+\settodepth{\gnat}{text} 			*\settodepth* *settodepth*
 		The |\settodepth| command sets the value of a \gnat command
 		equal to the depth of the {text} argument.
 
-\settoheight{\gnat}{text} 			*\settoheight*
+\settoheight{\gnat}{text} 			*\settoheight* *settoheight*
 		The |\settoheight| command sets the value of a \gnat command
 		equal to the height of the {text} argument.
 
-\settowidth{\gnat}{text}			*\settowidth*
+\settowidth{\gnat}{text}			*\settowidth* *settowidth*
 		The |\settowidth| command sets the value of a \gnat command
 		equal to the width of the {text} argument.
 
 Predefined lengths				*pre-lengths*
 
-\width 						*\width*
-\height						*\height*
-\depth						*\depth*
-\totalheight					*\totalheight*
+\width 						*\width* *width*
+\height						*\height* *height*
+\depth						*\depth* *depth*
+\totalheight					*\totalheight* *totalheight*
 		These length parameters can be used in the arguments of the
 		box-making commands See section Spaces & Boxes. They specify
 		the natural width etc.  of the text in the box.
@@ -1402,7 +1404,7 @@ These commands are used with the letter class:
 |\stopbreaks|	Disallow page breaks.
 |\telephone|	Your phone number.
 
-\address{Return address}			*\address*
+\address{Return address}			*\address* *address*
 		The return address, as it should appear on the letter and the
 		envelope.  Separate lines of the address should be separated
 		by |\\| commands. If you do not make an |\address| declaration,
@@ -1412,49 +1414,49 @@ These commands are used with the letter class:
 		implementation). If you give an |\address| declaration, then
 		the letter will be formatted as a personal letter.
 
-\cc{Kate Schechter\\Rob McKenna}		*\cc*
+\cc{Kate Schechter\\Rob McKenna}		*\cc* *cc*
 		Generate a list of other persons the letter was sent to. Each
 		name is printed on a separate line.
 
-\closing{text}					*\closing*
+\closing{text}					*\closing* *closing*
 		The letter closes with a |\closing| command, i.e., >
 			\closing{Best Regards,} \encl{CV\\Certificates}
 <		Generate a list of enclosed material.
 
-\location{address}				*\location*
+\location{address}				*\location* *location*
 		This modifies your organisation's standard address. This only
 		appears if the firstpage pagestyle is selected.
 
-\makelabels{number}				*\makelabels*
+\makelabels{number}				*\makelabels* *makelabels*
 		If you issue this command in the preamble, LaTeX will create a
 		sheet of address labels. This sheet will be output before the
 		letters.
 
-\name{June Davenport}				*\name*
+\name{June Davenport}				*\name* *name*
 		Your name, used for printing on the envelope together with the
 		return address.
 
-\opening{text}					*\opening*
+\opening{text}					*\opening* *opening*
 		The letter begins with the |\opening| command. The mandatory
 		argument, text, is whatever text you wish to start your
 		letter, i.e., >
 			\opening{Dear Joe,}
 
-\ps						*\ps*
+\ps						*\ps* *ps*
 		Use this command before a postscript.
 
-\signature{Harvey Swick}			*\signature*
+\signature{Harvey Swick}			*\signature* *signature*
 		Your name, as it should appear at the end of the letter
 		underneath the space for your signature. Items that should go
 		on separate lines should be separated by |\\| commands.
 
-\startbreaks					*\startbreaks*
+\startbreaks					*\startbreaks* *startbreaks*
 		Used after a |\stopbreaks| command to allow page breaks again.
 
-\stopbreaks					*\stopbreaks*
+\stopbreaks					*\stopbreaks* *stopbreaks*
 		Inhibit page breaks until a |\startbreaks| command occurs.
 
-\telephone{number}				*\telephone*
+\telephone{number}				*\telephone* *telephone*
 		This is your telephone number. This only appears if the
 		firstpage pagestyle is selected.
 
@@ -1500,19 +1502,19 @@ command, but LaTeX usually does it for you.
 		only be hyphenated at those points and not at any of the
 		hyphenation points that LaTeX might otherwise have chosen.
 
-\cleardoublepage				*\cleardoublepage*
+\cleardoublepage				*\cleardoublepage* *cleardoublepage*
 		The |\cleardoublepage| command ends the current page and causes
 		all figures and tables that have so far appeared in the input
 		to be printed.  In a two-sided printing style (|twoside|), it
 		also makes the next page a right-hand (odd-numbered) page,
 		producing a blank page if necessary.
 
-\clearpage					*\clearpage*
+\clearpage					*\clearpage* *clearpage*
 		The |\clearpage| command ends the current page and causes all
 		figures and tables that have so far appeared in the input to
 		be printed.
 
-\enlargethispage{size} 				*\enlargethispage*
+\enlargethispage{size} 				*\enlargethispage* *enlargethispage*
 \enlargethispage*{size}
 		Enlarge the textheight for the current page by the
 		specified amount; e.g.: >
@@ -1524,18 +1526,18 @@ command, but LaTeX usually does it for you.
 		much as possible. This is normally used together with
 		an explicit |\pagebreak|.
 
-\fussy						*\fussy*
+\fussy						*\fussy* *fussy*
 		This declaration (which is the default) makes TeX more fussy
 		about line breaking. This can avoids too much space between
 		words, but may produce overfull boxes.  This command cancels
 		the effect of a previous |\sloppy| command.
 
-\hyphenation{words}				*\hyphenation*
+\hyphenation{words}				*\hyphenation* *hyphenation*
 		The |\hyphenation| command declares allowed hyphenation points,
 		where words is a list of words, separated by spaces, in which
 		each hyphenation point is indicated by a - character.
 
-\linebreak[number]				*\linebreak*
+\linebreak[number]				*\linebreak* *linebreak*
 		The |\linebreak| command tells LaTeX to break the current line
 		at the point of the command. With the optional argument,
 		number, you can convert the |\linebreak| command from a demand
@@ -1544,14 +1546,14 @@ command, but LaTeX usually does it for you.
 		|\linebreak| command causes LaTeX to stretch the line so it
 		extends to the right margin.
 
-\newline					*\newline*
+\newline					*\newline* *newline*
 		The |\newline| command breaks the line right where it is. It
 		can only be used in paragraph mode.
 
-\newpage					*\newpage*
+\newpage					*\newpage* *newpage*
 		The |\newpage| command ends the current page.
 
-\nolinebreak[number]				*\nolinebreak*
+\nolinebreak[number]				*\nolinebreak* *nolinebreak*
 		The |\nolinebreak| command prevents LaTeX from breaking the
 		current line at the point of the command. With the optional
 		argument, [number], you can convert the |\nolinebreak| command
@@ -1559,7 +1561,7 @@ command, but LaTeX usually does it for you.
 		to 4. The higher the number, the more insistent the request
 		is.
 
-\nopagebreak[number]				*\nopagebreak*
+\nopagebreak[number]				*\nopagebreak* *nopagebreak*
 		The |\nopagebreak| command prevents LaTeX from breaking the
 		current page at the point of the command. With the optional
 		argument, [number], you can convert the |\nopagebreak| command
@@ -1567,14 +1569,14 @@ command, but LaTeX usually does it for you.
 		0 to 4. The higher the number, the more insistent the request
 		is.
 
-\pagebreak[number]				*\pagebreak*
+\pagebreak[number]				*\pagebreak* *pagebreak*
 		The |\pagebreak| command tells LaTeX to break the current page
 		at the point of the command. With the optional argument,
 		[number], you can convert the |\pagebreak| command from a
 		demand to a request. The [number] must be a number from 0 to
 		4. The higher the number, the more insistent the request is.
 
-\sloppy						*\sloppy*
+\sloppy						*\sloppy* *sloppy*
 		This declaration makes TeX less fussy about line breaking.
 		This can prevent overfull boxes, but may leave too much space
 		between words.
@@ -1592,24 +1594,24 @@ command.
 |\noindent| 	Do not indent this paragraph.
 |\par| 		Another way of writing a blank line.
 
-\indent 					*\indent*
+\indent 					*\indent* *indent*
 		This produces a horizontal space whose width equals the width
 		of the paragraph indentation. It is used to add paragraph
 		indentation where it would otherwise be suppressed.
 
-\noindent 					*\noindent*
+\noindent 					*\noindent* *noindent*
 		When used at the beginning of the paragraph, it suppresses the
 		paragraph indentation. It has no effect when used in the
 		middle of a paragraph.
 
-\par						*\par*
+\par						*\par* *par*
 		Equivalent to a blank line; often used to make command or
 		environment definitions easier to read.
 
 ==============================================================================
 13. Margin Notes				*latex-margin-notes*
 
-\marginpar[left]{right}				*\marginpar*
+\marginpar[left]{right}				*\marginpar* *marginpar*
 		This command creates a note in the margin. The first line will
 		be at the same height as the line in the text where the
 		|\marginpar| occurs.
@@ -1620,7 +1622,7 @@ command.
 		* in the outside margin for two-sided layout (|twoside|)
 		* in the nearest margin for two-column layout (|twocolumn|)
 
-\reversemarginpar				*\reversemarginpar*
+\reversemarginpar				*\reversemarginpar* *reversemarginpar*
 		By issuing the command |\reversemarginpar|, you can force the
 		marginal notes to go into the opposite (inside) margin.
 
@@ -1688,31 +1690,31 @@ four commands for use in math mode:
 ==========
 Math Miscellany					*math-misc*
 
-\cdots						*\cdots*
+\cdots						*\cdots* *cdots*
 		Produces a horizontal ellipsis where the dots are raised to
 		the centre of the line.
-\ddots						*\ddots*
+\ddots						*\ddots* *ddots*
 		Produces a diagonal ellipsis.
-\frac{num}{den}					*\frac*
+\frac{num}{den}					*\frac* *frac*
 		Produces the fraction num divided by den.
-\ldots						*\ldots*
+\ldots						*\ldots* *ldots*
 		Produces an ellipsis. This command works in any mode, not just
 		math mode.
-\overbrace{text}				*\overbrace*
+\overbrace{text}				*\overbrace* *overbrace*
 		Generates a brace over text.
-\overline{text}					*\overline*
+\overline{text}					*\overline* *overline*
 		Causes the argument text to be overlined.
-\sqrt[root]{arg}				*\sqrt*
+\sqrt[root]{arg}				*\sqrt* *sqrt*
 		Produces the square root of its argument.  The optional
 		argument, [root], determines what root to produce, i.e., the
 		cube root of x+y would be typed as: >
 			$\sqrt[3]{x+y}$.
-\underbrace{text}				*\underbrace*
+\underbrace{text}				*\underbrace* *underbrace*
 		Generates text with a brace underneath.
-\underline{text}				*\underline*
+\underline{text}				*\underline* *underline*
 		Causes the argument text to be underlined. This command can
 		also be used in paragraph and LR mode.
-\vdots						*\vdots*
+\vdots						*\vdots* *vdots*
 		Produces a vertical ellipsis.
 
 ==============================================================================
@@ -1758,7 +1760,7 @@ and foot. The page style determines what goes in them.
 |\pagestyle| 	Change the headings/footings style.
 |\thispagestyle| Change the headings/footings style for this page.
 
-\maketitle					*\maketitle*
+\maketitle					*\maketitle* *maketitle*
 		The |\maketitle| command generates a title on a separate title
 		page - except in the |\article| class, where the title normally
 		goes at the top of the first page.  Information used to
@@ -1769,37 +1771,37 @@ and foot. The page style determines what goes in them.
 		|\thanks|	A special form of footnote.
 		|\title|		How to set the document title.
 
-		\author{names}				*\author* *\and*
+		\author{names}				*\author* *author* *\and* *and*
 			The |\author| command declares the author(s), where
 			names is a list of authors separated by \and commands.
 			Use |\\| to separate lines within a single author's
 			entry -- for example, to give the author's institution
 			or address.
 
-		\date{text}				*\date*
+		\date{text}				*\date* *date*
 			The |\date| command declares text to be the document's
 			date.  With no |\date| command, the current date is
 			used.
 
-		\thanks{text}				*\thanks*
+		\thanks{text}				*\thanks* *thanks*
 			The |\thanks| command produces a |\footnote| to the
 			title.
 
-		\title{text}				*\title*
+		\title{text}				*\title* *title*
 			The |\title| command declares text to be the title. Use
 			|\\| to tell LaTeX where to start a new line in a long
 			title.
 
-\pagenumbering{numstyle}			*\pagenumbering*
+\pagenumbering{numstyle}			*\pagenumbering* *pagenumbering*
 		Specifies the style of page numbers. Possible values of
 		'numstyle' are:
-			arabic - Arabic numerals		*arabic*
-			roman  - Lowercase Roman numerals 	*roman*
-			Roman  - Uppercase Roman numerals 	*Roman*
-			alph   - Lowercase letters 		*alph*
-			Alph   - Uppercase letters 		*Alph*
+			arabic - Arabic numerals		|arabic|
+			roman  - Lowercase Roman numerals 	|roman|
+			Roman  - Uppercase Roman numerals 	|Roman|
+			alph   - Lowercase letters 		|alph|
+			Alph   - Uppercase letters 		|Alph|
 
-\pagestyle{option}				*\pagestyle*
+\pagestyle{option}				*\pagestyle* *pagestyle*
 						*plain* *empty* *headings*
 		The |\pagestyle| command changes the style from the current
 		page on throughout the remainder of your document.
@@ -1814,7 +1816,7 @@ and foot. The page style determines what goes in them.
 		|\markboth| 	Set left and right headings.
 		|\markright| 	Set right heading only.
 
-		\markboth{left head}{right head}	*\markboth*
+		\markboth{left head}{right head}	*\markboth* *markboth*
 			The |\markboth| command is used in conjunction with the
 			page style myheadings for setting both the left and
 			the right heading.
@@ -1826,7 +1828,7 @@ and foot. The page style determines what goes in them.
 			page.
 
 
-		\markright{right head}			*\markright*
+		\markright{right head}			*\markright* *markright*
 			The |\markright| command is used in conjunction with
 			the page style |\myheadings| for setting the right
 			heading, leaving the left heading unchanged.
@@ -1837,7 +1839,7 @@ and foot. The page style determines what goes in them.
 			there is one, otherwise by the last one before the
 			page.
 
-\thispagestyle{option}				*\thispagestyle*
+\thispagestyle{option}				*\thispagestyle* *thispagestyle*
 		The |\thispagestyle| command works in the same manner as the
 		|\pagestyle| command except that it changes the style for the
 		current page only.
@@ -1856,10 +1858,13 @@ Sectioning commands provide the means to structure your text into units.
 
 All sectioning commands take the same general form, i.e.,
 
-					*\part*
-					*\chapter* (report and book class only)
-					*\section* *\subsection* *\subsubsection*
-					*\paragraph* *\subparagraph*
+					*\part* *part*
+					*\chapter* *chapter* (report and book class only)
+                                        *\section* *section* 
+                                        *\subsection* *subsection*
+                                        *\subsubsection* *subsubsection*
+					*\paragraph* *paragraph*
+                                        *\subparagraph* *subparagraph*
 \chapter[optional]{title}
 		In addition to providing the heading in the text, the
 		mandatory argument of the sectioning command can appear in two
@@ -1874,7 +1879,7 @@ All sectioning commands take the same general form, i.e.,
 All sectioning commands have *\-forms that print a title, but do not include a
 number and do not make an entry in the table of contents.
 
-\appendix 					*\appendix*
+\appendix 					*\appendix* *appendix*
 		The |\appendix| command changes the way sectional units are
 		numbered. The |\appendix| command generates no text and does
 		not affect the numbering of parts. The normal use of this
@@ -1927,20 +1932,20 @@ LaTeX removes horizontal space that comes at the end of a line. If you don't
 want LaTeX to remove this space, include the optional * argument.  Then the
 space is never removed.
 
-\dotfill					*\dotfill*
+\dotfill					*\dotfill* *dotfill*
 		The |\dotfill| command produces a "rubber length" that produces
 		dots instead of just spaces.
 
-\hfill						*\hfill*
+\hfill						*\hfill* *hfill*
 		The |\hfill| fill command produces a "rubber length" which can
 		stretch or shrink horizontally. It will be filled with spaces.
 
-\hrulefill					*\hrulefill*
+\hrulefill					*\hrulefill* *hrulefill*
 		The |\hrulefill| fill command produces a "rubber length" which
 		can stretch or shrink horizontally. It will be filled with a
 		horizontal rule.
 
-\hspace[*]{length}				*\hspace*
+\hspace[*]{length}				*\hspace* *hspace*
 		The |\hspace| command adds horizontal space. The length of the
 		space can be expressed in any terms that LaTeX understands,
 		i.e., points, inches, etc. You can add negative as well as
@@ -1954,7 +1959,7 @@ LaTeX removes vertical space that comes at the end of a page. If you don't
 want LaTeX to remove this space, include the optional * argument.  Then the
 space is never removed.
 
-\addvspace{length}				*\addvspace*
+\addvspace{length}				*\addvspace* *addvspace*
 		The |\addvspace| command normally adds a vertical space of
 		height length.  However, if vertical space has already been
 		added to the same point in the output by a previous
@@ -1962,24 +1967,24 @@ space is never removed.
 		than needed to make the natural length of the total vertical
 		space equal to length.
 
-\bigskip					*\bigskip*
+\bigskip					*\bigskip* *bigskip*
 		The |\bigskip| command is equivalent to \vspace{bigskipamount}
 		where bigskipamount is determined by the document class.
 
-\medskip					*\medskip*
+\medskip					*\medskip* *medskip*
 		The |\medskip| command is equivalent to \vspace{medskipamount}
 		where medskipamount is determined by the document class.
 
-\smallskip					*\smallskip*
+\smallskip					*\smallskip* *smallskip*
 		The |\smallskip| command is equivalent to
 		\vspace{smallskipamount} where smallskipamount is determined
 		by the document class.
 
-\vfill						*\vfill*
+\vfill						*\vfill* *vfill*
 		The |\vfill| fill command produces a rubber length which can
 		stretch or shrink vertically.
 
-\vspace[*]{length}				*\vspace*
+\vspace[*]{length}				*\vspace* *vspace*
 		The |\vspace| command adds vertical space. The length of the
 		space can be expressed in any terms that LaTeX understands,
 		i.e., points, inches, etc. You can add negative as well as
@@ -1988,12 +1993,12 @@ space is never removed.
 
 Boxes:						*latex-boxes*
 
-\fbox{text}					*\fbox*
+\fbox{text}					*\fbox* *fbox*
 		The |\fbox| command is exactly the same as the |\mbox| command,
 		except that it puts a frame around the outside of the box that
 		it creates.
 
-\framebox[width][position]{text}		*\framebox*
+\framebox[width][position]{text}		*\framebox* *framebox*
 		The |\framebox| command is exactly the same as the |\makebox|
 		command, except that it puts a frame around the outside of the
 		box that it creates.
@@ -2001,13 +2006,13 @@ Boxes:						*latex-boxes*
 		|\fboxrule|, and leaves a space |\fboxsep| between the rule and
 		the contents of the box.
 
-lrbox						*\lrbox*
+lrbox						*\lrbox* *lrbox*
 \begin{lrbox}{cmd} text \end{lrbox}
 		This is the environment form of |\sbox|.
 		The text inside the environment is saved in the box cmd, which
 		must have been declared with |\newsavebox|.
 
-\makebox[width][position]{text} 		*\makebox*
+\makebox[width][position]{text} 		*\makebox* *makebox*
 		The |\makebox| command creates a box just wide enough to
 		contain the text specified. The width of the box is specified
 		by the optional [width] argument.  The position of the text
@@ -2020,18 +2025,18 @@ lrbox						*\lrbox*
 			     contain stretchable space for this to work.
 		See section |\picture-makebox|.
 
-\mbox{text}					*\mbox*
+\mbox{text}					*\mbox* *mbox*
 		The |\mbox| command creates a box just wide enough to hold the
 		text created by its argument.
 		Use this command to prevent text from being split across
 		lines.
 
-\newsavebox{cmd}				*\newsavebox*
+\newsavebox{cmd}				*\newsavebox* *newsavebox*
 		Declares {cmd}, which must be a command name that is not
 		already defined, to be a bin for saving boxes.
 
 
-\parbox[position][height][innerpos]{width}{text} 	*\parbox*
+\parbox[position][height][innerpos]{width}{text} 	*\parbox* *parbox*
 		A parbox is a box whose contents are created in
 		|\paragraph-mode|. The |\parbox| has two
 
@@ -2063,7 +2068,7 @@ lrbox						*\lrbox*
 		containing a paragraph-making environment, you should use a
 		|\minipage| environment.
 
-\raisebox{distance}[extendabove][extendbelow]{text}   *\raisebox*
+\raisebox{distance}[extendabove][extendbelow]{text}   *\raisebox* *raisebox*
 		The |\raisebox| command is used to raise or lower text. The
 		first mandatory argument specifies how high the text is to be
 		raised (or lowered if it is a negative amount). The text
@@ -2077,24 +2082,24 @@ lrbox						*\lrbox*
 		The second optional argument, extend-below, makes LaTeX think
 		that the text extends below the line by the amount specified.
 
-\rule[raiseheight]{width}{thickness} 		*\rule*
+\rule[raiseheight]{width}{thickness} 		*\rule* *rule*
 		The |\rule| command is used to produce horizontal lines. The
 		arguments are defined as follows:
 'raiseheight'	specifies how high to raise the rule (optional)
 'width'		specifies the length of the rule (mandatory)
 'thickness'	specifies the thickness of the rule (mandatory)
 
-\savebox{cmd}[width][pos]{text} 		*\savebox*
+\savebox{cmd}[width][pos]{text} 		*\savebox* *savebox*
 		This command typeset text in a box just as for |\makebox|.
 		However, instead of printing the resulting box, it saves it in
 		bin cmd, which must have been declared with |\newsavebox|.
 
-\sbox{text}					*\sbox*
+\sbox{text}					*\sbox* *sbox*
 		This commands typeset text in a box just as for |\mbox|.
 		However, instead of printing the resulting box, it saves it in
 		bin cmd, which must have been declared with |\newsavebox|.
 
-\usebox{cmd}					*\usebox*
+\usebox{cmd}					*\usebox* *usebox*
 		Prints the box most recently saved in bin cmd by a |\savebox|
 		command.
 
@@ -2114,7 +2119,7 @@ meaning. A \ is produced by typing $\backslash$ in your file.
 
 Also, \~ means `place a tilde accent over the following letter', so you will
 probably want to use |\verb| instead.
-						*\symbol*
+						*\symbol* *symbol*
 In addition, you can access any character of a font once you know its number
 by using the |\symbol| command. For example, the character used for displaying
 spaces in the |\verb|* command has the code decimal 32, so it can be typed as
@@ -2135,7 +2140,7 @@ root file; it is the one whose name you type when you run LaTeX.
 |\includeonly| 		Determine which files are included
 |\input| 		Unconditionally include a file
 
-\include{file}					*\include*
+\include{file}					*\include* *include*
 		The \include command is used in conjunction with the
 		|\includeonly| command for selective inclusion of
 		files. The file argument is the first name of a file,
@@ -2153,14 +2158,14 @@ root file; it is the one whose name you type when you run LaTeX.
 		The |\include| command may not appear in the preamble or in a
 		file read by another |\include| command.
 
-\includeonly{filelist}	 			*\includeonly*
+\includeonly{filelist}	 			*\includeonly* *includeonly*
 		The |\includeonly| command controls which files will be read in
 		by an |\include| command. {filelist} should be a
 		comma-separated list of filenames. Each filename must match
 		exactly a filename specified in a |\include| command. This
 		command can only appear in the preamble.
 
-\input{file} 					*\input*
+\input{file} 					*\input* *input*
 		The |\input| command causes the indicated file to be read and
 		processed, exactly as if its contents had been inserted in the
 		current file at that point. The file name may be a complete
@@ -2183,26 +2188,26 @@ You may include other LaTeX commands between the |\documentclass| and the
 ==============================================================================
 22. Table of Contents				*latex-toc*
 
-						*\tableofcontents*
+						*\tableofcontents* *tableofcontents*
 A table of contents is produced with the |\tableofcontents| command. You put
 the command right where you want the table of contents to go; LaTeX does the
 rest for you. It produces a heading, but it does not automatically start a new
 page. If you want a new page after the table of contents, include a |\newpage|
 command after the |\tableofcontents| command.
 
-						*\listoffigures* *\listoftables*
+						*\listoffigures* *listoffigures* *\listoftables* *listoftables*
 There are similar commands |\listoffigures| and |\listoftables| for producing a
 list of figures and a list of tables, respectively.  Everything works exactly
 the same as for the table of contents.
 
-						*\nofiles*
+						*\nofiles* *nofiles*
 NOTE: If you want any of these items to be generated, you cannot have the
 \nofiles command in your document.
 
 |\addcontentsline|	Add an entry to table of contents etc.
 |\addtocontents|		Add text directly to table of contents file etc.
 
-\addcontentsline{file}{secunit}{entry}		*\addcontentsline*
+\addcontentsline{file}{secunit}{entry}		*\addcontentsline* *addcontentsline*
 		The |\addcontentsline| command adds an entry to the specified
 		list or table where:
 {file}		is the extension of the file on which information is to be
@@ -2218,7 +2223,7 @@ NOTE: If you want any of these items to be generated, you cannot have the
 			lot -- table
 {entry}		is the text of the entry.
 
-\addtocontents{file}{text}				*\addtocontents*
+\addtocontents{file}{text}				*\addtocontents* *addtocontents*
 		The |\addtocontents| command adds text (or formatting commands)
 		directly to the file that generates the table of contents or
 		list of figures or tables.
@@ -2234,7 +2239,7 @@ NOTE: If you want any of these items to be generated, you cannot have the
 |\typein|		Read text from the terminal.
 |\typeout|		Write text to the terminal.
 
-\typein[cmd]{msg}					*\typein*
+\typein[cmd]{msg}					*\typein* *typein*
 		Prints {msg} on the terminal and causes LaTeX to stop and wait
 		for you to type a line of input, ending with return. If the
 		[cmd] argument is missing, the typed input is processed as if
@@ -2243,12 +2248,12 @@ NOTE: If you want any of these items to be generated, you cannot have the
 		a command name. This command name is then defined or redefined
 		to be the typed input.
 
-\typeout{msg}						*\typeout*
+\typeout{msg}						*\typeout* *typeout*
 		Prints {msg} on the terminal and in the `.log' file. Commands
 		in {msg} that are defined with |\newcommand| or |\renewcommand|
 		are replaced by their definitions before being printed.
 
-							*\space*
+							*\space* *space*
 LaTeX's usual rules for treating multiple spaces as a single space and
 ignoring spaces after a command name apply to {msg}. A |\space| command in {msg}
 causes a single space to be printed. A ^^J in {msg} prints a newline.
@@ -2279,60 +2284,60 @@ to get sans serif boldface.
 You can also use the environment form of the declaration forms; e.g.: >
 	\begin{ttfamily}...\end{ttfamily}.
 <
-\textrm (\rmfamily)		*\textrm* *\rmfamily*
+\textrm (\rmfamily)		*\textrm* *textrm* *\rmfamily* *rmfamily*
 		Roman
 
-\textit (\itshape)		*\textit* *\itshape* *\emph*
+\textit (\itshape)		*\textit* *textit* *\itshape* *itshape* *\emph* *emph*
 		Emphasis (toggles between |\textit| and |\textrm|).
 
-\textmd (\mdseries)		*\textmd* *\mdseries*
+\textmd (\mdseries)		*\textmd* *textmd* *\mdseries* *mdseries*
 		Medium weight (default). The opposite of boldface.
 
-\textbf (\bfseries)		*\textbf* *\bfseries*
+\textbf (\bfseries)		*\textbf* *textbf* *\bfseries* *bfseries*
 		Boldface.
 
-\textup (\upshape)		*\textup* *\upshape*
+\textup (\upshape)		*\textup* *textup* *\upshape* *upshape*
 		Upright (default).  The opposite of slanted.
 
-\textsl (\slshape)		*\textsl* *\slshape*
+\textsl (\slshape)		*\textsl* *textsl* *\slshape* *slshape*
 		Slanted.
 
-\textsf (\sffamily)		*\textsf* *\sffamily*
+\textsf (\sffamily)		*\textsf* *textsf* *\sffamily* *sffamily*
 		Sans serif.
 
-\textsc (\scshape)		*\textsc* *\scshape*
+\textsc (\scshape)		*\textsc* *textsc* *\scshape* *scshape*
 		Small caps.
 
-\texttt (\ttfamily)		*\texttt* *\ttfamily*
+\texttt (\ttfamily)		*\texttt* *texttt* *\ttfamily* *ttfamily*
 		Typewriter.
 
-\textnormal (\normalfont)	*\textnormal* *\normalfont*
+\textnormal (\normalfont)	*\textnormal* *textnormal* *\normalfont* *normalfont*
 		Main document font.
 
-\mathrm				*\mathrm*
+\mathrm				*\mathrm* *mathrm*
 		Roman, for use in math mode.
 
-\mathbf  			*\mathbf*
+\mathbf  			*\mathbf* *mathbf*
 		Boldface, for use in math mode.
 
-\mathsf				*\mathsf*
+\mathsf				*\mathsf* *mathsf*
 		Sans serif, for use in math mode.
 
-\mathtt				*\mathtt*
+\mathtt				*\mathtt* *mathtt*
 		Typewriter, for use in math mode.
 
-\mathit				*\mathit*
+\mathit				*\mathit* *mathit*
 		Italics, for use in math mode, e.g. variable names with
 		several letters.
 
-\mathnormal			*\mathnormal*
+\mathnormal			*\mathnormal* *mathnormal*
 		For use in math mode, e.g. inside another type style
 		declaration.
 
-\mathcal			*\mathcal*
+\mathcal			*\mathcal* *mathcal*
  `Calligraphic' letters, for use in math mode.
 
-				*\mathversion*
+				*\mathversion* *mathversion*
 In addition, the command \mathversion{bold} can be used for switching to bold
 letters and symbols in formulas. \mathversion{normal} restores the default.
 
@@ -2348,16 +2353,16 @@ current group.
 You can also use the environment form of these commands; e.g. >
 	\begin{tiny}...\end{tiny}
 
-\tiny			        *\tiny*
-\scriptsize		        *\scriptsize*
-\footnotesize		        *\footnotesize*
-\small			        *\small*
-\normalsize(default)	        *\normalsize*
-\large			        *\large*
-\Large			        *\Large*
-\LARGE			        *\LARGE*
-\huge			        *\huge*
-\Huge			        *\Huge*
+\tiny			        *\tiny* *tiny*
+\scriptsize		        *\scriptsize* *scriptsize*
+\footnotesize		        *\footnotesize* *footnotesize*
+\small			        *\small* *small*
+\normalsize(default)	        *\normalsize* *normalsize*
+\large			        *\large* *large*
+\Large			        *\Large* *Large*
+\LARGE			        *\LARGE* *LARGE*
+\huge			        *\huge* *huge*
+\Huge			        *\Huge* *Huge*
 
 ==========
 Low-level font commands				*font-lowlevelcommands*
@@ -2366,17 +2371,17 @@ These commands are primarily intended for writers of macros and packages. The
 commands listed here are only a subset of the available ones. For full
 details, you should consult Chapter 7 of The LaTeX Companion.
 
-\fontencoding{enc}				*\fontencoding*
+\fontencoding{enc}				*\fontencoding* *fontencoding*
 		Select font encoding. Valid encodings include OT1 and T1.
 
-\fontfamily{family}  				*\fontfamily*
+\fontfamily{family}  				*\fontfamily* *fontfamily*
 		Select font family. Valid families include:
 			cmr  for Computer Modern Roman
 			cmss for Computer Modern Sans Serif
 			cmtt for Computer Modern Typewriter
 		and numerous others.
 
-\fontseries{series}				*\fontseries*
+\fontseries{series}				*\fontseries* *fontseries*
 		Select font series. Valid series include:
 			m Medium (normal)
 			b Bold
@@ -2385,7 +2390,7 @@ details, you should consult Chapter 7 of The LaTeX Companion.
 			bx Bold extended
 		and various other combinations.
 
-\fontshape{shape}				*\fontshape*
+\fontshape{shape}				*\fontshape* *fontshape*
 		Select font shape. Valid shapes are:
 			n Upright (normal)
 			it Italic
@@ -2395,17 +2400,17 @@ details, you should consult Chapter 7 of The LaTeX Companion.
 			ol Outline
 		The two last shapes are not available for most font families.
 
-\fontsize{size}{skip}				*\fontsize*
+\fontsize{size}{skip}				*\fontsize* *fontsize*
 		Set font size. The first parameter is the font size to switch
 		to; the second is the \baselineskip to use. The unit of both
 		parameters defaults to pt. A rule of thumb is that the
 		baselineskip should be 1.2 times the font size.
 
-\selectfont					*\selectfont*
+\selectfont					*\selectfont* *selectfont*
 		The changes made by calling the four font commands described
 		above do not come into effect until |\selectfont| is called.
 
-\usefont{enc}{family}{series}{shape}		*\usefont*
+\usefont{enc}{family}{series}{shape}		*\usefont* *usefont*
 		Equivalent to calling |\fontencoding|, |\fontfamily|,
 		|\fontseries| and |\fontshape| with the given parameters,
 		followed by |\selectfont|.

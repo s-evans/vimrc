@@ -316,9 +316,13 @@ let g:no_viewdoc_abbrev=1
 let g:viewdoc_openempty=0
 
 " enable documentation for other filetypes
-let g:ViewDoc_cmake='ViewDoc_help_custom'
-let g:ViewDoc_tex='ViewDoc_help_custom'
-let g:ViewDoc_css='ViewDoc_help_custom'
+let g:ViewDoc_cmake=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_context=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_css=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_plaintex=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_tex=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_c=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
+let g:ViewDoc_cpp=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
 
 if executable("cmd")
     " use the dos help command
