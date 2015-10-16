@@ -32,6 +32,7 @@ Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
 Plug 'js-indent' , { 'for': 'javascript' }
 Plug 'js-syntax' , { 'for': 'javascript' }
+Plug 'latexbox'
 Plug 'matchit'
 Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
 Plug 'obsession'

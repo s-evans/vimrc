@@ -163,3 +163,6 @@
 [submodule "bundle/ps1"]
 	path = bundle/ps1
 	url = git@github.com:PProvost/vim-ps1.git
+[submodule "bundle/latexbox"]
+	path = bundle/latexbox
+	url = https://github.com/LaTeX-Box-Team/LaTeX-Box.git
