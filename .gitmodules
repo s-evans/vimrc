@@ -161,8 +161,10 @@
 	path = bundle/js-syntax
 	url = git@github.com:jelera/vim-javascript-syntax.git
 [submodule "bundle/ps1"]
+    ignore = dirty
 	path = bundle/ps1
 	url = git@github.com:PProvost/vim-ps1.git
 [submodule "bundle/latexbox"]
+    ignore = dirty
 	path = bundle/latexbox
 	url = https://github.com/LaTeX-Box-Team/LaTeX-Box.git
