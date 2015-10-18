@@ -317,16 +317,18 @@ let g:no_viewdoc_abbrev=1
 let g:viewdoc_openempty=0
 
 " enable documentation for other filetypes
-let g:ViewDoc_cmake=[ 'ViewDoc_help_custom' ]
+let g:ViewDoc_cmake=[ 'ViewDoc_help_custom', 'ViewDoc_DEFAULT' ]
 let g:ViewDoc_css=[ 'ViewDoc_help_custom' ]
 let g:ViewDoc_tex=[ 'ViewDoc_help_custom' ]
 let g:ViewDoc_c=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
 let g:ViewDoc_cpp=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
-let g:ViewDoc_asm=[ 'ViewDoc_help_custom' ]
-let g:ViewDoc_fasm=[ 'ViewDoc_help_custom' ]
-let g:ViewDoc_nasm=[ 'ViewDoc_help_custom' ]
-let g:ViewDoc_tasm=[ 'ViewDoc_help_custom' ]
-let g:ViewDoc_masm=[ 'ViewDoc_help_custom' ]
+
+let g:asm_help=[ 'ViewDoc_help_custom', 'ViewDoc_DEFAULT' ]
+let g:ViewDoc_asm=g:asm_help
+let g:ViewDoc_fasm=g:asm_help
+let g:ViewDoc_nasm=g:asm_help
+let g:ViewDoc_tasm=g:asm_help
+let g:ViewDoc_masm=g:asm_help
 
 if executable("cmd")
     " use the dos help command
@@ -834,7 +836,7 @@ endfunction
 " -------------------------------
 
 " used as an operator function with a callback. passes arguments via the current register.
-function! RegisterOperatorWrapper(type, callback) 
+function! RegisterOperatorWrapper(type, callback)
     let sel_save = &selection
     let &selection = "inclusive"
     let reg = v:register
@@ -857,7 +859,7 @@ function! RegisterOperatorWrapper(type, callback)
         normal! gvp
     elseif a:type == 'line'
         normal! `[V`]p
-    elseif a:type == 'block' 
+    elseif a:type == 'block'
         normal! `[\<C-V>`]p
     else
         normal! `[v`]p
@@ -866,6 +868,7 @@ function! RegisterOperatorWrapper(type, callback)
     let &selection = sel_save
     call setreg(reg, reg_save)
 endfunction
+
 
 " wraps operator functions that rely on simple input text
 function! OperatorWrapper(type, callback)
@@ -972,6 +975,10 @@ endfunction
 " -------------------------------
 " operator functions
 " -------------------------------
+
+function! HelpOperator(type)
+    call OperatorWrapper(a:type, "call ViewDoc('doc', getreg(v:register))")
+endfunction
 
 function! GrepWindowOperator(type) 
     call OperatorWrapper(a:type, "call GrepWindowRegister()")
@@ -1366,6 +1373,10 @@ nnoremap Y y$
 
 " make command mode work like readline
 cnoremap <C-a> <Home>
+
+" create visual mode mapping
+vmap K <Plug>(operator-help)
+call operator#user#define('help', 'HelpOperator')
 
 " -------------------------------
 " window navigation mappings
