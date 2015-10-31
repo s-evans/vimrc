@@ -358,6 +358,10 @@ function! s:ViewDoc_sshconfig(topic, filetype, synid, ctx)
 endfunction
 let g:ViewDoc_sshconfig=[ function('s:ViewDoc_sshconfig') ]
 
+" use the info pages for gdb help searching
+let g:ViewDoc_gdb=[ g:ViewDoc_search ]
+let g:ViewDocInfoIndex_gdb = '(gdb)Command and Variable Index'
+
 " define a custom help handler for sshdconfig files
 function! s:ViewDoc_sshdconfig(topic, filetype, synid, ctx)
     return {
