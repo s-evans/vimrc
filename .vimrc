@@ -6,12 +6,11 @@
 " table mode
 " refactoring operations
 " set operations: mean, median, mode, sum
-" extraction function (clear out a register, input regex and scope, append matches into buffer)
 " multiroot operations (rsync svn git sed cscope)
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
-" column text object
-" help: doxygen, asm, msdn, boost
+" help: msdn
+" text transforms: c escaped string, html / xml entities
 
 " -------------------------------
 " plugin setup
@@ -649,46 +648,6 @@ function! EvalMathExpression(exp)
 endfunction
 
 " -------------------------------
-" buffer management functions
-" -------------------------------
-
-" clears out the quickfix list
-function! ClearCw()
-    call setqflist([]) 
-    cclose
-endfunction
-
-" closes out of all inactive buffers
-function! DeleteInactiveBufs()
-    " Get a list of all buffers in all tabs
-    let tablist = []
-    for i in range(tabpagenr('$'))
-        call extend(tablist, tabpagebuflist(i + 1))
-    endfor
-
-    for i in range(1, bufnr('$'))
-        if bufexists(i) && !getbufvar(i,"&mod") && index(tablist, i) == -1
-            " bufno exists AND isn't modified AND isn't in the list of buffers open in windows and tabs
-            silent execute 'bwipeout' i
-        endif
-    endfor
-endfunction
-
-" clears up common sources of vim slowness
-" this breaks some things (nerdtree)
-function! GarbageCollection()
-    call ClearCw()
-    call DeleteInactiveBufs()
-endfunction
-
-" like bufdo, but returns to the original buffer when complete
-function! BufDo(command)
-    let currBuff=bufnr("%")
-    execute 'bufdo! ' . a:command
-    execute 'buffer ' . currBuff
-endfunction
-
-" -------------------------------
 " grep functions
 " -------------------------------
 
@@ -715,7 +674,8 @@ endfunction
 
 " greps in all windows
 function! GrepWindowRegister() 
-    call ClearCw()
+    call setqflist([]) 
+    cclose
     windo silent! execute "silent! grepadd! """ . shellescape(getreg(v:register)) . """ %"
     cw
     redraw!
@@ -815,26 +775,6 @@ function! ToggleDiff()
     endif
 endfunction
 
-" create a scroll locked column (cannot be used with a locked row)
-function! LockColumn()
-    set scrollbind
-    vsplit 
-    vertical resize 20
-    setlocal scrollopt=ver
-    set scrollbind
-    wincmd l
-endfunction
-
-" create a scroll locked row (cannot be used with a locked column)
-function! LockRow()
-    set scrollbind
-    split 
-    resize 1
-    setlocal scrollopt=hor
-    set scrollbind
-    wincmd j
-endfunction
-
 " -------------------------------
 " operator wrapping functions
 " -------------------------------
@@ -872,7 +812,6 @@ function! RegisterOperatorWrapper(type, callback)
     let &selection = sel_save
     call setreg(reg, reg_save)
 endfunction
-
 
 " wraps operator functions that rely on simple input text
 function! OperatorWrapper(type, callback)
@@ -1386,9 +1325,6 @@ call operator#user#define('help', 'HelpOperator')
 " window navigation mappings
 " -------------------------------
 
-" navigate to previous file
-nnoremap <leader><C-O> :ed#<CR>
-
 " quick window navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -1435,7 +1371,6 @@ nnoremap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
 nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TagbarToggle<CR>
-nnoremap <leader>ws :TScratch<CR>
 nnoremap <leader>wg :GundoToggle<CR>
 nnoremap <leader>we :CCTreeWindowToggle<CR>
 nnoremap <leader>wx :call ToggleHex()<CR>
@@ -1443,14 +1378,21 @@ nnoremap <leader>wd :call ToggleDiff()<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
-nnoremap <leader>wfn :call LockRow()<CR>
-nnoremap <leader>wfv :call LockColumn()<CR>
 nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
-nnoremap <leader>wq :call GarbageCollection()<CR> 
 nnoremap <leader>wz :set spell!<CR> 
 set pastetoggle=<leader>wp
+
+" -------------------------------
+" quickfix mappings
+" -------------------------------
+
+augroup quickfix_mappings
+    autocmd!
+    autocmd BufReadPost quickfix nnoremap <buffer> u :colder<CR>
+    autocmd BufReadPost quickfix nnoremap <buffer> <c-r> :cnewer<CR>
+augroup END
 
 " -------------------------------
 " grep operator mappings
