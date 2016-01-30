@@ -1,2 +1,2 @@
 setlocal commentstring=;\ %s
-setlocal comments=b:%
+setlocal comments=b:;
