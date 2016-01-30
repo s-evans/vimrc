@@ -23,6 +23,7 @@ Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] 
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
+Plug 'cisco-ios'
 Plug 'cmake' , { 'for': 'cmake' }
 Plug 'dispatch'
 Plug 'dosbatch' , { 'for': 'dosbatch' }
