@@ -1,4 +1,9 @@
 
+" comment settings
+
+setlocal commentstring=!\ %s
+setlocal comments=b:!
+
 " section functions
 
 function! s:cisco_fwd_top_section()
@@ -52,3 +57,4 @@ vnoremap <buffer> <silent> [[ :<c-u>call <SID>cisco_rev_top_section_visual()<CR>
 
 noremap <buffer> <silent> [] :call <SID>cisco_rev_bot_section()<CR>
 vnoremap <buffer> <silent> [] :<c-u>call <SID>cisco_rev_bot_section_visual()<CR>
+
