@@ -348,29 +348,151 @@ if executable("cmd")
     let g:ViewDoc_dosbatch=[ function('s:ViewDoc_doshelp') ]
 endif
 
+" define a custom help handler for udev files
+function! s:ViewDoc_udev(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man udev',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_udevconf=[ function('s:ViewDoc_udev') ]
+let g:ViewDoc_udevrules=[ function('s:ViewDoc_udev') ]
+let g:ViewDoc_udevperm=[ function('s:ViewDoc_udev') ]
+
+" define a custom help handler for ldap.conf files
+function! s:ViewDoc_ldapconf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man ldap.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_ldapconf=[ function('s:ViewDoc_ldapconf') ]
+
+" define a custom help handler for resolv.conf files
+function! s:ViewDoc_resolv(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man resolv.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_resolv=[ function('s:ViewDoc_resolv') ]
+
+" define a custom help handler for expect files
+function! s:ViewDoc_expect(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man expect',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_expect=[ function('s:ViewDoc_expect') ]
+
+" define a custom help handler for terminfo files
+function! s:ViewDoc_terminfo(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man terminfo',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_terminfo=[ function('s:ViewDoc_terminfo') ]
+
+" define a custom help handler for wget files
+function! s:ViewDoc_wget(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man wget',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_wget=[ function('s:ViewDoc_wget') ]
+
+" define a custom help handler for gitconfig files
+function! s:ViewDoc_gitconfig(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man git-config',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_gitconfig=[ function('s:ViewDoc_gitconfig') ]
+
+" define a custom help handler for screenrc files
+function! s:ViewDoc_screen(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man screen',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_screen=[ function('s:ViewDoc_screen') ]
+
+" define a custom help handler for modules files
+function! s:ViewDoc_modconf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man modules',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_modconf=[ function('s:ViewDoc_modconf') ]
+
+" define a custom help handler for host.conf files
+function! s:ViewDoc_hostconf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man host.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_hostconf=[ function('s:ViewDoc_hostconf') ]
+
+" define a custom help handler for netrc files
+function! s:ViewDoc_netrc(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man netrc',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_netrc=[ function('s:ViewDoc_netrc') ]
+
+" define a custom help handler for apt.conf files
+function! s:ViewDoc_aptconf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man apt.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_aptconf=[ function('s:ViewDoc_aptconf') ]
+
 " define a custom help handler for sshconfig files
 function! s:ViewDoc_sshconfig(topic, filetype, synid, ctx)
     return {
                 \'cmd':    'man ssh_config',
                 \'ft':     'man',
-                \'search': '^     ' . a:topic . '\>',
+                \'search': '^[ ]\+' . a:topic . '\>',
                 \}
 endfunction
 let g:ViewDoc_sshconfig=[ function('s:ViewDoc_sshconfig') ]
-
-" use the info pages for gdb help searching
-let g:ViewDoc_gdb=[ 'ViewDoc_search' ]
-let g:ViewDocInfoIndex_gdb = '(gdb)Command and Variable Index'
 
 " define a custom help handler for sshdconfig files
 function! s:ViewDoc_sshdconfig(topic, filetype, synid, ctx)
     return {
                 \'cmd':    'man sshd_config',
                 \'ft':     'man',
-                \'search': '^     ' . a:topic . '\>',
+                \'search': '^[ ]\+' . a:topic . '\>',
                 \}
 endfunction
 let g:ViewDoc_sshdconfig=[ function('s:ViewDoc_sshdconfig') ]
+
+" use the info pages for gdb help searching
+let g:ViewDoc_gdb=[ 'ViewDoc_search' ]
+let g:ViewDocInfoIndex_gdb = '(gdb)Command and Variable Index'
 
 if executable("hlpviewer")
     " TODO: support more than one visual studio version
