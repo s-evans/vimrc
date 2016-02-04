@@ -470,6 +470,25 @@ function! s:ViewDoc_aptconf(topic, filetype, synid, ctx)
 endfunction
 let g:ViewDoc_aptconf=[ function('s:ViewDoc_aptconf') ]
 
+" define a custom help handler for services files
+function! s:ViewDoc_services(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man services',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_services=[ function('s:ViewDoc_services') ]
+
+" define a custom help handler for fstab files
+function! s:ViewDoc_fstab(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man fstab',
+                \'ft':     'man',
+                \}
+endfunction
+let g:ViewDoc_fstab=[ function('s:ViewDoc_fstab') ]
+
 " define a custom help handler for sshconfig files
 function! s:ViewDoc_sshconfig(topic, filetype, synid, ctx)
     return {
