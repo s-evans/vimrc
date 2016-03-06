@@ -360,6 +360,66 @@ let g:ViewDoc_udevconf=[ function('s:ViewDoc_udev') ]
 let g:ViewDoc_udevrules=[ function('s:ViewDoc_udev') ]
 let g:ViewDoc_udevperm=[ function('s:ViewDoc_udev') ]
 
+" define a custom help handler for dnsmasq files
+function! s:ViewDoc_dnsmasq(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man dnsmasq',
+                \'ft':     'man',
+                \'search': a:topic,
+                \}
+endfunction
+let g:ViewDoc_dnsmasq=[ function('s:ViewDoc_dnsmasq') ]
+
+" define a custom help handler for sysctl files
+function! s:ViewDoc_sysctl(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'sysctl --all',
+                \'ft':     'sysctl',
+                \'search': a:topic,
+                \}
+endfunction
+let g:ViewDoc_sysctl=[ function('s:ViewDoc_sysctl') ]
+
+" define a custom help handler for samba files
+function! s:ViewDoc_samba(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man smb.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_samba=[ function('s:ViewDoc_samba') ]
+
+" define a custom help handler for readline files
+function! s:ViewDoc_readline(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man readline',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_readline=[ function('s:ViewDoc_readline') ]
+
+" define a custom help handler for pamconf files
+function! s:ViewDoc_pamconf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man pam.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_pamconf=[ function('s:ViewDoc_pamconf') ]
+
+" define a custom help handler for xf86conf files
+function! s:ViewDoc_xf86conf(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man xorg.conf',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_xf86conf=[ function('s:ViewDoc_xf86conf') ]
+
 " define a custom help handler for ldap.conf files
 function! s:ViewDoc_ldapconf(topic, filetype, synid, ctx)
     return {
