@@ -480,6 +480,16 @@ function! s:ViewDoc_services(topic, filetype, synid, ctx)
 endfunction
 let g:ViewDoc_services=[ function('s:ViewDoc_services') ]
 
+" define a custom help handler for upstart files
+function! s:ViewDoc_upstart(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man -s 5 init',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_upstart=[ function('s:ViewDoc_upstart') ]
+
 " define a custom help handler for fstab files
 function! s:ViewDoc_fstab(topic, filetype, synid, ctx)
     return {
