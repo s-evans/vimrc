@@ -11,6 +11,8 @@
 " left/right expression text object
 " help: msdn
 " text transforms: c escaped string, html / xml entities
+" non-coercive title case function / mapping
+" update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
 
 " -------------------------------
 " plugin setup
@@ -34,6 +36,7 @@ Plug 'js-indent' , { 'for': 'javascript' }
 Plug 'js-syntax' , { 'for': 'javascript' }
 Plug 'latexbox'
 Plug 'matchit'
+Plug 'mediawiki'
 Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
@@ -541,6 +544,7 @@ endfunction
 let g:ViewDoc_services=[ function('s:ViewDoc_services') ]
 
 " define a custom help handler for upstart files
+" TODO: add DEFAULT help handler for commands invoked by upstart scripts?
 function! s:ViewDoc_upstart(topic, filetype, synid, ctx)
     return {
                 \'cmd':    'man -s 5 init',
