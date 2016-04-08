@@ -89,6 +89,7 @@ set noshowmatch
 set nowrap
 set number
 set smartcase
+set visualbell
 set textwidth=0
 set matchpairs+=<:>
 let g:load_doxygen_syntax=1
