@@ -396,14 +396,8 @@ endfunction
 let g:ViewDoc_samba=[ function('s:ViewDoc_samba') ]
 
 " define a custom help handler for readline files
-function! s:ViewDoc_readline(topic, filetype, synid, ctx)
-    return {
-                \'cmd':    'man readline',
-                \'ft':     'man',
-                \'search': '^[ ]\+' . a:topic . '\>',
-                \}
-endfunction
-let g:ViewDoc_readline=[ function('s:ViewDoc_readline') ]
+let g:ViewDocInfoIndex_readline = [ '(bash)Variable Index', '(bash)Function Index' ]
+let g:ViewDoc_readline=[ 'ViewDoc_search' ]
 
 " define a custom help handler for pamconf files
 function! s:ViewDoc_pamconf(topic, filetype, synid, ctx)
@@ -1137,8 +1131,12 @@ endfunction
 " operator functions
 " -------------------------------
 
+function! HelpRegister()
+    call ViewDoc('doc', getreg(v:register))
+endfunction
+
 function! HelpOperator(type)
-    call OperatorWrapper(a:type, "call ViewDoc('doc', getreg(v:register))")
+    call OperatorWrapper(a:type, "call HelpRegister()")
 endfunction
 
 function! GrepWindowOperator(type) 
