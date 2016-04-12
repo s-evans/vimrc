@@ -174,3 +174,6 @@
 [submodule "bundle/mediawiki"]
 	path = bundle/mediawiki
 	url = https://github.com/chikamichi/mediawiki.vim.git
+[submodule "bundle/tmux-conf"]
+	path = bundle/tmux-conf
+	url = https://github.com/tmux-plugins/vim-tmux.git

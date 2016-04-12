@@ -56,6 +56,7 @@ Plug 'textobj-line'
 Plug 'textobj-parameter'
 Plug 'textobj-user'
 Plug 'tlib_vim'
+Plug 'tmux-conf'
 Plug 'viewdoc'
 Plug 'vim-abolish'
 Plug 'vim-addon-mw-utils'
@@ -394,6 +395,16 @@ function! s:ViewDoc_samba(topic, filetype, synid, ctx)
                 \}
 endfunction
 let g:ViewDoc_samba=[ function('s:ViewDoc_samba') ]
+
+" define a custom help handler for tmux files
+function! s:ViewDoc_tmux(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man tmux',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic . '\>',
+                \}
+endfunction
+let g:ViewDoc_tmux=[ function('s:ViewDoc_tmux') ]
 
 " define a custom help handler for readline files
 let g:ViewDocInfoIndex_readline = [ '(bash)Variable Index', '(bash)Function Index' ]
