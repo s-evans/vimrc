@@ -14,6 +14,7 @@
 " non-coercive title case function / mapping
 " update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
 " diff command mappings: perhaps prepended with "\d"
+" infokey filetype plugin
 
 " -------------------------------
 " plugin setup
