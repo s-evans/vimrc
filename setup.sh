@@ -12,5 +12,11 @@ echo "Pulling all git submodules"
 cd $DIRPATH
 git submodule update --init --recursive
 
-echo "Please compile YCM!"
+echo "Installing plugins"
+vim -c ":PlugInstall" -c ":qa!"
 
+echo "Generating helptags"
+vim -c ":silent! helptags $DIRPATH/ftdoc" -c ":qa!"
+
+echo "TODO:"
+echo "-Compile YCM"
