@@ -15,6 +15,7 @@
 " update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
 " diff command mappings: perhaps prepended with "\d"
 " infokey filetype plugin
+" using xmlstarlet as format program
 
 " -------------------------------
 " plugin setup
@@ -1604,6 +1605,7 @@ nnoremap <leader>wg :GundoToggle<CR>
 nnoremap <leader>we :CCTreeWindowToggle<CR>
 nnoremap <leader>wx :call ToggleHex()<CR>
 nnoremap <leader>wd :call ToggleDiff()<CR>
+nnoremap <leader>wu :diffupdate<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
