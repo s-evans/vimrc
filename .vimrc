@@ -34,6 +34,7 @@ Plug 'dosbatch' , { 'for': 'dosbatch' }
 Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
 Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
 Plug 'gundo' , { 'on': 'GundoToggle' }
+Plug 'indent-motion'
 Plug 'js-indent' , { 'for': 'javascript' }
 Plug 'js-syntax' , { 'for': 'javascript' }
 Plug 'latexbox'
