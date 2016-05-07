@@ -11,7 +11,6 @@
 " left/right expression text object
 " help: msdn
 " text transforms: c escaped string, html / xml entities
-" non-coercive title case function / mapping
 " update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
 " diff command mappings: perhaps prepended with "\d"
 " infokey filetype plugin
@@ -304,13 +303,13 @@ let g:easy_align_delimiters = {
 " -------------------------------
 
 " enable eclim completion only on java files
-if has("autocmd") 
+if has("autocmd")
     augroup eclim_java_completion
         autocmd!
         autocmd BufEnter *.java let g:EclimCompletionMethod = 'omnifunc'
         autocmd BufLeave *.java unlet g:EclimCompletionMethod
     augroup END
-endif 
+endif
 
 " -------------------------------
 " viewdoc settings
@@ -346,7 +345,7 @@ if executable("cmd")
         let output=system('cmd /C help '.tmp_topic)
         if match(output, "This command is not supported by the help utility") != -1
             return {}
-        else 
+        else
             return { 'cmd': 'cmd /C help '.tmp_topic,
                         \ 'ft':	'dosbatch',
                         \ }
@@ -617,12 +616,12 @@ if has('patch-7.3.541')
 endif
 
 " disable continuation commenting
-if has("autocmd") 
+if has("autocmd")
     augroup comment_format
         autocmd!
         autocmd FileType * set formatoptions-=cro
     augroup END
-endif 
+endif
 
 " initialize the format program dictionary
 let g:format_prg={}
@@ -690,7 +689,7 @@ endif
 
 " sets the format program a little more easily
 function! SetFormatProgram(string)
-   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" ) 
+   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
 endfunction
 
 " gets the format program for the filetype specified
@@ -699,7 +698,7 @@ function! GetFileTypeFormatProgram(filetype)
 endfunction
 
 " set up auto commands to set the format program per buffer
-if has("autocmd") 
+if has("autocmd")
     augroup auto_format
         autocmd!
 
@@ -718,7 +717,7 @@ endif
 if has("python") && executable("python")
     python << 
 try:
-    from math import * 
+    from math import *
     import vim
     import sys
 except ImportError:
@@ -731,13 +730,13 @@ endif
 " -------------------------------
 
 " returns a list containing strings contained in the path variable
-function! GetPathList() 
+function! GetPathList()
     let p = &path
     return split(p, ",")
 endfunction
 
 " returns a space separated string of all elements in the path variable
-function! GetPathString() 
+function! GetPathString()
     let plist = GetPathList()
     return join(plist, " ")
 endfunction
@@ -745,7 +744,7 @@ endfunction
 " executes a command string for each path element, replacing all occurances of %s with the path element string
 function! ForEachPath(command)
     let plist = GetPathList()
-    for p in plist 
+    for p in plist
         let newCommand = substitute(a:command, "\%s", p, "g")
         execute newCommand
     endfor
@@ -866,7 +865,7 @@ endif
 " -------------------------------
 
 " solves the given mathemical expression and returns the result
-function! EvalMathExpression(exp) 
+function! EvalMathExpression(exp)
     execute "python sys.argv = [\"" . a:exp . "\"]"
     python sys.argv[0] = eval(sys.argv[0])
     python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
@@ -899,8 +898,8 @@ function! GrepCurrentRegister()
 endfunction
 
 " greps in all windows
-function! GrepWindowRegister() 
-    call setqflist([]) 
+function! GrepWindowRegister()
+    call setqflist([])
     cclose
     windo silent! execute "silent! grepadd! """ . shellescape(getreg(v:register)) . """ %"
     cw
@@ -1049,7 +1048,7 @@ function! OperatorWrapper(type, callback)
         normal! gvy
     elseif a:type == 'line'
         normal! `[V`]y
-    elseif a:type == 'block' 
+    elseif a:type == 'block'
         normal! `[\<C-V>`]y
     else
         normal! `[v`]y
@@ -1072,13 +1071,13 @@ let g:urlRangeCount = len(urlRanges)
 function! UrlEncodeCharInternal(charByte, lower, upper)
     let idx = a:lower + (a:upper - a:lower) / 2
 
-    if a:lower > a:upper 
+    if a:lower > a:upper
         return 0
     endif
 
-    if a:charByte < g:urlRanges[idx][0] 
+    if a:charByte < g:urlRanges[idx][0]
         return UrlEncodeCharInternal(a:charByte, a:lower, idx - 1)
-    elseif a:charByte > g:urlRanges[idx][1] 
+    elseif a:charByte > g:urlRanges[idx][1]
         return UrlEncodeCharInternal(a:charByte, idx + 1, a:upper)
     endif
 
@@ -1104,7 +1103,7 @@ function! UrlEncodeRegister()
             break
         endif
 
-        if UrlEncodeChar(byteVal)  
+        if UrlEncodeChar(byteVal)
             let newChar = "%" . printf('%02X', byteVal)
         endif
 
@@ -1153,7 +1152,7 @@ function! HelpOperator(type)
     call OperatorWrapper(a:type, "call HelpRegister()")
 endfunction
 
-function! GrepWindowOperator(type) 
+function! GrepWindowOperator(type)
     call OperatorWrapper(a:type, "call GrepWindowRegister()")
 endfunction
 
@@ -1237,63 +1236,67 @@ function! TopologicalSortOperator()
     call RegisterOperatorWrapper(a:type, "call TopologicalSortRegister()")
 endfunction
 
-function! MathExpressionOperator(type) 
+function! MathExpressionOperator(type)
     call RegisterOperatorWrapper(a:type, "call MathExpressionRegister()")
 endfunction
 
-function! Base64Operator(type) 
+function! Base64Operator(type)
     call RegisterOperatorWrapper(a:type, "call Base64Register()")
 endfunction
 
-function! Base64DecodeOperator(type) 
+function! Base64DecodeOperator(type)
     call RegisterOperatorWrapper(a:type, "call Base64DecodeRegister()")
 endfunction
 
-function! Md5Operator(type) 
+function! Md5Operator(type)
     call RegisterOperatorWrapper(a:type, "call Md5Register()")
 endfunction
 
-function! CrcOperator(type) 
+function! CrcOperator(type)
     call RegisterOperatorWrapper(a:type, "call CrcRegister()")
 endfunction
 
-function! CppFilterOperator(type) 
+function! CppFilterOperator(type)
     call RegisterOperatorWrapper(a:type, "call CppFilterRegister()")
 endfunction
 
-function! UnixToDosOperator(type) 
+function! UnixToDosOperator(type)
     call RegisterOperatorWrapper(a:type, "call UnixToDosRegister()")
 endfunction
 
-function! TitleCaseOperator(type) 
+function! TitleCaseOperator(type)
     call RegisterOperatorWrapper(a:type, "call TitleCaseRegister()")
 endfunction
 
-function! TableOperator(type) 
+function! LiteTitleCaseOperator(type)
+    call RegisterOperatorWrapper(a:type, "call LiteTitleCaseRegister()")
+endfunction
+
+function! TableOperator(type)
     call RegisterOperatorWrapper(a:type, "call TableRegister()")
 endfunction
 
-function! DosToUnixOperator(type) 
+function! DosToUnixOperator(type)
     call RegisterOperatorWrapper(a:type, "call DosToUnixRegister()")
 endfunction
 
-function! MacToUnixOperator(type) 
+function! MacToUnixOperator(type)
     call RegisterOperatorWrapper(a:type, "call MacToUnixRegister()")
 endfunction
 
-function! UnixToMacOperator(type) 
+function! UnixToMacOperator(type)
     call RegisterOperatorWrapper(a:type, "call UnixToMacRegister()")
 endfunction
 
-function! TableSeparatorOperator(type) 
+function! TableSeparatorOperator(type)
     call RegisterOperatorWrapper(a:type, "call TableSeparatorRegister()")
 endfunction
 
-function! SubstituteRegisterOperator(type) 
+function! SubstituteRegisterOperator(type)
     call RegisterOperatorWrapper(a:type, "call SubstituteRegisterRegister()")
 endfunction
 
-function! SubstituteOperator(type) 
+function! SubstituteOperator(type)
     call RegisterOperatorWrapper(a:type, "call SubstituteRegister()")
 endfunction
 
@@ -1366,21 +1369,21 @@ function! UniqueRegister()
 endfunction
 
 " checks if adjacent values are the same
-function! DuplicateFunction(arg1, arg2) 
-    return a:arg1 ==# a:arg2 
+function! DuplicateFunction(arg1, arg2)
+    return a:arg1 ==# a:arg2
 endfunction
 
 " finds blocks of adjacent values that are the same
 function! DuplicateBlockFunction(arg1, arg2)
-    if a:arg1 ==# a:arg2 || a:arg1 ==# g:DuplicateValue 
+    if a:arg1 ==# a:arg2 || a:arg1 ==# g:DuplicateValue
         let g:DuplicateValue = a:arg1
-        return 0 
+        return 0
     endif
     return 1
 endfunction
 
-" removes unique values (set intersection) 
-" also: 
+" removes unique values (set intersection)
+" also:
 " join <(sort -n A) <(sort -n B)
 " sort -n A B | uniq -d
 " grep -xF -f A B
@@ -1429,7 +1432,7 @@ function! SubstituteRegisterRegister()
     let flags = input("Enter flags: ")
     let list = split(getreg(v:register), "\n")
     let size = len(list)
-    let i = 0 
+    let i = 0
     while i < size
         let list[i] = substitute(list[i], pat, sub, flags)
         let i += 1
@@ -1444,7 +1447,7 @@ function! SubstituteRegister()
     let flags = input("Enter flags: ")
     let list = split(getreg(v:register), "\n")
     let size = len(list)
-    let i = 0 
+    let i = 0
     while i < size
         let list[i] = substitute(list[i], pat, sub, flags)
         let i += 1
@@ -1453,13 +1456,18 @@ function! SubstituteRegister()
 endfunction
 
 " evaluates mathematical expressions
-function! MathExpressionRegister() 
+function! MathExpressionRegister()
     call setreg(v:register, EvalMathExpression(getreg(v:register)))
 endfunction
 
 " makes text title case
 function! TitleCaseRegister()
     call setreg(v:register, substitute(getreg(v:register), "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") )
+endfunction
+
+" makes text title case
+function! LiteTitleCaseRegister()
+    call setreg(v:register, substitute(getreg(v:register), "\\v<(\\w*)>", "\\u\\1", "g") )
 endfunction
 
 " creates a table from space separated arguments
@@ -1499,27 +1507,27 @@ function! CppFilterRegister()
 endfunction
 
 " performs crc32 on selected text
-function! CrcRegister() 
+function! CrcRegister()
     call setreg(v:register, system("cksum", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
     call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
 " performs md5 on selected text
-function! Md5Register() 
+function! Md5Register()
     call setreg(v:register, system("md5sum", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
     call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
 endfunction
 
 " base64 encodes text
-function! Base64Register() 
+function! Base64Register()
     call setreg(v:register, system("base64", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
 
 " base64 decodes text
-function! Base64DecodeRegister() 
+function! Base64DecodeRegister()
     call setreg(v:register, system("base64 -d", getreg(v:register)))
     call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
 endfunction
@@ -1612,7 +1620,7 @@ nnoremap <leader>wa :AS<CR>
 nnoremap <leader>wl :set number!<CR>
 nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
-nnoremap <leader>wz :set spell!<CR> 
+nnoremap <leader>wz :set spell!<CR>
 set pastetoggle=<leader>wp
 
 " -------------------------------
@@ -1680,6 +1688,9 @@ call operator#user#define('cpp-filter', 'CppFilterOperator')
 
 map <leader>ti <Plug>(operator-title-case)
 call operator#user#define('title-case', 'TitleCaseOperator')
+
+map <leader>tI <Plug>(operator-lite-title-case)
+call operator#user#define('lite-title-case', 'LiteTitleCaseOperator')
 
 map <leader>tt <Plug>(operator-table)
 call operator#user#define('table', 'TableOperator')
