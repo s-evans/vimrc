@@ -1260,10 +1260,6 @@ function! CppFilterOperator(type)
     call RegisterOperatorWrapper(a:type, "call CppFilterRegister()")
 endfunction
 
-function! UnixToDosOperator(type)
-    call RegisterOperatorWrapper(a:type, "call UnixToDosRegister()")
-endfunction
-
 function! TitleCaseOperator(type)
     call RegisterOperatorWrapper(a:type, "call TitleCaseRegister()")
 endfunction
@@ -1274,18 +1270,6 @@ endfunction
 
 function! TableOperator(type)
     call RegisterOperatorWrapper(a:type, "call TableRegister()")
-endfunction
-
-function! DosToUnixOperator(type)
-    call RegisterOperatorWrapper(a:type, "call DosToUnixRegister()")
-endfunction
-
-function! MacToUnixOperator(type)
-    call RegisterOperatorWrapper(a:type, "call MacToUnixRegister()")
-endfunction
-
-function! UnixToMacOperator(type)
-    call RegisterOperatorWrapper(a:type, "call UnixToMacRegister()")
 endfunction
 
 function! TableSeparatorOperator(type)
@@ -1481,26 +1465,6 @@ function! TableSeparatorRegister()
     call setreg(v:register, system("column -s" . shellescape(delimiter) ." -t", getreg(v:register)))
 endfunction
 
-" converts unix text to mac
-function! UnixToMacRegister()
-    call setreg(v:register, system("unix2mac -f", getreg(v:register)))
-endfunction
-
-" converts mac text to unix
-function! MacToUnixRegister()
-    call setreg(v:register, system("mac2unix -f", getreg(v:register)))
-endfunction
-
-" converts dos text to unix
-function! DosToUnixRegister()
-    call setreg(v:register, system("dos2unix -f", getreg(v:register)))
-endfunction
-
-" converts unix text to dos
-function! UnixToDosRegister()
-    call setreg(v:register, system("unix2dos -f", getreg(v:register)))
-endfunction
-
 " converts cpp name mangled strings to their pretty counterparts
 function! CppFilterRegister()
     call setreg(v:register, system("c++filt", getreg(v:register)))
@@ -1655,18 +1619,6 @@ call operator#user#define('grep-window', 'GrepWindowOperator')
 " -------------------------------
 " text transformation mappings
 " -------------------------------
-
-map <leader>tud <Plug>(operator-unix-to-dos)
-call operator#user#define('unix-to-dos', 'UnixToDosOperator')
-
-map <leader>tdu <Plug>(operator-dos-to-unix)
-call operator#user#define('dos-to-unix', 'DosToUnixOperator')
-
-map <leader>tmu <Plug>(operator-mac-to-unix)
-call operator#user#define('mac-to-unix', 'MacToUnixOperator')
-
-map <leader>tum <Plug>(operator-unix-to-mac)
-call operator#user#define('unix-to-mac', 'UnixToMacOperator')
 
 map <leader>tb <Plug>(operator-base64)
 call operator#user#define('base64', 'Base64Operator')
