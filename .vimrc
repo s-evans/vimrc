@@ -412,6 +412,10 @@ let g:ViewDoc_tmux=[ function('s:ViewDoc_tmux') ]
 let g:ViewDocInfoIndex_readline = [ '(bash)Variable Index', '(bash)Function Index' ]
 let g:ViewDoc_readline=[ 'ViewDoc_search' ]
 
+" define a custom help handler for sed files
+let g:ViewDocInfoIndex_sed = [ '(sed)Command and Option Index' ]
+let g:ViewDoc_sed=[ 'ViewDoc_search' ]
+
 " define a custom help handler for pamconf files
 function! s:ViewDoc_pamconf(topic, filetype, synid, ctx)
     return {
