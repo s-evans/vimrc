@@ -412,6 +412,16 @@ let g:ViewDoc_tmux=[ function('s:ViewDoc_tmux') ]
 let g:ViewDocInfoIndex_readline = [ '(bash)Variable Index', '(bash)Function Index' ]
 let g:ViewDoc_readline=[ 'ViewDoc_search' ]
 
+" define a custom help handler for awk files
+function! s:ViewDoc_awk(topic, filetype, synid, ctx)
+    return {
+                \'cmd':    'man gawk',
+                \'ft':     'man',
+                \'search': '^[ ]\+' . a:topic,
+                \}
+endfunction
+let g:ViewDoc_awk=[ function('s:ViewDoc_awk') ]
+
 " define a custom help handler for sed files
 let g:ViewDocInfoIndex_sed = [ '(sed)Command and Option Index' ]
 let g:ViewDoc_sed=[ 'ViewDoc_search' ]
