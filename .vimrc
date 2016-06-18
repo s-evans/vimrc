@@ -15,6 +15,11 @@
 " diff command mappings: perhaps prepended with "\d"
 " infokey filetype plugin
 " using xmlstarlet as format program
+" better diff filetype support
+"  motions for ^- ^+ ^! ^@
+"  text objects for change blocks, hunks, files
+" clearcase checkin, checkout, mkelem
+" improve awk help (if while switch ...)
 
 " -------------------------------
 " plugin setup
@@ -1590,8 +1595,6 @@ nnoremap <leader>wt :TagbarToggle<CR>
 nnoremap <leader>wg :GundoToggle<CR>
 nnoremap <leader>we :CCTreeWindowToggle<CR>
 nnoremap <leader>wx :call ToggleHex()<CR>
-nnoremap <leader>wd :call ToggleDiff()<CR>
-nnoremap <leader>wu :diffupdate<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
@@ -1600,6 +1603,15 @@ nnoremap <leader>ww :set wrap!<CR>
 nnoremap <leader>wr :redraw!<CR>
 nnoremap <leader>wz :set spell!<CR>
 set pastetoggle=<leader>wp
+
+" -------------------------------
+" diff mappings
+" -------------------------------
+
+nnoremap <leader>dt :call ToggleDiff()<CR>
+nnoremap <leader>du :diffupdate<CR>
+nnoremap <leader>do :diffoff!<CR>
+nnoremap <leader>da :diffoff!<CR>:windo :diffthis<CR>
 
 " -------------------------------
 " quickfix mappings
