@@ -1,6 +1,12 @@
 " indent settings
 
-let s:begin_context=[ '^application$', '^call-manager-fallback$', '^class-map ', '^control-plane$', '^ip access-list', '^ipv6 access-list', '^controller ', '^crypto ', '^dial-peer ', '^dspfarm ', '^flow ', '^gatekeeper$', '^interface ', '^ip dhcp ', '^line ', '^policy-map ', '^redundancy$', '^router ', '^vlan ', '^voice service ', '^voice-card ' ]
+let s:begin_context=[ '^application$', '^call-manager-fallback$', '^class-map ',
+            \'^control-plane$', '^ip access-list', '^ipv6 access-list',
+            \'^controller ', '^crypto ', '^dial-peer ', '^dspfarm ', '^flow ',
+            \'^gatekeeper$', '^interface ', '^ip dhcp ', '^line ',
+            \'^policy-map ', '^redundancy$', '^router ', '^vlan ',
+            \'^voice service ', '^voice-card ', '^vrf definition ',
+            \'^aaa group ', '^key chain ' ]
 
 function! GetCiscoIndent()
   let prev_lnum = v:lnum - 1

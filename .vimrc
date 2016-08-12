@@ -9,15 +9,9 @@
 " multiroot operations (rsync svn git sed cscope)
 " consider modifying cscope scan to always pull applicable file types into cscope.files
 " left/right expression text object
-" help: msdn
 " text transforms: c escaped string, html / xml entities
 " update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
-" diff command mappings: perhaps prepended with "\d"
 " infokey filetype plugin
-" using xmlstarlet as format program
-" better diff filetype support
-"  motions for ^- ^+ ^! ^@
-"  text objects for change blocks, hunks, files
 " clearcase checkin, checkout, mkelem
 
 " -------------------------------
@@ -223,6 +217,13 @@ set secure
 if exists('+undofile')
     set undofile
 endif
+
+" -------------------------------
+" python-mode settings
+" -------------------------------
+
+" override ctags goto definition mapping
+let g:pymode_rope_goto_definition_bind = '<C-]>'
 
 " -------------------------------
 " youcompleteme settings
@@ -657,7 +658,12 @@ if executable("xmllint")
     let g:format_prg['xml'] = 'xmllint --format -'
 endif
 
-" python support
+" yapf support
+if executable("yapf")
+    let g:format_prg['python'] = 'yapf'
+endif
+
+" autopep8 support
 if executable("autopep8")
     let g:format_prg['python'] = 'autopep8 -'
 endif
@@ -676,6 +682,13 @@ endif
 " html-beautify support
 if executable("html-beautify")
     let g:format_prg['html'] = 'html-beautify -f -'
+endif
+
+" xmlstarlet support
+if executable("xmlstarlet")
+    let g:format_prg['html'] = 'xmlstarlet -q fo --html -'
+    let g:format_prg['xhtml'] = 'xmlstarlet -q fo -'
+    let g:format_prg['xml'] = 'xmlstarlet -q fo -'
 endif
 
 " tidy support
