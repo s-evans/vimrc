@@ -219,6 +219,13 @@ if exists('+undofile')
 endif
 
 " -------------------------------
+" dispatch settings
+" -------------------------------
+
+" constrain dispatch handlers
+let g:dispatch_handlers = [ 'headless' ]
+
+" -------------------------------
 " python-mode settings
 " -------------------------------
 
@@ -1532,7 +1539,10 @@ nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
 " build
-nnoremap <leader>k :make<CR>
+nnoremap <leader>kk :Make!<CR>
+nnoremap <leader>kc :Make! clean<CR>
+nnoremap <leader>kr :Make! rebuild<CR>
+nnoremap <leader>ko :Copen<CR>
 
 " make y behave like other capitals
 nnoremap Y y$
