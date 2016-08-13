@@ -1539,6 +1539,7 @@ nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
 
 " build
+nnoremap <leader>k :make<CR>
 nnoremap <leader>kk :Make!<CR>
 nnoremap <leader>kc :Make! clean<CR>
 nnoremap <leader>kr :Make! rebuild<CR>
