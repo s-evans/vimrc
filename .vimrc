@@ -613,12 +613,12 @@ let g:ViewDoc_gdb=[ 'ViewDoc_search' ]
 let g:ViewDocInfoIndex_gdb = '(gdb)Command and Variable Index'
 
 if executable("hlpviewer")
-    " TODO: support more than one visual studio version
-    " TODO: connect up to one of the help viewers (ie. DEFAULT)
-
-    " invoke the help viewer for visual studio
     function! s:ViewDoc_hlpviewer(topic, filetype, synid, ctx)
-        return { 'cmd': 'hlpviewer /catalogName VisualStudio14 /helpQuery "method=f1&query=' . shellescape(a:topic,1) . '"' }
+        return { 'cmd': 'hlpviewer ' . shellescape( 'http://127.0.0.1:47873/help/2-5424/ms.help?method=f1&query=' . a:atopic ) . ' & '}
+    endfunction
+
+    function! s:ViewDoc_hlpviewer(topic, filetype, synid, ctx)
+        return { 'cmd': 'hlpviewer /catalogName VisualStudio14 /helpQuery ' . shellescape( 'method=f1&query=' . a:atopic ) . ' & '}
     endfunction
 endif
 
