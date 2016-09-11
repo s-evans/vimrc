@@ -106,13 +106,16 @@
 	ignore = dirty
 	path = bundle/cctree
 	url = git@github.com:s-evans/cctree.git
+	; url = https://github.com/s-evans/cctree.git
 [submodule "bundle/textobj-between"]
 	ignore = dirty
 	path = bundle/textobj-between
 	url = git@github.com:s-evans/vim-textobj-between.git
+	; url = https://github.com/s-evans/vim-textobj-between.git
 [submodule "bundle/vim-snippets"]
 	path = bundle/vim-snippets
 	url = git@github.com:s-evans/vim-snippets.git
+	; url = https://github.com/s-evans/vim-snippets.git
 [submodule "bundle/textobj-line"]
 	ignore = dirty
 	path = bundle/textobj-line
@@ -132,38 +135,39 @@
 [submodule "bundle/startify"]
 	ignore = dirty
 	path = bundle/startify
-	url = git@github.com:mhinz/vim-startify.git
+	url = https://github.com/mhinz/vim-startify.git
 [submodule "bundle/obsession"]
 	ignore = dirty
 	path = bundle/obsession
-	url = git@github.com:tpope/vim-obsession.git
+	url = https://github.com/tpope/vim-obsession.git
 [submodule "bundle/dispatch"]
 	ignore = dirty
 	path = bundle/dispatch
-	url = git@github.com:tpope/vim-dispatch.git
+	url = https://github.com/tpope/vim-dispatch.git
 [submodule "bundle/python-mode"]
 	ignore = dirty
 	path = bundle/python-mode
-	url = git@github.com:klen/python-mode.git
+	url = https://github.com/klen/python-mode.git
 [submodule "bundle/viewdoc"]
 	ignore = dirty
 	path = bundle/viewdoc
-	url = git@github.com:powerman/vim-plugin-viewdoc.git
+	url = https://github.com/powerman/vim-plugin-viewdoc.git
 [submodule "bundle/cmake"]
 	path = bundle/cmake
 	url = git@github.com:s-evans/vim-cmake.git
+	; url = https://github.com/s-evans/vim-cmake.git
 [submodule "bundle/js-indent"]
 	ignore = dirty
 	path = bundle/js-indent
-	url = git@github.com:vim-scripts/JavaScript-Indent.git
+	url = https://github.com/vim-scripts/JavaScript-Indent.git
 [submodule "bundle/js-syntax"]
 	ignore = dirty
 	path = bundle/js-syntax
-	url = git@github.com:jelera/vim-javascript-syntax.git
+	url = https://github.com/jelera/vim-javascript-syntax.git
 [submodule "bundle/ps1"]
 	ignore = dirty
 	path = bundle/ps1
-	url = git@github.com:PProvost/vim-ps1.git
+	url = https://github.com/PProvost/vim-ps1.git
 [submodule "bundle/latexbox"]
 	ignore = dirty
 	path = bundle/latexbox
@@ -183,4 +187,4 @@
 [submodule "bundle/indent-motion"]
 	ignore = dirty
 	path = bundle/indent-motion
-	url = git@github.com:jeetsukumaran/vim-indentwise.git
+	url = https://github.com/jeetsukumaran/vim-indentwise.git
