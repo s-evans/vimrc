@@ -21,36 +21,44 @@
 let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
-Plug 'a-vim', {'on': [ 'A', 'AS', 'AV', 'AT', 'AN', 'IH', 'IHS', 'IHT', 'IHN' ] }
+Plug 'ConflictMotions'
+Plug 'CountJump'
+Plug 'a-vim' , { 'on' : [ 'A' , 'AS' , 'AV' , 'AT' , 'AN' , 'IH' , 'IHS' , 'IHT' , 'IHN' ] }
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
-Plug 'cctree' , { 'on': 'CCTreeLoadDB' }
+Plug 'cctree' , { 'on' : 'CCTreeLoadDB' }
 Plug 'cisco-ios'
-Plug 'cmake' , { 'for': 'cmake' }
+Plug 'cmake' , { 'for' : 'cmake' }
+Plug 'diff_movement' , { 'for' : [ 'diff' ] }
+Plug 'diffwindow_movement'
 Plug 'dispatch'
-Plug 'dosbatch' , { 'for': 'dosbatch' }
-Plug 'doxygen_toolkit' , { 'on': ['Dox', 'DoxAuthor'] }
-Plug 'easy-align' , { 'on': '<Plug>(EasyAlign)' }
-Plug 'gundo' , { 'on': 'GundoToggle' }
+Plug 'dosbatch' , { 'for' : 'dosbatch' }
+Plug 'dosbatch_movement' , { 'for' : [ 'dosbatch' ] }
+Plug 'doxygen_toolkit' , { 'on' : [ 'Dox' , 'DoxAuthor' ] }
+Plug 'easy-align' , { 'on' : '<Plug>(EasyAlign)' }
+Plug 'gundo' , { 'on' : 'GundoToggle' }
+Plug 'help_movement' , { 'for' : [ 'help' ] }
 Plug 'indent-motion'
-Plug 'js-indent' , { 'for': 'javascript' }
-Plug 'js-syntax' , { 'for': 'javascript' }
+Plug 'ingo-library'
+Plug 'js-indent' , { 'for' : 'javascript' }
+Plug 'js-syntax' , { 'for' : 'javascript' }
 Plug 'latexbox'
 Plug 'matchit'
 Plug 'mediawiki'
-Plug 'nerdtree' , { 'on':  'NERDTreeToggle' }
+Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
 Plug 'operator-user'
 Plug 'ps1'
-Plug 'python-mode' , { 'for':  'python' }
+Plug 'python-mode' , { 'for' : 'python' }
 Plug 'snipmate'
 Plug 'startify'
-Plug 'syntastic', { 'on': 'SyntasticCheck'}
-Plug 'tagbar' , { 'on': 'TagbarToggle' }
+Plug 'syntastic' , { 'on' : 'SyntasticCheck' }
+Plug 'tagbar' , { 'on' : 'TagbarToggle' }
 Plug 'textobj-between'
 Plug 'textobj-camel'
 Plug 'textobj-comment'
+Plug 'textobj-diff' , { 'for' : [ 'diff' ] }
 Plug 'textobj-function'
 Plug 'textobj-line'
 Plug 'textobj-parameter'
@@ -66,8 +74,9 @@ Plug 'vim-repeat'
 Plug 'vim-snippets'
 Plug 'vim-surround'
 Plug 'vim-unimpaired'
+Plug 'vim_movement' , { 'for' : [ 'vim' ] }
 Plug 'visualrepeat'
-Plug 'ycm', {'for': [ 'cpp', 'c' ] }
+Plug 'ycm' , { 'for' : [ 'cpp' , 'c' ] }
 
 call plug#end()
 
