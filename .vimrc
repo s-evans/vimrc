@@ -791,6 +791,15 @@ endfunction
 " cscope functions
 " -------------------------------
 
+function! s:get_visual_selection()
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
+endfunction
+
 " attempts to automatically find a cscope database to use
 function! CscopeAutoAdd()
     " add any database in current directory
@@ -1580,6 +1589,33 @@ nnoremap <C-l> <C-w>l
 
 nnoremap <C-\>r :call CscopeRescanRecurse()<CR>
 nnoremap <C-\>p :call CscopeRescanAll()<CR>
+
+vnoremap <C-\>s :<C-U>cs find s <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>g :<C-U>cs find g <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>c :<C-U>cs find c <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>t :<C-U>cs find t <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>e :<C-U>cs find e <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>f :<C-U>cs find f <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>i :<C-U>cs find i <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-\>d :<C-U>cs find d <C-R>=<SID>get_visual_selection()<CR><CR>
+
+vnoremap <C-@>s :<C-U>scs find s <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>g :<C-U>scs find g <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>c :<C-U>scs find c <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>t :<C-U>scs find t <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>e :<C-U>scs find e <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>f :<C-U>scs find f <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>i :<C-U>scs find i <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@>d :<C-U>scs find d <C-R>=<SID>get_visual_selection()<CR><CR>
+
+vnoremap <C-@><C-@>s :<C-U>vert scs find s <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>g :<C-U>vert scs find g <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>c :<C-U>vert scs find c <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>t :<C-U>vert scs find t <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>e :<C-U>vert scs find e <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>f :<C-U>vert scs find f <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>i :<C-U>vert scs find i <C-R>=<SID>get_visual_selection()<CR><CR>
+vnoremap <C-@><C-@>d :<C-U>vert scs find d <C-R>=<SID>get_visual_selection()<CR><CR>
 
 nnoremap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
 nnoremap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
