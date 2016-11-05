@@ -153,6 +153,7 @@
 	path = bundle/viewdoc
 	url = https://github.com/powerman/vim-plugin-viewdoc.git
 [submodule "bundle/cmake"]
+	ignore = dirty
 	path = bundle/cmake
 	url = git@github.com:s-evans/vim-cmake.git
 	; url = https://github.com/s-evans/vim-cmake.git
@@ -189,29 +190,38 @@
 	path = bundle/indent-motion
 	url = https://github.com/jeetsukumaran/vim-indentwise.git
 [submodule "bundle/CountJump"]
+	ignore = dirty
 	path = bundle/CountJump
 	url = https://github.com/vim-scripts/CountJump
 [submodule "bundle/diff_movement"]
+	ignore = dirty
 	path = bundle/diff_movement
 	url = https://github.com/vim-scripts/diff_movement
 [submodule "bundle/ConflictMotions"]
+	ignore = dirty
 	path = bundle/ConflictMotions
 	url = https://github.com/vim-scripts/ConflictMotions
 [submodule "bundle/diffwindow_movement"]
+	ignore = dirty
 	path = bundle/diffwindow_movement
 	url = https://github.com/vim-scripts/diffwindow_movement
 [submodule "bundle/dosbatch_movement"]
+	ignore = dirty
 	path = bundle/dosbatch_movement
 	url = https://github.com/vim-scripts/dosbatch_movement
 [submodule "bundle/ingo-library"]
+	ignore = dirty
 	path = bundle/ingo-library
 	url = https://github.com/vim-scripts/ingo-library
 [submodule "bundle/textobj-diff"]
+	ignore = dirty
 	path = bundle/textobj-diff
 	url = https://github.com/kana/vim-textobj-diff
 [submodule "bundle/help_movement"]
+	ignore = dirty
 	path = bundle/help_movement
 	url = https://github.com/vim-scripts/help_movement
 [submodule "bundle/vim_movement"]
+	ignore = dirty
 	path = bundle/vim_movement
 	url = https://github.com/vim-scripts/vim_movement
