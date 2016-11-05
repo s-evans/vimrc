@@ -351,6 +351,7 @@ let g:ViewDoc_css=[ 'ViewDoc_help_custom' ]
 let g:ViewDoc_tex=[ 'ViewDoc_help_custom' ]
 let g:ViewDoc_c=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
 let g:ViewDoc_cpp=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
+let g:ViewDoc_cuda=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
 
 let g:asm_help=[ 'ViewDoc_help_custom', 'ViewDoc_DEFAULT' ]
 let g:ViewDoc_asm=g:asm_help
@@ -655,6 +656,7 @@ let g:format_prg={}
 if executable("clang-format")
     let g:format_prg['c'] = 'clang-format -style=file'
     let g:format_prg['cpp'] = 'clang-format -style=file'
+    let g:format_prg['cuda'] = 'clang-format -style=file'
     let g:format_prg['objc'] = 'clang-format -style=file'
     let g:format_prg['javascript'] = 'clang-format -style=file'
 endif
@@ -663,6 +665,7 @@ endif
 if executable("astyle")
     let g:format_prg['c'] = 'astyle'
     let g:format_prg['cpp'] = 'astyle'
+    let g:format_prg['cuda'] = 'astyle'
     let g:format_prg['java'] = 'astyle --mode=java'
     let g:format_prg['cs'] = 'astyle --mode=cs'
 endif
