@@ -1245,8 +1245,8 @@ function! SequenceOperator(type)
     call RegisterOperatorWrapper(a:type, "call SequenceRegister()")
 endfunction
 
-function! ComplimentOperator(type)
-    call RegisterOperatorWrapper(a:type, "call ComplimentRegister()")
+function! ComplementOperator(type)
+    call RegisterOperatorWrapper(a:type, "call ComplementRegister()")
 endfunction
 
 function! SymmetricDifferenceOperator(type)
@@ -1346,13 +1346,15 @@ function! TopologicalSortRegister()
     call setreg(v:register, system("tsort", getreg(v:register)))
 endfunction
 
-" gets the compliment of two sets
-function! ComplimentRegister()
+" gets the complement of two sets
+function! ComplementRegister()
     let A = uniq(sort(split(getreg(v:register), "\n")))
     let B = uniq(sort(split(getreg(input("Enter register: ")), "\n")))
     call filter(A, 'index(B, v:val) < 0')
     call setreg(v:register, join(A, "\n"))
 endfunction
+
+" TODO: fix this function
 
 " gets the symmetric difference of two sets
 function! SymmetricDifferenceRegister()
@@ -1414,6 +1416,8 @@ function! DuplicateBlockFunction(arg1, arg2)
     endif
     return 1
 endfunction
+
+let g:DuplicateValue = ""
 
 " removes unique values (set intersection)
 " also:
@@ -1788,8 +1792,8 @@ call operator#user#define('unique', 'UniqueOperator')
 map <leader>sU <Plug>(operator-duplicate)
 call operator#user#define('duplicate', 'DuplicateOperator')
 
-map <leader>s- <Plug>(operator-compliment)
-call operator#user#define('compliment', 'ComplimentOperator')
+map <leader>s- <Plug>(operator-complement)
+call operator#user#define('complement', 'ComplementOperator')
 
 map <leader>s+ <Plug>(operator-symmetric-difference)
 call operator#user#define('symmetric-difference', 'SymmetricDifferenceOperator')
