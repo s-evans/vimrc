@@ -327,8 +327,8 @@ let g:easy_align_delimiters = {
 if has("autocmd")
     augroup eclim_java_completion
         autocmd!
-        autocmd BufEnter *.java let g:EclimCompletionMethod = 'omnifunc'
-        autocmd BufLeave *.java unlet g:EclimCompletionMethod
+        autocmd WinEnter *.java let g:EclimCompletionMethod = 'omnifunc'
+        autocmd WinLeave *.java unlet g:EclimCompletionMethod
     augroup END
 endif
 
@@ -345,15 +345,29 @@ let g:no_viewdoc_abbrev=1
 " don't open anything if the term is not found
 let g:viewdoc_openempty=0
 
-if executable("hlpviewer")
-    function! s:ViewDoc_hlpviewer(topic, filetype, synid, ctx)
-        return { 'cmd': 'hlpviewer ' . shellescape( 'http://127.0.0.1:47873/help/2-5424/ms.help?method=f1&query=' . a:atopic ) . ' & '}
-    endfunction
+function! ViewDoc_hlpviewer(topic, filetype, synid, ctx)
+    if !exists('g:hlpviewer_exists')
+        let g:hlpviewer_exists=( has('win32') || has('win32unix') ) && executable("hlpviewer")
+    endif
 
-    function! s:ViewDoc_hlpviewer(topic, filetype, synid, ctx)
-        return { 'cmd': 'hlpviewer /catalogName VisualStudio14 /helpQuery ' . shellescape( 'method=f1&query=' . a:atopic ) . ' & '}
-    endfunction
-endif
+    if g:hlpviewer_exists == 0
+        return {}
+    endif
+
+    if !exists('g:hlpviewer_version') || !exists('g:hlpviewer_catalog')
+        let help_string=system('hlpviewer /?')
+        let g:hlpviewer_version=substitute(help_string, '.*Help Viewer \([0-9]\+\.[0-9]\+\).*', '\=submatch(1)', '')
+        let g:hlpviewer_catalog=substitute(help_string, '.*\(VisualStudio[0-9]\+\).*', '\=submatch(1)', '')
+    endif
+
+    if match(g:hlpviewer_version, "1\.[0-9]") != -1
+        return { 'cmd': 'hlpviewer ' . shellescape( 'http://127.0.0.1:47873/help/2-5424/ms.help?method=f1&query=' . a:topic ) . ' & '}
+    elseif match(g:hlpviewer_version, "2\.[0-9]") != -1
+        return { 'cmd': 'hlpviewer /catalogName ' . g:hlpviewer_catalog . ' /helpQuery ' . shellescape( 'method=f1&query=' . a:topic ) . ' & '}
+    else
+        return {}
+    endif
+endfunction
 
 " -------------------------------
 " autoformat settings
@@ -373,7 +387,9 @@ if has("autocmd")
 endif
 
 " initialize the format program dictionary
-let g:format_prg={}
+if !exists('g:format_prg')
+    let g:format_prg={}
+endif
 
 " sets the format program a little more easily
 function! SetFormatProgram(string)
@@ -391,7 +407,7 @@ if has("autocmd")
         autocmd!
 
         " on entering a buffer set the format program
-        autocmd BufEnter * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
+        autocmd WinEnter * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
 
         " if the file type of a buffer changes, change the format program
         autocmd FileType * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
