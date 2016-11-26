@@ -591,7 +591,7 @@ endfunction
 
 " greps recursively from the current working directory
 function! GrepRecurse(arg)
-    silent! execute "silent! grep! -r """ . shellescape(getreg(a:arg)) . """"
+    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """"
     cw
     redraw!
 endfunction
