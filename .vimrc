@@ -228,6 +228,16 @@ if exists('+undofile')
 endif
 
 " -------------------------------
+" a-vim settings
+" -------------------------------
+
+" cuda support
+let g:alternateExtensions_h = "c,cpp,cxx,cc,cu"
+let g:alternateExtensions_H = "C,CPP,CXX,CC,CU"
+let g:alternateExtensions_hpp = "cpp,c,cu"
+let g:alternateExtensions_HPP = "CPP,C,CU"
+
+" -------------------------------
 " dispatch settings
 " -------------------------------
 
@@ -1237,12 +1247,30 @@ nnoremap <leader>ko :Copen<CR>
 " make y behave like other capitals
 nnoremap Y y$
 
-" make command mode work like readline
-cnoremap <C-a> <Home>
-
 " create visual mode mapping
 vmap K <Plug>(operator-help)
 call operator#user#define('help', 'HelpOperator')
+
+" -------------------------------
+" emacs-like bindings
+" -------------------------------
+
+" insert mode
+inoremap <C-b> <Left>
+inoremap <C-f> <Right>
+inoremap <C-a> <C-o>0
+inoremap <C-e> <End>
+inoremap <C-d> <Del>
+inoremap <C-h> <BS>
+inoremap <C-k> <C-o>D
+
+" command line mode
+cnoremap <C-b> <Left>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-d> <Del>
+cnoremap <C-h> <BS>
+cnoremap <C-k> <C-f>D<C-c>
 
 " -------------------------------
 " window navigation mappings

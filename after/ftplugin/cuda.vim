@@ -18,3 +18,10 @@ if !has_key(g:format_prg, 'cuda')
         let g:format_prg['cuda'] = 'astyle'
     endif
 endif
+
+" -------------------------------
+" a-vim settings
+" -------------------------------
+
+let g:alternateExtensions_cu = "h,hpp"
+let g:alternateExtensions_CU = "H,HPP"
