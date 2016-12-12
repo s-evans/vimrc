@@ -1224,6 +1224,14 @@ function! Base64DecodeRegister()
 endfunction
 
 " -------------------------------
+" commands
+" -------------------------------
+
+command! -nargs=1 -complete=file Mkdir call mkdir("<args>", "p")
+command! -nargs=1 -complete=help Apropos helpgrep <args>
+command! -nargs=0 Write write !sudo tee %
+
+" -------------------------------
 " miscellaneous mappings
 " -------------------------------
 
@@ -1246,6 +1254,9 @@ nnoremap <leader>ko :Copen<CR>
 
 " make y behave like other capitals
 nnoremap Y y$
+
+" change behavior of ampersand
+nnoremap & :%&&<CR>
 
 " create visual mode mapping
 vmap K <Plug>(operator-help)
