@@ -675,7 +675,7 @@ function! ToggleList(bufname, pfx)
 endfunction
 
 " helper function to toggle hex mode
-function! ToggleHex()
+function! ToggleHexMode()
     " hex mode should be considered a read-only operation
     " save values for modified and read-only for restoration later,
     " and clear the read-only flag for now
@@ -685,27 +685,31 @@ function! ToggleHex()
     let l:oldmodifiable=&modifiable
     let &modifiable=1
 
-    if !exists("b:editHex") || !b:editHex
+    if &filetype != "xxd"
         " save old options
         let b:oldft=&ft
         let b:oldbin=&bin
+
         " set new options
         setlocal binary " make sure it overrides any textwidth, etc.
         let &ft="xxd"
-        " set status
-        let b:editHex=1
+
         " switch to hex editor
         %!xxd
     else
-        " restore old options
-        let &ft=b:oldft
-        if !b:oldbin
+        if exists("b:oldbin") && !b:oldbin
             setlocal nobinary
         endif
-        " set status
-        let b:editHex=0
+
         " return to normal editing
         %!xxd -r
+
+        if exists("b:oldft") && b:oldft != ""
+            " restore old options
+            let &ft=b:oldft
+        else
+            doautocmd BufRead
+        endif
     endif
 
     " restore values for modified and read only state
@@ -1362,7 +1366,7 @@ nnoremap <leader>wn :NERDTreeToggle<CR>
 nnoremap <leader>wt :TagbarToggle<CR>
 nnoremap <leader>wg :GundoToggle<CR>
 nnoremap <leader>we :CCTreeWindowToggle<CR>
-nnoremap <leader>wx :call ToggleHex()<CR>
+nnoremap <leader>wx :call ToggleHexMode()<CR>
 nnoremap <leader>wc :call ToggleList("Quickfix List", 'c')<CR>
 nnoremap <leader>wo :call GrepRecurse("TODO")<CR>
 nnoremap <leader>wa :AS<CR>
