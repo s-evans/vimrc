@@ -250,6 +250,7 @@ let g:dispatch_handlers = [ 'headless' ]
 
 " override ctags goto definition mapping
 let g:pymode_rope_goto_definition_bind = '<C-]>'
+let g:pymode_doc = 0
 
 " -------------------------------
 " youcompleteme settings
