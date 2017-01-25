@@ -84,7 +84,6 @@ call plug#end()
 " general settings
 " -------------------------------
 
-set nocompatible
 colors evening
 set bs=2
 set expandtab
@@ -158,11 +157,11 @@ set cinoptions+=:0  " case labels not indented
 
 set ignorecase
 
-if exists("&wildignorecase")
+if exists('&wildignorecase')
     set wildignorecase
 endif
 
-if exists("&fileignorecase")
+if exists('&fileignorecase')
     set fileignorecase
 endif
 
@@ -179,12 +178,12 @@ set errorformat+=%f:\(.text%*[^\ ]%m
 
 set grepprg=grep\ -n\ -H\ "$@"
 
-if executable("ack")
+if executable('ack')
     set grepprg=ack\ -H\ --nocolor\ --nogroup\ --column
     set grepformat=%f:%l:%c:%m
 endif
 
-if executable("ag")
+if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor\ --column
     set grepformat=%f:%l:%c:%m
 endif
@@ -232,10 +231,10 @@ endif
 " -------------------------------
 
 " cuda support
-let g:alternateExtensions_h = "c,cpp,cxx,cc,cu"
-let g:alternateExtensions_H = "C,CPP,CXX,CC,CU"
-let g:alternateExtensions_hpp = "cpp,c,cu"
-let g:alternateExtensions_HPP = "CPP,C,CU"
+let g:alternateExtensions_h = 'c,cpp,cxx,cc,cu'
+let g:alternateExtensions_H = 'C,CPP,CXX,CC,CU'
+let g:alternateExtensions_hpp = 'cpp,c,cu'
+let g:alternateExtensions_HPP = 'CPP,C,CU'
 
 " -------------------------------
 " dispatch settings
@@ -269,6 +268,7 @@ let g:ycm_show_diagnostics_ui = 0
 " -------------------------------
 
 let g:syntastic_check_on_open = 0
+let g:syntastic_vim_checkers = ['vint']
 
 " -------------------------------
 " ultisnips settings
@@ -335,7 +335,7 @@ let g:easy_align_delimiters = {
 " -------------------------------
 
 " enable eclim completion only on java files
-if has("autocmd")
+if has('autocmd')
     augroup eclim_java_completion
         autocmd!
         autocmd WinEnter *.java let g:EclimCompletionMethod = 'omnifunc'
@@ -358,7 +358,7 @@ let g:viewdoc_openempty=0
 
 function! ViewDoc_hlpviewer(topic, filetype, synid, ctx)
     if !exists('g:hlpviewer_exists')
-        let g:hlpviewer_exists=( has('win32') || has('win32unix') ) && executable("hlpviewer")
+        let g:hlpviewer_exists=( has('win32') || has('win32unix') ) && executable('hlpviewer')
     endif
 
     if g:hlpviewer_exists == 0
@@ -371,9 +371,9 @@ function! ViewDoc_hlpviewer(topic, filetype, synid, ctx)
         let g:hlpviewer_catalog=substitute(help_string, '.*\(VisualStudio[0-9]\+\).*', '\=submatch(1)', '')
     endif
 
-    if match(g:hlpviewer_version, "1\.[0-9]") != -1
+    if match(g:hlpviewer_version, '1\.[0-9]') != -1
         return { 'cmd': 'hlpviewer ' . shellescape( 'http://127.0.0.1:47873/help/2-5424/ms.help?method=f1&query=' . a:topic ) . ' & '}
-    elseif match(g:hlpviewer_version, "2\.[0-9]") != -1
+    elseif match(g:hlpviewer_version, '2\.[0-9]') != -1
         return { 'cmd': 'hlpviewer /catalogName ' . g:hlpviewer_catalog . ' /helpQuery ' . shellescape( 'method=f1&query=' . a:topic ) . ' & '}
     else
         return {}
@@ -390,7 +390,7 @@ if has('patch-7.3.541')
 endif
 
 " disable continuation commenting
-if has("autocmd")
+if has('autocmd')
     augroup comment_format
         autocmd!
         autocmd FileType * set formatoptions-=cro
@@ -404,16 +404,16 @@ endif
 
 " sets the format program a little more easily
 function! SetFormatProgram(string)
-   exec "set formatprg=" . substitute( a:string, " ", "\\\\ ", "g" )
+   exec 'set formatprg=' . substitute( a:string, ' ', "\\\\ ", 'g' )
 endfunction
 
 " gets the format program for the filetype specified
 function! GetFileTypeFormatProgram(filetype)
-    return get(g:format_prg, &ft, "")
+    return get(g:format_prg, &ft, '')
 endfunction
 
 " set up auto commands to set the format program per buffer
-if has("autocmd")
+if has('autocmd')
     augroup auto_format
         autocmd!
 
@@ -429,7 +429,7 @@ endif
 " configure python instance
 " -------------------------------
 
-if has("python") && executable("python")
+if has('python') && executable('python')
     python << 
 try:
     from math import *
@@ -447,20 +447,20 @@ endif
 " returns a list containing strings contained in the path variable
 function! GetPathList()
     let p = &path
-    return split(p, ",")
+    return split(p, ',')
 endfunction
 
 " returns a space separated string of all elements in the path variable
 function! GetPathString()
     let plist = GetPathList()
-    return join(plist, " ")
+    return join(plist, ' ')
 endfunction
 
 " executes a command string for each path element, replacing all occurances of %s with the path element string
 function! ForEachPath(command)
     let plist = GetPathList()
     for p in plist
-        let newCommand = substitute(a:command, "\%s", p, "g")
+        let newCommand = substitute(a:command, '\%s', p, 'g')
         execute newCommand
     endfor
 endfunction
@@ -473,7 +473,7 @@ function! s:get_visual_selection()
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[-1] = lines[-1][: col2 - (&selection ==# 'inclusive' ? 1 : 2)]
   let lines[0] = lines[0][col1 - 1:]
   return join(lines, "\n")
 endfunction
@@ -502,7 +502,7 @@ endfunction
 function! CscopeRescan()
     let ft = &filetype
 
-    if ft == "java"
+    if ft ==# 'java'
         silent !find * -type f | grep "\.java$" > cscope.files
     endif
 
@@ -511,7 +511,7 @@ endfunction
 
 " executes a cscope rescan on the given directory recursively
 function! CscopeRescanDir(dir)
-    silent! execute "cd " . a:dir
+    silent! execute 'cd ' . a:dir
     call CscopeRescan()
     cd -
 endfunction
@@ -539,12 +539,12 @@ function! CscopeGetDbPaths()
         endif
 
         " Check if the first element is a number
-        if match(tok[0], "[0-9]") == -1
+        if match(tok[0], '[0-9]') == -1
             continue
         endif
 
         " Get that path
-        let tmppath = system("dirname ".tok[2])
+        let tmppath = system('dirname '.tok[2])
 
         " Add to the path list
         call add(paths, tmppath)
@@ -576,7 +576,7 @@ endfunction
 " cscope settings
 " -------------------------------
 
-if has("cscope") && executable("cscope")
+if has('cscope') && executable('cscope')
     set nocscopeverbose
     set csto=0 " Try cscope first in tag search
     set cst " Add cscope to tag search
@@ -591,6 +591,7 @@ endif
 " solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp)
     execute "python sys.argv = [\"" . a:exp . "\"]"
+    let out = ''
     python sys.argv[0] = eval(sys.argv[0])
     python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
     return out
@@ -602,21 +603,21 @@ endfunction
 
 " greps recursively from the current working directory
 function! GrepRecurse(arg)
-    silent! execute "silent! grep! -r """ . shellescape(a:arg) . """"
+    silent! execute 'silent! grep! -r "' . shellescape(a:arg) . '"'
     cw
     redraw!
 endfunction
 
 " greps recursively from the current working directory
 function! GrepRecurseRegister()
-    silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """"
+    silent! execute 'silent! grep! -r "' . shellescape(getreg(v:register)) . '"'
     cw
     redraw!
 endfunction
 
 " greps in the current window
 function! GrepCurrentRegister()
-    silent! execute "silent! grep! """ . shellescape(getreg(v:register)) . """ % "
+    silent! execute 'silent! grep! "' . shellescape(getreg(v:register)) . '" % '
     cw
     redraw!
 endfunction
@@ -633,7 +634,7 @@ endfunction
 " greps recursively for all directories in the path
 function! GrepPathRegister()
     let plist = GetPathString()
-    silent! execute "silent! grep! -r """ . shellescape(getreg(v:register)) . """ " . plist
+    silent! execute 'silent! grep! -r "' . shellescape(getreg(v:register)) . '" ' . plist
     cw
     redraw!
 endfunction
@@ -661,9 +662,9 @@ function! ToggleList(bufname, pfx)
         endif
     endfor
 
-    if a:pfx == 'l' && len(getloclist(0)) == 0
+    if a:pfx ==# 'l' && len(getloclist(0)) == 0
         echohl ErrorMsg
-        echo "Location List is Empty."
+        echo 'Location List is Empty.'
         return
     endif
 
@@ -686,26 +687,26 @@ function! ToggleHexMode()
     let l:oldmodifiable=&modifiable
     let &modifiable=1
 
-    if &filetype != "xxd"
+    if &filetype !=# 'xxd'
         " save old options
         let b:oldft=&ft
         let b:oldbin=&bin
 
         " set new options
         setlocal binary " make sure it overrides any textwidth, etc.
-        let &ft="xxd"
+        let &ft='xxd'
 
         " switch to hex editor
         %!xxd
     else
-        if exists("b:oldbin") && !b:oldbin
+        if exists('b:oldbin') && !b:oldbin
             setlocal nobinary
         endif
 
         " return to normal editing
         %!xxd -r
 
-        if exists("b:oldft") && b:oldft != ""
+        if exists('b:oldft') && b:oldft !=# ''
             " restore old options
             let &ft=b:oldft
         else
@@ -735,15 +736,15 @@ endfunction
 " used as an operator function with a callback. passes arguments via the current register.
 function! RegisterOperatorWrapper(type, callback)
     let sel_save = &selection
-    let &selection = "inclusive"
+    let &selection = 'inclusive'
     let reg = v:register
     let reg_save = getreg(reg)
 
-    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+    if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
         normal! gvy
-    elseif a:type == 'line'
+    elseif a:type ==# 'line'
         normal! `[V`]y
-    elseif a:type == 'block'
+    elseif a:type ==# 'block'
         normal! `[\<C-V>`]y
     else
         normal! `[v`]y
@@ -751,12 +752,12 @@ function! RegisterOperatorWrapper(type, callback)
 
     silent execute a:callback
 
-    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+    if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
         call setreg(reg, getreg(reg), a:type)
         normal! gvp
-    elseif a:type == 'line'
+    elseif a:type ==# 'line'
         normal! `[V`]p
-    elseif a:type == 'block'
+    elseif a:type ==# 'block'
         normal! `[\<C-V>`]p
     else
         normal! `[v`]p
@@ -769,14 +770,14 @@ endfunction
 " wraps operator functions that rely on simple input text
 function! OperatorWrapper(type, callback)
     let sel_save = &selection
-    let &selection = "inclusive"
+    let &selection = 'inclusive'
     let reg_save = getreg(v:register)
 
-    if a:type ==# 'v' || a:type ==# 'V' || a:type == ''
+    if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
         normal! gvy
-    elseif a:type == 'line'
+    elseif a:type ==# 'line'
         normal! `[V`]y
-    elseif a:type == 'block'
+    elseif a:type ==# 'block'
         normal! `[\<C-V>`]y
     else
         normal! `[v`]y
@@ -819,7 +820,7 @@ endfunction
 
 " url encodes the current register
 function! UrlEncodeRegister()
-    let newStr = ""
+    let newStr = ''
     let i = 0
     let reg_val = getreg(v:register)
 
@@ -832,7 +833,7 @@ function! UrlEncodeRegister()
         endif
 
         if UrlEncodeChar(byteVal)
-            let newChar = "%" . printf('%02X', byteVal)
+            let newChar = '%' . printf('%02X', byteVal)
         endif
 
         let newStr .= newChar
@@ -844,7 +845,7 @@ endfunction
 
 " url decodes the current register
 function! UrlDecodeRegister()
-    let newStr = ""
+    let newStr = ''
     let i = 0
     let reg_val = getreg(v:register)
 
@@ -856,7 +857,7 @@ function! UrlDecodeRegister()
             break
         endif
 
-        if newChar == "%"
+        if newChar ==# '%'
             let newChar = nr2char(str2nr(reg_val[i+1:i+2], 16))
             let i += 2
         endif
@@ -877,143 +878,143 @@ function! HelpRegister()
 endfunction
 
 function! HelpOperator(type)
-    call OperatorWrapper(a:type, "call HelpRegister()")
+    call OperatorWrapper(a:type, 'call HelpRegister()')
 endfunction
 
 function! GrepWindowOperator(type)
-    call OperatorWrapper(a:type, "call GrepWindowRegister()")
+    call OperatorWrapper(a:type, 'call GrepWindowRegister()')
 endfunction
 
 function! GrepRecurseOperator(type)
-    call OperatorWrapper(a:type, "call GrepRecurseRegister()")
+    call OperatorWrapper(a:type, 'call GrepRecurseRegister()')
 endfunction
 
 function! GrepCurrentOperator(type)
-    call OperatorWrapper(a:type, "call GrepCurrentRegister()")
+    call OperatorWrapper(a:type, 'call GrepCurrentRegister()')
 endfunction
 
 function! GrepPathOperator(type)
-    call OperatorWrapper(a:type, "call GrepPathRegister()")
+    call OperatorWrapper(a:type, 'call GrepPathRegister()')
 endfunction
 
 function! UrlEncodeOperator(type)
-    call RegisterOperatorWrapper(a:type, "call UrlEncodeRegister()")
+    call RegisterOperatorWrapper(a:type, 'call UrlEncodeRegister()')
 endfunction
 
 function! UrlDecodeOperator(type)
-    call RegisterOperatorWrapper(a:type, "call UrlDecodeRegister()")
+    call RegisterOperatorWrapper(a:type, 'call UrlDecodeRegister()')
 endfunction
 
 function! ExternalOperator(type)
-    call RegisterOperatorWrapper(a:type, "call ExternalRegister()")
+    call RegisterOperatorWrapper(a:type, 'call ExternalRegister()')
 endfunction
 
 function! SortStringLengthOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SortStringLengthRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SortStringLengthRegister()')
 endfunction
 
 function! ReverseSortStringLengthOperator(type)
-    call RegisterOperatorWrapper(a:type, "call ReverseSortStringLengthRegister()")
+    call RegisterOperatorWrapper(a:type, 'call ReverseSortStringLengthRegister()')
 endfunction
 
 function! ShuffleOperator(type)
-    call RegisterOperatorWrapper(a:type, "call ShuffleRegister()")
+    call RegisterOperatorWrapper(a:type, 'call ShuffleRegister()')
 endfunction
 
 function! SequenceOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SequenceRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SequenceRegister()')
 endfunction
 
 function! ComplementOperator(type)
-    call RegisterOperatorWrapper(a:type, "call ComplementRegister()")
+    call RegisterOperatorWrapper(a:type, 'call ComplementRegister()')
 endfunction
 
 function! SymmetricDifferenceOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SymmetricDifferenceRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SymmetricDifferenceRegister()')
 endfunction
 
 function! SplitOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SplitRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SplitRegister()')
 endfunction
 
 function! JoinOperator(type)
-    call RegisterOperatorWrapper(a:type, "call JoinRegister()")
+    call RegisterOperatorWrapper(a:type, 'call JoinRegister()')
 endfunction
 
 function! JoinSeparatorOperator(type)
-    call RegisterOperatorWrapper(a:type, "call JoinSeparatorRegister()")
+    call RegisterOperatorWrapper(a:type, 'call JoinSeparatorRegister()')
 endfunction
 
 function! UniqueOperator(type)
-    call RegisterOperatorWrapper(a:type, "call UniqueRegister()")
+    call RegisterOperatorWrapper(a:type, 'call UniqueRegister()')
 endfunction
 
 function! DuplicateOperator(type)
-    call RegisterOperatorWrapper(a:type, "call DuplicateRegister()")
+    call RegisterOperatorWrapper(a:type, 'call DuplicateRegister()')
 endfunction
 
 function! SortOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SortRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SortRegister()')
 endfunction
 
 function! SortReverseOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SortReverseRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SortReverseRegister()')
 endfunction
 
-function! TopologicalSortOperator()
-    call RegisterOperatorWrapper(a:type, "call TopologicalSortRegister()")
+function! TopologicalSortOperator(type)
+    call RegisterOperatorWrapper(a:type, 'call TopologicalSortRegister()')
 endfunction
 
 function! MathExpressionOperator(type)
-    call RegisterOperatorWrapper(a:type, "call MathExpressionRegister()")
+    call RegisterOperatorWrapper(a:type, 'call MathExpressionRegister()')
 endfunction
 
 function! Base64Operator(type)
-    call RegisterOperatorWrapper(a:type, "call Base64Register()")
+    call RegisterOperatorWrapper(a:type, 'call Base64Register()')
 endfunction
 
 function! Base64DecodeOperator(type)
-    call RegisterOperatorWrapper(a:type, "call Base64DecodeRegister()")
+    call RegisterOperatorWrapper(a:type, 'call Base64DecodeRegister()')
 endfunction
 
 function! Md5Operator(type)
-    call RegisterOperatorWrapper(a:type, "call Md5Register()")
+    call RegisterOperatorWrapper(a:type, 'call Md5Register()')
 endfunction
 
 function! CrcOperator(type)
-    call RegisterOperatorWrapper(a:type, "call CrcRegister()")
+    call RegisterOperatorWrapper(a:type, 'call CrcRegister()')
 endfunction
 
 function! CppFilterOperator(type)
-    call RegisterOperatorWrapper(a:type, "call CppFilterRegister()")
+    call RegisterOperatorWrapper(a:type, 'call CppFilterRegister()')
 endfunction
 
 function! TitleCaseOperator(type)
-    call RegisterOperatorWrapper(a:type, "call TitleCaseRegister()")
+    call RegisterOperatorWrapper(a:type, 'call TitleCaseRegister()')
 endfunction
 
 function! LiteTitleCaseOperator(type)
-    call RegisterOperatorWrapper(a:type, "call LiteTitleCaseRegister()")
+    call RegisterOperatorWrapper(a:type, 'call LiteTitleCaseRegister()')
 endfunction
 
 function! TableOperator(type)
-    call RegisterOperatorWrapper(a:type, "call TableRegister()")
+    call RegisterOperatorWrapper(a:type, 'call TableRegister()')
 endfunction
 
 function! TableSeparatorOperator(type)
-    call RegisterOperatorWrapper(a:type, "call TableSeparatorRegister()")
+    call RegisterOperatorWrapper(a:type, 'call TableSeparatorRegister()')
 endfunction
 
 function! SubstituteRegisterOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SubstituteRegisterRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SubstituteRegisterRegister()')
 endfunction
 
 function! SubstituteOperator(type)
-    call RegisterOperatorWrapper(a:type, "call SubstituteRegister()")
+    call RegisterOperatorWrapper(a:type, 'call SubstituteRegister()')
 endfunction
 
 function! Sha256Operator(type)
-    call RegisterOperatorWrapper(a:type, "call Sha256Register()")
+    call RegisterOperatorWrapper(a:type, 'call Sha256Register()')
 endfunction
 
 " -------------------------------
@@ -1022,13 +1023,13 @@ endfunction
 
 " performs a topological sort
 function! TopologicalSortRegister()
-    call setreg(v:register, system("tsort", getreg(v:register)))
+    call setreg(v:register, system('tsort', getreg(v:register)))
 endfunction
 
 " gets the complement of two sets
 function! ComplementRegister()
     let A = uniq(sort(split(getreg(v:register), "\n")))
-    let B = uniq(sort(split(getreg(input("Enter register: ")), "\n")))
+    let B = uniq(sort(split(getreg(input('Enter register: ')), "\n")))
     call filter(A, 'index(B, v:val) < 0')
     call setreg(v:register, join(A, "\n"))
 endfunction
@@ -1037,7 +1038,7 @@ endfunction
 
 " gets the symmetric difference of two sets
 function! SymmetricDifferenceRegister()
-    call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n")), "DuplicateBlockFunction"), "\n"))
+    call setreg(v:register, join(uniq(sort(split(getreg(v:register), "\n")), 'DuplicateBlockFunction'), "\n"))
 endfunction
 
 " used for sorting based on string length
@@ -1047,17 +1048,17 @@ endfunction
 
 " sorts strings based on their length
 function! SortStringLengthRegister()
-    call setreg(v:register, join(sort(split(getreg(v:register), "\n"), "LengthFunction"), "\n"))
+    call setreg(v:register, join(sort(split(getreg(v:register), "\n"), 'LengthFunction'), "\n"))
 endfunction
 
 " Reverse sorts strings based on their length
 function! ReverseSortStringLengthRegister()
-    call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"), "LengthFunction")), "\n"))
+    call setreg(v:register, join(reverse(sort(split(getreg(v:register), "\n"), 'LengthFunction')), "\n"))
 endfunction
 
 " shuffle the input lines
 function! ShuffleRegister()
-    call setreg(v:register, system("shuf", getreg(v:register)))
+    call setreg(v:register, system('shuf', getreg(v:register)))
 endfunction
 
 " replace input lines with a sequence of numbers
@@ -1068,12 +1069,12 @@ endfunction
 
 " joins newline separated values with spaces
 function! JoinRegister()
-    call setreg(v:register, join(split(getreg(v:register), "\n"), " "))
+    call setreg(v:register, join(split(getreg(v:register), "\n"), ' '))
 endfunction
 
 " joins newline separated values with user specified delimiter
 function! JoinSeparatorRegister()
-    let delimiter = input("Enter delimiter: ")
+    let delimiter = input('Enter delimiter: ')
     call setreg(v:register, join(split(getreg(v:register), "\n"), delimiter))
 endfunction
 
@@ -1096,7 +1097,7 @@ function! DuplicateBlockFunction(arg1, arg2)
     return 1
 endfunction
 
-let g:DuplicateValue = ""
+let g:DuplicateValue = ''
 
 " removes unique values (set intersection)
 " also:
@@ -1105,8 +1106,8 @@ let g:DuplicateValue = ""
 " grep -xF -f A B
 " comm -12 <(sort -n A) <(sort -n B)
 function! DuplicateRegister()
-    let g:DuplicateValue = ""
-    call setreg(v:register, join(uniq(uniq(sort(add(split(getreg(v:register), "\n"), "")), "DuplicateFunction")), "\n"))
+    let g:DuplicateValue = ''
+    call setreg(v:register, join(uniq(uniq(sort(add(split(getreg(v:register), "\n"), '')), 'DuplicateFunction')), "\n"))
 endfunction
 
 " sorts the given text
@@ -1130,22 +1131,22 @@ endfunction
 
 " splits up values
 function! SplitRegister()
-    let delimiter = input("Enter delimiter: ")
+    let delimiter = input('Enter delimiter: ')
     call setreg(v:register, join(split(getreg(v:register), delimiter), "\n"))
 endfunction
 
 " executes and replaces given commands
 function! ExternalRegister()
     call setreg(v:register, system(&shell, getreg(v:register)))
-    call setreg(v:register, substitute(getreg(v:register), "^\n", "", "") )
-    call setreg(v:register, substitute(getreg(v:register), "\n$", "", "") )
+    call setreg(v:register, substitute(getreg(v:register), "^\n", '', '') )
+    call setreg(v:register, substitute(getreg(v:register), "\n$", '', '') )
 endfunction
 
 " performs a regex substitution on the given text
 function! SubstituteRegisterRegister()
-    let pat = getreg(input("Enter pattern register: "))
-    let sub = getreg(input("Enter substitution register: "))
-    let flags = input("Enter flags: ")
+    let pat = getreg(input('Enter pattern register: '))
+    let sub = getreg(input('Enter substitution register: '))
+    let flags = input('Enter flags: ')
     let list = split(getreg(v:register), "\n")
     let size = len(list)
     let i = 0
@@ -1158,9 +1159,9 @@ endfunction
 
 " performs a regex substitution on the given text
 function! SubstituteRegister()
-    let pat = input("Enter pattern: ")
-    let sub = input("Enter substitution: ")
-    let flags = input("Enter flags: ")
+    let pat = input('Enter pattern: ')
+    let sub = input('Enter substitution: ')
+    let flags = input('Enter flags: ')
     let list = split(getreg(v:register), "\n")
     let size = len(list)
     let i = 0
@@ -1178,54 +1179,54 @@ endfunction
 
 " makes text title case
 function! TitleCaseRegister()
-    call setreg(v:register, substitute(getreg(v:register), "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", "g") )
+    call setreg(v:register, substitute(getreg(v:register), "\\v<(.)(\\w*)>", "\\u\\1\\L\\2", 'g') )
 endfunction
 
 " makes text title case
 function! LiteTitleCaseRegister()
-    call setreg(v:register, substitute(getreg(v:register), "\\v<(\\w*)>", "\\u\\1", "g") )
+    call setreg(v:register, substitute(getreg(v:register), "\\v<(\\w*)>", "\\u\\1", 'g') )
 endfunction
 
 " creates a table from space separated arguments
 function! TableRegister()
-    call setreg(v:register, system("column -t", getreg(v:register)))
+    call setreg(v:register, system('column -t', getreg(v:register)))
 endfunction
 
 " creates a table from comma separated arguments
 function! TableSeparatorRegister()
-    let delimiter = input("Enter delimiter: ")
-    call setreg(v:register, system("column -s" . shellescape(delimiter) ." -t", getreg(v:register)))
+    let delimiter = input('Enter delimiter: ')
+    call setreg(v:register, system('column -s' . shellescape(delimiter) .' -t', getreg(v:register)))
 endfunction
 
 " converts cpp name mangled strings to their pretty counterparts
 function! CppFilterRegister()
-    call setreg(v:register, system("c++filt", getreg(v:register)))
+    call setreg(v:register, system('c++filt', getreg(v:register)))
 endfunction
 
 " performs crc32 on selected text
 function! CrcRegister()
-    call setreg(v:register, system("cksum", getreg(v:register)))
-    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
-    call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
+    call setreg(v:register, system('cksum', getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", '', 'g'))
+    call setreg(v:register, substitute(getreg(v:register), ' .*', '', 'g'))
 endfunction
 
 " performs md5 on selected text
 function! Md5Register()
-    call setreg(v:register, system("md5sum", getreg(v:register)))
-    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
-    call setreg(v:register, substitute(getreg(v:register), " .*", "", "g"))
+    call setreg(v:register, system('md5sum', getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", '', 'g'))
+    call setreg(v:register, substitute(getreg(v:register), ' .*', '', 'g'))
 endfunction
 
 " base64 encodes text
 function! Base64Register()
-    call setreg(v:register, system("base64", getreg(v:register)))
-    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
+    call setreg(v:register, system('base64', getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", '', 'g'))
 endfunction
 
 " base64 decodes text
 function! Base64DecodeRegister()
-    call setreg(v:register, system("base64 -d", getreg(v:register)))
-    call setreg(v:register, substitute(getreg(v:register), "\\n", "", "g"))
+    call setreg(v:register, system('base64 -d', getreg(v:register)))
+    call setreg(v:register, substitute(getreg(v:register), "\\n", '', 'g'))
 endfunction
 
 " -------------------------------
@@ -1529,7 +1530,7 @@ nnoremap <leader>ll :source ./.vimrc<CR>
 " local .vimrc settings
 " -------------------------------
 
-if filereadable(glob("~/.vimrc_local"))
+if filereadable(glob('~/.vimrc_local'))
     source ~/.vimrc_local
 endif
 

@@ -225,3 +225,7 @@
 	ignore = dirty
 	path = bundle/vim_movement
 	url = https://github.com/vim-scripts/vim_movement
+[submodule "bundle/vint"]
+	ignore = dirty
+	path = bundle/vint
+	url = https://github.com/Kuniwak/vint.git

@@ -15,22 +15,22 @@ function! GetCiscoIndent()
     return 0
   endif
 
-  if getline(v:lnum) =~ '^[ ]*!'
+  if getline(v:lnum) =~# '^[ ]*!'
       return 0
   endif
 
   let prev_line = getline(prev_lnum)
 
-  if prev_line =~ '^[ ]*!'
+  if prev_line =~# '^[ ]*!'
       return 0
   endif
 
-  if prev_line =~ '^ '
+  if prev_line =~# '^ '
       return indent(prev_lnum)
   endif
 
   for pattern in s:begin_context
-      if prev_line =~ pattern
+      if prev_line =~# pattern
           return &sw
       endif
   endfor
