@@ -268,7 +268,8 @@ let g:ycm_show_diagnostics_ui = 0
 " -------------------------------
 
 let g:syntastic_check_on_open = 0
-let g:syntastic_vim_checkers = ['vint']
+let g:syntastic_vim_checkers = [ 'vint' ]
+let g:syntastic_awk_checkers = [ 'awk' ]
 
 " -------------------------------
 " ultisnips settings
@@ -507,6 +508,7 @@ function! CscopeRescan()
     endif
 
     silent !cscope -Rbqk
+    silent !ctags -R
 endfunction
 
 " executes a cscope rescan on the given directory recursively
