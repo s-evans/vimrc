@@ -53,7 +53,7 @@ Plug 'ps1'
 Plug 'python-mode' , { 'for' : 'python' }
 Plug 'snipmate'
 Plug 'startify'
-Plug 'syntastic' , { 'on' : 'SyntasticCheck' }
+Plug 'syntastic'
 Plug 'tagbar' , { 'on' : 'TagbarToggle' }
 Plug 'textobj-between'
 Plug 'textobj-camel'
@@ -267,9 +267,14 @@ let g:ycm_show_diagnostics_ui = 0
 " syntastic settings
 " -------------------------------
 
-let g:syntastic_check_on_open = 0
+" Checker override
 let g:syntastic_vim_checkers = [ 'vint' ]
-let g:syntastic_awk_checkers = [ 'awk' ]
+
+" Disable checking
+let g:syntastic_mode_map = {
+    \ 'mode': 'active',
+    \ 'passive_filetypes': ['c', 'cpp', 'python']
+    \}
 
 " -------------------------------
 " ultisnips settings
