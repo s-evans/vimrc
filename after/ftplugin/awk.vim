@@ -13,7 +13,6 @@ endfunction
 
 " configure viewdoc
 let g:ViewDocInfoIndex_awk = [ '(gawk)Index' ]
-let g:ViewDoc_readline=[ 'ViewDoc_search' ]
 let g:ViewDoc_awk=[ 'ViewDoc_search', function('s:ViewDoc_awk') ]
 
 " parse awk lint output
