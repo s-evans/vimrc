@@ -1,3 +1,7 @@
+" comment settings
+setlocal commentstring=#\ %s
+setlocal comments=b:#
+
 " define a custom help handler for fstab files
 function! s:ViewDoc_fstab(topic, filetype, synid, ctx)
     return {
