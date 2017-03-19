@@ -21,6 +21,10 @@ function! MyGetAwkIndent()
     " 'pattern { action }' (simple check match on /{/ increases the indent then)
 
     if s:Get_brace_balance( prev_data, '{', '}' ) > 0
+        " Don't increase indent if this line completes a brace context
+        if getline(v:lnum) =~ '^\s*}'
+            return ind
+        endif
         return ind + &sw
     endif
 

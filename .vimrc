@@ -36,6 +36,7 @@ Plug 'dosbatch' , { 'for' : 'dosbatch' }
 Plug 'dosbatch_movement' , { 'for' : [ 'dosbatch' ] }
 Plug 'doxygen_toolkit' , { 'on' : [ 'Dox' , 'DoxAuthor' ] }
 Plug 'easy-align' , { 'on' : '<Plug>(EasyAlign)' }
+Plug 'eclim'
 Plug 'gundo' , { 'on' : 'GundoToggle' }
 Plug 'help_movement' , { 'for' : [ 'help' ] }
 Plug 'indent-motion'
@@ -340,14 +341,7 @@ let g:easy_align_delimiters = {
 " eclim settings
 " -------------------------------
 
-" enable eclim completion only on java files
-if has('autocmd')
-    augroup eclim_java_completion
-        autocmd!
-        autocmd WinEnter *.java let g:EclimCompletionMethod = 'omnifunc'
-        autocmd WinLeave *.java unlet g:EclimCompletionMethod
-    augroup END
-endif
+let g:EclimCompletionMethod = 'omnifunc'
 
 " -------------------------------
 " viewdoc settings
