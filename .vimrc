@@ -401,6 +401,8 @@ endif
 function! SetFormatProgram()
     if exists('b:format_prg')
         exec 'set formatprg=' . substitute( b:format_prg, ' ', "\\\\ ", 'g' )
+    else
+        set formatprg=
     endif
 endfunction
 
