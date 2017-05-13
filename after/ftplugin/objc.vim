@@ -1,6 +1,4 @@
-if !has_key(g:format_prg, 'objc')
-    " clang-format support
-    if executable('clang-format')
-        let g:format_prg['objc'] = 'clang-format -style=file'
-    endif
+" clang-format support
+if executable('clang-format')
+    let b:format_prg = 'clang-format -style=file'
 endif

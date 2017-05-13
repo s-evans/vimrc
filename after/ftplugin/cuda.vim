@@ -7,16 +7,14 @@ let g:snipMate.scope_aliases['cuda'] = 'cpp'
 " custom help handler for cuda
 let g:ViewDoc_cuda=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom' ]
 
-if !has_key(g:format_prg, 'cuda')
-    " clang-format support
-    if executable('clang-format')
-        let g:format_prg['cuda'] = 'clang-format -style=file'
-    endif
+" clang-format support
+if executable('clang-format')
+    let b:format_prg = 'clang-format -style=file'
+endif
 
-    " astyle support
-    if executable('astyle')
-        let g:format_prg['cuda'] = 'astyle'
-    endif
+" astyle support
+if executable('astyle')
+    let b:format_prg = 'astyle'
 endif
 
 " -------------------------------

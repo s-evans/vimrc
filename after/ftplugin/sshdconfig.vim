@@ -7,3 +7,5 @@ function! s:ViewDoc_sshdconfig(topic, filetype, synid, ctx)
                 \}
 endfunction
 let g:ViewDoc_sshdconfig=[ function('s:ViewDoc_sshdconfig') ]
+setlocal commentstring=#\ %s
+setlocal comments=b:#

@@ -1,6 +1,4 @@
-if !has_key(g:format_prg, 'json')
-    " js-beautify support
-    if executable('js-beautify')
-        let g:format_prg['json'] = 'js-beautify -'
-    endif
+" js-beautify support
+if executable('js-beautify')
+    let b:format_prg = 'js-beautify -'
 endif

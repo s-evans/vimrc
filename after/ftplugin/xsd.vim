@@ -1,6 +1,4 @@
-if !has_key(g:format_prg, 'xsd')
-    " xmllint support
-    if executable('xmllint')
-        let g:format_prg['xsd'] = 'xmllint --format -'
-    endif
+" xmllint support
+if executable('xmllint')
+    let b:format_prg = 'xmllint --format -'
 endif

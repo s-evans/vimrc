@@ -1,6 +1,4 @@
-if !has_key(g:format_prg, 'ruby')
-    " rbeautify support
-    if executable('rbeautify')
-        let g:format_prg['ruby'] = 'rbeautify'
-    endif
+" rbeautify support
+if executable('rbeautify')
+    let b:format_prg = 'rbeautify'
 endif

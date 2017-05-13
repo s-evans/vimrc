@@ -1,11 +1,9 @@
-if !has_key(g:format_prg, 'python')
-    " yapf support
-    if executable('yapf')
-        let g:format_prg['python'] = 'yapf'
-    endif
+" yapf support
+if executable('yapf')
+    let b:format_prg = 'yapf'
+endif
 
-    " autopep8 support
-    if executable('autopep8')
-        let g:format_prg['python'] = 'autopep8 -'
-    endif
+" autopep8 support
+if executable('autopep8')
+    let b:format_prg = 'autopep8 -'
 endif

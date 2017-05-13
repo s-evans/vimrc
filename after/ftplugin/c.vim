@@ -1,13 +1,11 @@
 let g:ViewDoc_c=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom', function('ViewDoc_hlpviewer') ]
 
-if !has_key(g:format_prg, 'c')
-    " clang-format support
-    if executable('clang-format')
-        let g:format_prg['c'] = 'clang-format -style=file'
-    endif
+" clang-format support
+if executable('clang-format')
+    let b:format_prg = 'clang-format -style=file'
+endif
 
-    " astyle support
-    if executable('astyle')
-        let g:format_prg['c'] = 'astyle'
-    endif
+" astyle support
+if executable('astyle')
+    let b:format_prg = 'astyle'
 endif

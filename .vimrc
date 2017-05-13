@@ -397,19 +397,11 @@ if has('autocmd')
     augroup END
 endif
 
-" initialize the format program dictionary
-if !exists('g:format_prg')
-    let g:format_prg={}
-endif
-
 " sets the format program a little more easily
-function! SetFormatProgram(string)
-   exec 'set formatprg=' . substitute( a:string, ' ', "\\\\ ", 'g' )
-endfunction
-
-" gets the format program for the filetype specified
-function! GetFileTypeFormatProgram(filetype)
-    return get(g:format_prg, &ft, '')
+function! SetFormatProgram()
+    if exists('b:format_prg')
+        exec 'set formatprg=' . substitute( b:format_prg, ' ', "\\\\ ", 'g' )
+    endif
 endfunction
 
 " set up auto commands to set the format program per buffer
@@ -418,10 +410,10 @@ if has('autocmd')
         autocmd!
 
         " on entering a buffer set the format program
-        autocmd WinEnter * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
+        autocmd WinEnter * call SetFormatProgram()
 
         " if the file type of a buffer changes, change the format program
-        autocmd FileType * call SetFormatProgram(GetFileTypeFormatProgram(&ft))
+        autocmd FileType * call SetFormatProgram()
     augroup END
 endif
 
