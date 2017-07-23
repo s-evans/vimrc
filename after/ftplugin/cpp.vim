@@ -1,3 +1,4 @@
+" viewdoc support
 let g:ViewDoc_cpp=[ 'ViewDoc_DEFAULT', 'ViewDoc_help_custom', function('ViewDoc_hlpviewer') ]
 
 " clang-format support
@@ -9,3 +10,6 @@ endif
 if executable('astyle')
     let b:format_prg = 'astyle'
 endif
+
+" file path search support
+set suffixesadd=.hpp,.hh,.hxx,.cpp,.c++,cxx,.cc
