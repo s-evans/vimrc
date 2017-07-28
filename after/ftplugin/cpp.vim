@@ -12,4 +12,4 @@ if executable('astyle')
 endif
 
 " file path search support
-set suffixesadd=.hpp,.hh,.hxx,.cpp,.c++,cxx,.cc
+set suffixesadd=.hpp,.hh,.hxx,.h,.cpp,.c++,cxx,.cc,.c

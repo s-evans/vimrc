@@ -104,6 +104,7 @@ set visualbell
 set textwidth=0
 set matchpairs+=<:>
 let g:load_doxygen_syntax=1
+set backup
 
 if has('extra_search')
     set nohlsearch
