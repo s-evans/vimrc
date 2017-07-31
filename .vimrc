@@ -3,13 +3,8 @@
 " TODO list
 " -------------------------------
 
-" table mode
-" refactoring operations
-" set operations: mean, median, mode, sum
 " multiroot operations (rsync svn git sed cscope)
-" consider modifying cscope scan to always pull applicable file types into cscope.files
-" left/right expression text object
-" text transforms: c escaped string, html / xml entities
+" modify cscope scan to always pull applicable file types into cscope.files
 " update mappings to operate on the entire current line if the last character of the mapping is repeated, per vim convention
 " infokey filetype plugin
 " clearcase checkin, checkout, mkelem
