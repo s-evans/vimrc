@@ -49,6 +49,7 @@ Plug 'mediawiki'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
+Plug 'operator-surround'
 Plug 'operator-user'
 Plug 'ps1'
 Plug 'python-mode' , { 'for' : 'python' }
@@ -73,7 +74,6 @@ Plug 'vim-commentary'
 Plug 'vim-indent-object'
 Plug 'vim-repeat'
 Plug 'vim-snippets'
-Plug 'vim-surround'
 Plug 'vim-unimpaired'
 Plug 'vim_movement' , { 'for' : [ 'vim' ] }
 Plug 'visualrepeat'
@@ -1521,6 +1521,14 @@ call operator#user#define('sequence', 'SequenceOperator')
 
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
+
+" -------------------------------
+" surround mappings
+" -------------------------------
+
+map <silent>ys <Plug>(operator-surround-append)
+map <silent>ds <Plug>(operator-surround-delete)
+map <silent>cs <Plug>(operator-surround-replace)
 
 " -------------------------------
 " local .vimrc settings

@@ -22,10 +22,6 @@
 	ignore = dirty
 	path = bundle/gundo
 	url = https://github.com/sjl/gundo.vim.git
-[submodule "bundle/vim-surround"]
-	ignore = dirty
-	path = bundle/vim-surround
-	url = https://github.com/tpope/vim-surround.git
 [submodule "bundle/vim-repeat"]
 	ignore = dirty
 	path = bundle/vim-repeat
@@ -229,3 +225,7 @@
 	ignore = dirty
 	path = bundle/vint
 	url = https://github.com/Kuniwak/vint.git
+[submodule "bundle/operator-surround"]
+	ignore = dirty
+	path = bundle/operator-surround
+	url = https://github.com/rhysd/vim-operator-surround.git
