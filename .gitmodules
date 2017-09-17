@@ -229,3 +229,7 @@
 	ignore = dirty
 	path = bundle/operator-surround
 	url = https://github.com/rhysd/vim-operator-surround.git
+[submodule "bundle/typescript"]
+	ignore = dirty
+	path = bundle/typescript
+	url = https://github.com/leafgarland/typescript-vim.git
