@@ -1522,9 +1522,9 @@ nnoremap <leader>ll :source ./.vimrc<CR>
 " surround mappings
 " -------------------------------
 
-map <silent>ys <Plug>(operator-surround-append)
-map <silent>ds <Plug>(operator-surround-delete)
-map <silent>cs <Plug>(operator-surround-replace)
+nmap <silent>ys <Plug>(operator-surround-append)
+nmap <silent>ds <Plug>(operator-surround-delete)
+nmap <silent>cs <Plug>(operator-surround-replace)
 
 " -------------------------------
 " local .vimrc settings
