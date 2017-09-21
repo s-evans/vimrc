@@ -148,6 +148,7 @@ set tabstop=4
 set cinoptions+=g0  " access specifiers left justified
 set cinoptions+=N-s " namespace content not indented
 set cinoptions+=:0  " case labels not indented
+set cinoptions+=t0  " don't indent return types
 
 " -------------------------------
 " ignorecase
