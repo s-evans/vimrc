@@ -409,11 +409,8 @@ if has('autocmd')
     augroup auto_format
         autocmd!
 
-        " on entering a buffer set the format program
-        autocmd WinEnter * call SetFormatProgram()
-
-        " if the file type of a buffer changes, change the format program
-        autocmd FileType * call SetFormatProgram()
+        " set the format program on changing buffer and changing filetype
+        autocmd BufEnter,FileType * call SetFormatProgram()
     augroup END
 endif
 
@@ -1391,92 +1388,116 @@ augroup quickfix_mappings
 augroup END
 
 " -------------------------------
-" grep operator mappings
+" grep operator operator mappings
 " -------------------------------
 
 map <leader>gp <Plug>(operator-grep-path)
+map <leader>gpp V<Plug>(operator-grep-path)
 call operator#user#define('grep-path', 'GrepPathOperator')
 
 map <leader>gr <Plug>(operator-grep-recursive)
+map <leader>grr V<Plug>(operator-grep-recursive)
 call operator#user#define('grep-recursive', 'GrepRecurseOperator')
 
 map <leader>gc <Plug>(operator-grep-current)
+map <leader>gcc V<Plug>(operator-grep-current)
 call operator#user#define('grep-current', 'GrepCurrentOperator')
 
 map <leader>gb <Plug>(operator-grep-buffer)
+map <leader>gbb V<Plug>(operator-grep-buffer)
 call operator#user#define('grep-buffer', 'GrepBufferOperator')
 
 map <leader>gw <Plug>(operator-grep-window)
+map <leader>gww V<Plug>(operator-grep-window)
 call operator#user#define('grep-window', 'GrepWindowOperator')
 
 " -------------------------------
-" text transformation mappings
+" text transformation operator mappings
 " -------------------------------
 
 map <leader>tb <Plug>(operator-base64)
+nmap <leader>tbb V<Plug>(operator-base64)
 call operator#user#define('base64', 'Base64Operator')
 
 map <leader>tB <Plug>(operator-base64-decode)
+map <leader>tBB V<Plug>(operator-base64-decode)
 call operator#user#define('base64-decode', 'Base64DecodeOperator')
 
 map <leader>t2 <Plug>(operator-sha256)
+map <leader>t22 V<Plug>(operator-sha256)
 call operator#user#define('sha256', 'Sha256Operator')
 
 map <leader>t5 <Plug>(operator-md5)
+map <leader>t55 V<Plug>(operator-md5)
 call operator#user#define('md5', 'Md5Operator')
 
 map <leader>tk <Plug>(operator-crc)
+map <leader>tkk V<Plug>(operator-crc)
 call operator#user#define('crc', 'CrcOperator')
 
 map <leader>tp <Plug>(operator-cpp-filter)
+map <leader>tpp V<Plug>(operator-cpp-filter)
 call operator#user#define('cpp-filter', 'CppFilterOperator')
 
 map <leader>ti <Plug>(operator-title-case)
+map <leader>tii V<Plug>(operator-title-case)
 call operator#user#define('title-case', 'TitleCaseOperator')
 
 map <leader>tI <Plug>(operator-lite-title-case)
+map <leader>tII V<Plug>(operator-lite-title-case)
 call operator#user#define('lite-title-case', 'LiteTitleCaseOperator')
 
 map <leader>tt <Plug>(operator-table)
+map <leader>ttt V<Plug>(operator-table)
 call operator#user#define('table', 'TableOperator')
 
 map <leader>tT <Plug>(operator-table-separator)
+map <leader>tTT V<Plug>(operator-table-separator)
 call operator#user#define('table-separator', 'TableSeparatorOperator')
 
 map <leader>ts <Plug>(operator-substitute)
+map <leader>tss V<Plug>(operator-substitute)
 call operator#user#define('substitute', 'SubstituteOperator')
 
 map <leader>tS <Plug>(operator-substitute-register)
+map <leader>tSS V<Plug>(operator-substitute-register)
 call operator#user#define('substitute-register', 'SubstituteRegisterOperator')
 
 map <leader>tl <Plug>(operator-split)
+map <leader>tll V<Plug>(operator-split)
 call operator#user#define('split', 'SplitOperator')
 
 map <leader>tj <Plug>(operator-join)
+map <leader>tjj V<Plug>(operator-join)
 call operator#user#define('join', 'JoinOperator')
 
 map <leader>tJ <Plug>(operator-join-separator)
+map <leader>tJJ V<Plug>(operator-join-separator)
 call operator#user#define('join-separator', 'JoinSeparatorOperator')
 
 map <leader>tr <Plug>(operator-url-encode)
+map <leader>trr V<Plug>(operator-url-encode)
 call operator#user#define('url-encode', 'UrlEncodeOperator')
 
 map <leader>tR <Plug>(operator-url-decode)
+map <leader>tRR V<Plug>(operator-url-decode)
 call operator#user#define('url-decode', 'UrlDecodeOperator')
 
 map <leader>! <Plug>(operator-external)
+map <leader>!! V<Plug>(operator-external)
 call operator#user#define('external', 'ExternalOperator')
 
 map <leader>m <Plug>(operator-math)
+map <leader>mm V<Plug>(operator-math)
 call operator#user#define('math', 'MathExpressionOperator')
 
 map <leader>p <Plug>(operator-replace)
+map <leader>pp V<Plug>(operator-replace)
 
-vmap <leader>a <Plug>(EasyAlign)
-nmap <leader>a <Plug>(EasyAlign)
+map <leader>a <Plug>(EasyAlign)
 
 " -------------------------------
-" set operation mappings
+" set operation operator mappings
 " -------------------------------
 
 map <leader>sP <Plug>(operator-topsort)
@@ -1513,19 +1534,23 @@ map <leader>sq <Plug>(operator-sequence)
 call operator#user#define('sequence', 'SequenceOperator')
 
 " -------------------------------
+" surround operator mappings
+" -------------------------------
+
+vmap <silent>ys <Plug>(operator-surround-append)
+nmap <silent>ys <Plug>(operator-surround-append)
+nmap <silent>yss V<Plug>(operator-surround-append)
+nmap <silent>ds <Plug>(operator-surround-delete)
+nmap <silent>dss V<Plug>(operator-surround-delete)
+nmap <silent>cs <Plug>(operator-surround-replace)
+nmap <silent>css V<Plug>(operator-surround-replace)
+
+" -------------------------------
 " .vimrc reload mappings
 " -------------------------------
 
 nnoremap <leader>lg :source ~/.vimrc<CR>
 nnoremap <leader>ll :source ./.vimrc<CR>
-
-" -------------------------------
-" surround mappings
-" -------------------------------
-
-nmap <silent>ys <Plug>(operator-surround-append)
-nmap <silent>ds <Plug>(operator-surround-delete)
-nmap <silent>cs <Plug>(operator-surround-replace)
 
 " -------------------------------
 " local .vimrc settings

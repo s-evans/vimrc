@@ -1,6 +1,6 @@
 setlocal indentexpr=GetJavaIndent()
 
-function! SkipJavaBlanksAndComments(startline)
+function! s:SkipJavaBlanksAndComments(startline)
   let lnum = a:startline
   while lnum > 1
     let lnum = prevnonblank(lnum)
@@ -34,7 +34,7 @@ function! GetJavaIndent()
   endif
 
   " find start of previous line, in case it was a continuation line
-  let lnum = SkipJavaBlanksAndComments(v:lnum - 1)
+  let lnum = s:SkipJavaBlanksAndComments(v:lnum - 1)
 
   " If the previous line starts with '@', we should have the same indent as
   " the previous one
@@ -44,7 +44,7 @@ function! GetJavaIndent()
 
   let prev = lnum
   while prev > 1
-    let next_prev = SkipJavaBlanksAndComments(prev - 1)
+    let next_prev = s:SkipJavaBlanksAndComments(prev - 1)
     if getline(next_prev) !~# ',\s*$'
       break
     endif
@@ -82,7 +82,7 @@ function! GetJavaIndent()
 
   " Below a line starting with "}" never indent more.  Needed for a method
   " below a method with an indented "throws" clause.
-  let lnum = SkipJavaBlanksAndComments(v:lnum - 1)
+  let lnum = s:SkipJavaBlanksAndComments(v:lnum - 1)
   if getline(lnum) =~# '^\s*}\s*\(//.*\|/\*.*\)\=$' && indent(lnum) < theIndent
     let theIndent = indent(lnum)
   endif

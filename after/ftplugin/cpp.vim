@@ -13,3 +13,6 @@ endif
 
 " file path search support
 set suffixesadd=.hpp,.hh,.hxx,.h,.cpp,.c++,cxx,.cc,.c
+
+" comment string settings
+let b:commentary_format='// %s'
