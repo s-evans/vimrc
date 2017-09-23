@@ -101,6 +101,7 @@ set textwidth=0
 set matchpairs+=<:>
 let g:load_doxygen_syntax=1
 set backup
+set statusline=%<%f:%l\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
 if has('extra_search')
     set nohlsearch
