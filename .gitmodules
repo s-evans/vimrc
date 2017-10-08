@@ -225,11 +225,11 @@
 	ignore = dirty
 	path = bundle/vint
 	url = https://github.com/Kuniwak/vint.git
-[submodule "bundle/operator-surround"]
-	ignore = dirty
-	path = bundle/operator-surround
-	url = https://github.com/rhysd/vim-operator-surround.git
 [submodule "bundle/typescript"]
 	ignore = dirty
 	path = bundle/typescript
 	url = https://github.com/leafgarland/typescript-vim.git
+[submodule "bundle/vim-surround"]
+	ignore = dirty
+	path = bundle/vim-surround
+	url = git@github.com:tpope/vim-surround.git

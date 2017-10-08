@@ -44,7 +44,7 @@ Plug 'mediawiki'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
-Plug 'operator-surround'
+Plug 'vim-surround'
 Plug 'operator-user'
 Plug 'ps1'
 Plug 'python-mode' , { 'for' : 'python' }
@@ -1533,18 +1533,6 @@ call operator#user#define('shuffle', 'ShuffleOperator')
 
 map <leader>sq <Plug>(operator-sequence)
 call operator#user#define('sequence', 'SequenceOperator')
-
-" -------------------------------
-" surround operator mappings
-" -------------------------------
-
-vmap <silent>ys <Plug>(operator-surround-append)
-nmap <silent>ys <Plug>(operator-surround-append)
-nmap <silent>yss V<Plug>(operator-surround-append)
-nmap <silent>ds <Plug>(operator-surround-delete)
-nmap <silent>dss V<Plug>(operator-surround-delete)
-nmap <silent>cs <Plug>(operator-surround-replace)
-nmap <silent>css V<Plug>(operator-surround-replace)
 
 " -------------------------------
 " .vimrc reload mappings
