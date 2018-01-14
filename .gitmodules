@@ -245,3 +245,7 @@
 	ignore = dirty
 	path = bundle/php-indent
 	url = git://github.com/2072/PHP-Indenting-for-VIm.git
+[submodule "bundle/omnisharp"]
+	ignore = dirty
+	path = bundle/omnisharp
+	url = git://github.com/OmniSharp/omnisharp-vim.git

@@ -43,6 +43,7 @@ Plug 'matchit'
 Plug 'mediawiki'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
+Plug 'omnisharp'
 Plug 'operator-replace'
 Plug 'operator-user'
 Plug 'php-indent'
