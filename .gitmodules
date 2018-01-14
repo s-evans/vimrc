@@ -233,3 +233,15 @@
 	ignore = dirty
 	path = bundle/vim-surround
 	url = git@github.com:tpope/vim-surround.git
+[submodule "bundle/phpcd"]
+	ignore = dirty
+	path = bundle/phpcd
+	url = git://github.com/lvht/phpcd.vim.git
+[submodule "bundle/php-syntax"]
+	ignore = dirty
+	path = bundle/php-syntax
+	url = git://github.com/StanAngeloff/php.vim.git
+[submodule "bundle/php-indent"]
+	ignore = dirty
+	path = bundle/php-indent
+	url = git://github.com/2072/PHP-Indenting-for-VIm.git

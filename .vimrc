@@ -44,8 +44,10 @@ Plug 'mediawiki'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'operator-replace'
-Plug 'vim-surround'
 Plug 'operator-user'
+Plug 'php-indent'
+Plug 'php-syntax'
+Plug 'phpcd', { 'for': 'php', 'do': 'composer install' }
 Plug 'ps1'
 Plug 'python-mode' , { 'for' : 'python' }
 Plug 'snipmate'
@@ -70,6 +72,7 @@ Plug 'vim-commentary'
 Plug 'vim-indent-object'
 Plug 'vim-repeat'
 Plug 'vim-snippets'
+Plug 'vim-surround'
 Plug 'vim-unimpaired'
 Plug 'vim_movement' , { 'for' : [ 'vim' ] }
 Plug 'visualrepeat'
