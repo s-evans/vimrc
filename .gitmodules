@@ -249,3 +249,12 @@
 	ignore = dirty
 	path = bundle/omnisharp
 	url = git://github.com/OmniSharp/omnisharp-vim.git
+[submodule "bundle/dbext"]
+	path = bundle/dbext
+	url = git://github.com/vim-scripts/dbext.vim.git
+[submodule "bundle/align"]
+	path = bundle/align
+	url = git://github.com/vim-scripts/Align.git
+[submodule "bundle/sql-utilities"]
+	path = bundle/sql-utilities
+	url = git://github.com/vim-scripts/SQLUtilities.git

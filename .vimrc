@@ -19,11 +19,13 @@ call plug#begin(s:my_vim_dir . '/bundle')
 Plug 'ConflictMotions'
 Plug 'CountJump'
 Plug 'a-vim' , { 'on' : [ 'A' , 'AS' , 'AV' , 'AT' , 'AN' , 'IH' , 'IHS' , 'IHT' , 'IHN' ] }
+Plug 'align'
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
 Plug 'cctree' , { 'on' : 'CCTreeLoadDB' }
 Plug 'cisco-ios'
 Plug 'cmake' , { 'for' : 'cmake' }
+Plug 'dbext'
 Plug 'diff_movement' , { 'for' : [ 'diff' ] }
 Plug 'diffwindow_movement'
 Plug 'dispatch'
@@ -52,6 +54,7 @@ Plug 'phpcd', { 'for': 'php', 'do': 'composer install' }
 Plug 'ps1'
 Plug 'python-mode' , { 'for' : 'python' }
 Plug 'snipmate'
+Plug 'sql-utilities'
 Plug 'startify'
 Plug 'syntastic'
 Plug 'tagbar' , { 'on' : 'TagbarToggle' }
@@ -229,6 +232,20 @@ set secure
 if exists('+undofile')
     set undofile
 endif
+
+" -------------------------------
+" SQLUtilities settings
+" -------------------------------
+
+" disable default mappings
+let g:sqlutil_load_default_maps = 0
+
+" -------------------------------
+" Align settings
+" -------------------------------
+
+" disable default mappings
+let g:loaded_AlignMapsPlugin = 1
 
 " -------------------------------
 " a-vim settings
