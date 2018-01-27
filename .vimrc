@@ -43,6 +43,7 @@ Plug 'js-syntax' , { 'for' : 'javascript' }
 Plug 'latexbox'
 Plug 'matchit'
 Plug 'mediawiki'
+Plug 'neoformat'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
 Plug 'omnisharp'
