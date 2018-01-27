@@ -7,3 +7,6 @@ function! s:ViewDoc_samba(topic, filetype, synid, ctx)
                 \}
 endfunction
 let g:ViewDoc_samba=[ function('s:ViewDoc_samba') ]
+
+" comment string settings
+let b:commentary_format='// %s'
