@@ -1,12 +1,12 @@
 if executable('cmd')
     " use the dos help command
     function! s:ViewDoc_doshelp(topic, filetype, synid, ctx)
-        let tmp_topic=shellescape(a:topic,1)
-        let output=system('cmd /C help '.tmp_topic)
-        if match(output, 'This command is not supported by the help utility') != -1
+        let l:tmp_topic=shellescape(a:topic,1)
+        let l:output=system('cmd /C help '.l:tmp_topic)
+        if match(l:output, 'This command is not supported by the help utility') != -1
             return {}
         else
-            return { 'cmd': 'cmd /C help '.tmp_topic,
+            return { 'cmd': 'cmd /C help '.l:tmp_topic,
                         \ 'ft':	'dosbatch',
                         \ }
         endif

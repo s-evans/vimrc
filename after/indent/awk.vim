@@ -9,40 +9,40 @@ setlocal indentexpr=MyGetAwkIndent()
 function! MyGetAwkIndent()
 
     " Find previous line and get it's indentation
-    let prev_lineno = s:Get_prev_line( v:lnum )
-    if prev_lineno == 0
+    let l:prev_lineno = s:Get_prev_line( v:lnum )
+    if l:prev_lineno == 0
         return 0
     endif
-    let prev_data = getline( prev_lineno )
-    let ind = indent( prev_lineno )
+    let l:prev_data = getline( l:prev_lineno )
+    let l:ind = indent( l:prev_lineno )
 
     " Increase indent if the previous line contains an opening brace. Search
     " for this brace the hard way to prevent errors if the previous line is a
     " 'pattern { action }' (simple check match on /{/ increases the indent then)
 
-    if s:Get_brace_balance( prev_data, '{', '}' ) > 0
+    if s:Get_brace_balance( l:prev_data, '{', '}' ) > 0
         " Don't increase indent if this line completes a brace context
-        if getline(v:lnum) =~ '^\s*}'
-            return ind
+        if getline(v:lnum) =~# '^\s*}'
+            return l:ind
         endif
-        return ind + &sw
+        return l:ind + &shiftwidth
     endif
 
-    let brace_balance = s:Get_brace_balance( prev_data, '(', ')' )
+    let l:brace_balance = s:Get_brace_balance( l:prev_data, '(', ')' )
 
     " If prev line has positive brace_balance and starts with a word (keyword
     " or function name), align the current line on the first '(' of the prev
     " line
 
-    if brace_balance > 0 && s:Starts_with_word( prev_data )
-        return s:Safe_indent( ind, s:First_word_len(prev_data), getline(v:lnum))
+    if l:brace_balance > 0 && s:Starts_with_word( l:prev_data )
+        return s:Safe_indent( l:ind, s:First_word_len(l:prev_data), getline(v:lnum))
     endif
 
     " If this line starts with an open brace bail out now before the line
     " continuation checks.
 
     if getline( v:lnum ) =~# '^\s*{'
-        return ind
+        return l:ind
     endif
 
     " If prev line seems to be part of multiline statement:
@@ -52,19 +52,19 @@ function! MyGetAwkIndent()
     " 2. Prev line is not first line of a multiline statement
     "    -> copy indent of prev line
 
-    let continue_mode = s:Seems_continuing( prev_data )
-    if continue_mode > 0
-        if s:Seems_continuing( getline(s:Get_prev_line( prev_lineno )) )
+    let l:continue_mode = s:Seems_continuing( l:prev_data )
+    if l:continue_mode > 0
+        if s:Seems_continuing( getline(s:Get_prev_line( l:prev_lineno )) )
             " Case 2
-            return ind
+            return l:ind
         else
             " Case 1
-            if continue_mode == 1
+            if l:continue_mode == 1
                 " Need continuation due to comma, backslash, etc
-                return s:Safe_indent( ind, s:First_word_len(prev_data), getline(v:lnum))
+                return s:Safe_indent( l:ind, s:First_word_len(l:prev_data), getline(v:lnum))
             else
                 " if/for/while without '{'
-                return ind + &sw
+                return l:ind + &shiftwidth
             endif
         endif
     endif
@@ -83,32 +83,32 @@ function! MyGetAwkIndent()
     "   until that's not the case anymore. Take indent of one line down.
 
     " Case 1
-    if prev_data =~# ')' && brace_balance < 0
-        while brace_balance != 0 && prev_lineno > 0
-            let prev_lineno = s:Get_prev_line( prev_lineno )
-            let prev_data = getline( prev_lineno )
-            let brace_balance=brace_balance+s:Get_brace_balance(prev_data,'(',')' )
+    if l:prev_data =~# ')' && l:brace_balance < 0
+        while l:brace_balance != 0 && l:prev_lineno > 0
+            let l:prev_lineno = s:Get_prev_line( l:prev_lineno )
+            let l:prev_data = getline( l:prev_lineno )
+            let l:brace_balance=l:brace_balance+s:Get_brace_balance(l:prev_data,'(',')' )
         endwhile
-        let ind = indent( prev_lineno )
+        let l:ind = indent( l:prev_lineno )
     else
         " Case 2
-        if s:Seems_continuing( getline( prev_lineno - 1 ) )
-            let prev_lineno = prev_lineno - 2
-            let prev_data = getline( prev_lineno )
-            while prev_lineno > 0 && (s:Seems_continuing( prev_data ) > 0)
-                let prev_lineno = s:Get_prev_line( prev_lineno )
-                let prev_data = getline( prev_lineno )
+        if s:Seems_continuing( getline( l:prev_lineno - 1 ) )
+            let l:prev_lineno = l:prev_lineno - 2
+            let l:prev_data = getline( l:prev_lineno )
+            while l:prev_lineno > 0 && (s:Seems_continuing( l:prev_data ) > 0)
+                let l:prev_lineno = s:Get_prev_line( l:prev_lineno )
+                let l:prev_data = getline( l:prev_lineno )
             endwhile
-            let ind = indent( prev_lineno + 1 )
+            let l:ind = indent( l:prev_lineno + 1 )
         endif
     endif
 
     " Decrease indent if this line contains a '}'.
     if getline(v:lnum) =~# '^\s*}'
-        let ind = ind - &sw
+        let l:ind = l:ind - &shiftwidth
     endif
 
-    return ind
+    return l:ind
 endfunction
 
 " Find the open and close braces in this line and return how many more open-
@@ -116,13 +116,13 @@ endfunction
 " across multiple lines.
 
 function! s:Get_brace_balance( line, b_open, b_close )
-    let start_idx = stridx(a:line, a:b_open)
-    let mod_line = a:line[start_idx :]
-    let line2 = substitute( mod_line, a:b_open, '', 'g' )
-    let openb = strlen( mod_line ) - strlen( line2 )
-    let line3 = substitute( line2, a:b_close, '', 'g' )
-    let closeb = strlen( line2 ) - strlen( line3 )
-    return openb - closeb
+    let l:start_idx = stridx(a:line, a:b_open)
+    let l:mod_line = a:line[l:start_idx :]
+    let l:line2 = substitute( l:mod_line, a:b_open, '', 'g' )
+    let l:openb = strlen( l:mod_line ) - strlen( l:line2 )
+    let l:line3 = substitute( l:line2, a:b_close, '', 'g' )
+    let l:closeb = strlen( l:line2 ) - strlen( l:line3 )
+    return l:openb - l:closeb
 endfunction
 
 " Find out whether the line starts with a word (i.e. keyword or function
@@ -141,13 +141,13 @@ endfunction
 " Precondition: only to be used on lines where 'Starts_with_word' returns 1.
 
 function! s:First_word_len( line )
-    let white_end = matchend( a:line, '^\s*' )
+    let l:white_end = matchend( a:line, '^\s*' )
     if match( a:line, '^\s*func' ) != -1
-        let word_end = matchend( a:line, '[a-z]\+\s\+[a-zA-Z_0-9]\+[ (]*' )
+        let l:word_end = matchend( a:line, '[a-z]\+\s\+[a-zA-Z_0-9]\+[ (]*' )
     else
-        let word_end = matchend( a:line, '[a-zA-Z_0-9]\+[ (]*' )
+        let l:word_end = matchend( a:line, '[a-zA-Z_0-9]\+[ (]*' )
     endif
-    return word_end - white_end
+    return l:word_end - l:white_end
 endfunction
 
 " Determine if 'line' completes a statement or is continued on the next line.
@@ -173,13 +173,13 @@ endfunction
 " comment or blank and return the line number
 
 function! s:Get_prev_line( lineno )
-    let lnum = a:lineno - 1
-    let data = getline( lnum )
-    while lnum > 0 && (data =~# '^\s*#' || data =~# '^\s*$')
-        let lnum = lnum - 1
-        let data = getline( lnum )
+    let l:lnum = a:lineno - 1
+    let l:data = getline( l:lnum )
+    while l:lnum > 0 && (l:data =~# '^\s*#' || l:data =~# '^\s*$')
+        let l:lnum = l:lnum - 1
+        let l:data = getline( l:lnum )
     endwhile
-    return lnum
+    return l:lnum
 endfunction
 
 " This function checks whether an indented line exceeds a maximum linewidth
@@ -188,12 +188,12 @@ endfunction
 " it > base_indent), do so.
 
 function! s:Safe_indent( base, wordlen, this_line )
-    let line_base = matchend( a:this_line, '^\s*' )
-    let line_len = strlen( a:this_line ) - line_base
-    let indent = a:base
-    if (indent + a:wordlen + line_len) > 80
+    let l:line_base = matchend( a:this_line, '^\s*' )
+    let l:line_len = strlen( a:this_line ) - l:line_base
+    let l:indent = a:base
+    if (l:indent + a:wordlen + l:line_len) > 80
         " Simple implementation good enough for the time being
-        let indent = indent + 3
+        let l:indent = l:indent + 3
     endif
-    return indent + a:wordlen
+    return l:indent + a:wordlen
 endfunction

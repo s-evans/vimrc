@@ -17,16 +17,16 @@ let g:ViewDoc_awk=[ 'ViewDoc_search', function('s:ViewDoc_awk') ]
 
 " parse awk lint output
 function! SyntaxCheckers_awk_awk_GetLocList() dict
-    let makeprg = self.makeprgBuild({
+    let l:makeprg = l:self.makeprgBuild({
                 \ 'exe' : 'awk',
                 \ 'args' : '--lint -f'
                 \})
 
-    let errorformat = 'awk: %f:%l: %m'
+    let l:errorformat = 'awk: %f:%l: %m'
 
     return SyntasticMake({
-        \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat,
+        \ 'makeprg': l:makeprg,
+        \ 'errorformat': l:errorformat,
         \ 'returns': [0, 1] })
 endfunction
 

@@ -91,7 +91,7 @@ call plug#end()
 " -------------------------------
 
 colors evening
-set bs=2
+set backspace=2
 set expandtab
 set history=1000
 set laststatus=2
@@ -388,9 +388,9 @@ function! ViewDoc_hlpviewer(topic, filetype, synid, ctx)
     endif
 
     if !exists('g:hlpviewer_version') || !exists('g:hlpviewer_catalog')
-        let help_string=system('hlpviewer /?')
-        let g:hlpviewer_version=substitute(help_string, '.*Help Viewer \([0-9]\+\.[0-9]\+\).*', '\=submatch(1)', '')
-        let g:hlpviewer_catalog=substitute(help_string, '.*\(VisualStudio[0-9]\+\).*', '\=submatch(1)', '')
+        let l:help_string=system('hlpviewer /?')
+        let g:hlpviewer_version=substitute(l:help_string, '.*Help Viewer \([0-9]\+\.[0-9]\+\).*', '\=submatch(1)', '')
+        let g:hlpviewer_catalog=substitute(l:help_string, '.*\(VisualStudio[0-9]\+\).*', '\=submatch(1)', '')
     endif
 
     if match(g:hlpviewer_version, '1\.[0-9]') != -1
@@ -459,22 +459,22 @@ endif
 
 " returns a list containing strings contained in the path variable
 function! GetPathList()
-    let p = &path
-    return split(p, ',')
+    let l:p = &path
+    return split(l:p, ',')
 endfunction
 
 " returns a space separated string of all elements in the path variable
 function! GetPathString()
-    let plist = GetPathList()
-    return join(plist, ' ')
+    let l:plist = GetPathList()
+    return join(l:plist, ' ')
 endfunction
 
 " executes a command string for each path element, replacing all occurances of %s with the path element string
 function! ForEachPath(command)
-    let plist = GetPathList()
-    for p in plist
-        let newCommand = substitute(a:command, '\%s', p, 'g')
-        execute newCommand
+    let l:plist = GetPathList()
+    for l:p in l:plist
+        let l:newCommand = substitute(a:command, '\%s', l:p, 'g')
+        execute l:newCommand
     endfor
 endfunction
 
@@ -483,21 +483,21 @@ endfunction
 " -------------------------------
 
 function! s:get_visual_selection()
-  let [lnum1, col1] = getpos("'<")[1:2]
-  let [lnum2, col2] = getpos("'>")[1:2]
-  let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection ==# 'inclusive' ? 1 : 2)]
-  let lines[0] = lines[0][col1 - 1:]
-  return join(lines, "\n")
+  let [l:lnum1, l:col1] = getpos("'<")[1:2]
+  let [l:lnum2, l:col2] = getpos("'>")[1:2]
+  let l:lines = getline(l:lnum1, l:lnum2)
+  let l:lines[-1] = l:lines[-1][: l:col2 - (&selection ==# 'inclusive' ? 1 : 2)]
+  let l:lines[0] = l:lines[0][l:col1 - 1:]
+  return join(l:lines, "\n")
 endfunction
 
 " attempts to automatically find a cscope database to use
 function! CscopeAutoAdd()
     " add any database in current directory
-    let db = findfile('cscope.out', '.;')
-    if !empty(db)
+    let l:db = findfile('cscope.out', '.;')
+    if !empty(l:db)
         silent cscope reset
-        silent! execute 'cscope add' db
+        silent! execute 'cscope add' l:db
         " else add database pointed to by environment
     elseif !empty($CSCOPE_DB)
         silent cscope reset
@@ -513,9 +513,9 @@ endfunction
 
 " executes a cscope rescan on the current directory recursively
 function! CscopeRescan()
-    let ft = &filetype
+    let l:ft = &filetype
 
-    if ft ==# 'java'
+    if l:ft ==# 'java'
         silent !find * -type f | grep "\.java$" > cscope.files
     endif
 
@@ -532,47 +532,47 @@ endfunction
 
 " returns a list of connected cscope databases
 function! CscopeGetDbLines()
-    redir =>cslist
+    redir =>l:cslist
     silent! cscope show
     redir END
-    return split(cslist, '\n')
+    return split(l:cslist, '\n')
 endfunction
 
 " returns a list of paths of connected cscope databases
 function! CscopeGetDbPaths()
-    let dblines = CscopeGetDbLines()
-    let paths = []
+    let l:dblines = CscopeGetDbLines()
+    let l:paths = []
 
-    for line in dblines
+    for l:line in l:dblines
         " Split the line into space separated tokens
-        let tok = split(line)
+        let l:tok = split(l:line)
 
         " Check that we got something
-        if empty(tok)
+        if empty(l:tok)
             continue
         endif
 
         " Check if the first element is a number
-        if match(tok[0], '[0-9]') == -1
+        if match(l:tok[0], '[0-9]') == -1
             continue
         endif
 
         " Get that path
-        let tmppath = system('dirname '.tok[2])
+        let l:tmppath = system('dirname '.l:tok[2])
 
         " Add to the path list
-        call add(paths, tmppath)
+        call add(l:paths, l:tmppath)
     endfor
 
-    return paths
+    return l:paths
 endfunction
 
 " rescans all currently connected cscope databases for changes
 function! CscopeRescanAll()
-    let paths = CscopeGetDbPaths()
+    let l:paths = CscopeGetDbPaths()
 
-    for pth in paths
-        call CscopeRescanDir(pth)
+    for l:pth in l:paths
+        call CscopeRescanDir(l:pth)
     endfor
 
     cscope reset
@@ -592,8 +592,8 @@ endfunction
 
 if has('cscope') && executable('cscope')
     set nocscopeverbose
-    set csto=0 " Try cscope first in tag search
-    set cst " Add cscope to tag search
+    set cscopetagorder=0 " Try cscope first in tag search
+    set cscopetag " Add cscope to tag search
     set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
     call CscopeAutoAdd()
 endif
@@ -605,10 +605,10 @@ endif
 " solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp)
     execute "python sys.argv = [\"" . a:exp . "\"]"
-    let out = ''
+    let l:out = ''
     python sys.argv[0] = eval(sys.argv[0])
     python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
-    return out
+    return l:out
 endfunction
 
 " -------------------------------
@@ -647,8 +647,8 @@ endfunction
 
 " greps recursively for all directories in the path
 function! GrepPathRegister()
-    let plist = GetPathString()
-    silent! execute 'silent! grep! -r "' . shellescape(getreg(v:register)) . '" ' . plist
+    let l:plist = GetPathString()
+    silent! execute 'silent! grep! -r "' . shellescape(getreg(v:register)) . '" ' . l:plist
     cw
     redraw!
 endfunction
@@ -659,18 +659,18 @@ endfunction
 
 " returns the list of buffers in string format
 function! GetBufferList()
-    redir =>buflist
+    redir =>l:buflist
     silent! ls
     redir END
-    return buflist
+    return l:buflist
 endfunction
 
 " toggles the specified window
 function! ToggleList(bufname, pfx)
-    let buflist = GetBufferList()
+    let l:buflist = GetBufferList()
 
-    for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-        if bufwinnr(bufnum) != -1
+    for l:bufnum in map(filter(split(l:buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+        if bufwinnr(l:bufnum) != -1
             exec(a:pfx.'close')
             return
         endif
@@ -682,10 +682,10 @@ function! ToggleList(bufname, pfx)
         return
     endif
 
-    let winnr = winnr()
+    let l:winnr = winnr()
     exec(a:pfx.'open')
 
-    if winnr() != winnr
+    if winnr() != l:winnr
         wincmd p
     endif
 endfunction
@@ -695,7 +695,7 @@ function! ToggleHexMode()
     " hex mode should be considered a read-only operation
     " save values for modified and read-only for restoration later,
     " and clear the read-only flag for now
-    let l:modified=&mod
+    let l:modified=&modified
     let l:oldreadonly=&readonly
     let &readonly=0
     let l:oldmodifiable=&modifiable
@@ -703,12 +703,12 @@ function! ToggleHexMode()
 
     if &filetype !=# 'xxd'
         " save old options
-        let b:oldft=&ft
-        let b:oldbin=&bin
+        let b:oldft=&filetype
+        let b:oldbin=&binary
 
         " set new options
         setlocal binary " make sure it overrides any textwidth, etc.
-        let &ft='xxd'
+        let &filetype='xxd'
 
         " switch to hex editor
         %!xxd
@@ -722,14 +722,14 @@ function! ToggleHexMode()
 
         if exists('b:oldft') && b:oldft !=# ''
             " restore old options
-            let &ft=b:oldft
+            let &filetype=b:oldft
         else
             doautocmd BufRead
         endif
     endif
 
     " restore values for modified and read only state
-    let &mod=l:modified
+    let &modified=l:modified
     let &readonly=l:oldreadonly
     let &modifiable=l:oldmodifiable
 endfunction
@@ -749,10 +749,10 @@ endfunction
 
 " used as an operator function with a callback. passes arguments via the current register.
 function! RegisterOperatorWrapper(type, callback)
-    let sel_save = &selection
+    let l:sel_save = &selection
     let &selection = 'inclusive'
-    let reg = v:register
-    let reg_save = getreg(reg)
+    let l:reg = v:register
+    let l:reg_save = getreg(l:reg)
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
         normal! gvy
@@ -767,7 +767,7 @@ function! RegisterOperatorWrapper(type, callback)
     silent execute a:callback
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
-        call setreg(reg, getreg(reg), a:type)
+        call setreg(l:reg, getreg(l:reg), a:type)
         normal! gvp
     elseif a:type ==# 'line'
         normal! `[V`]p
@@ -777,15 +777,15 @@ function! RegisterOperatorWrapper(type, callback)
         normal! `[v`]p
     endif
 
-    let &selection = sel_save
-    call setreg(reg, reg_save)
+    let &selection = l:sel_save
+    call setreg(l:reg, l:reg_save)
 endfunction
 
 " wraps operator functions that rely on simple input text
 function! OperatorWrapper(type, callback)
-    let sel_save = &selection
+    let l:sel_save = &selection
     let &selection = 'inclusive'
-    let reg_save = getreg(v:register)
+    let l:reg_save = getreg(v:register)
 
     if a:type ==# 'v' || a:type ==# 'V' || a:type ==# ''
         normal! gvy
@@ -799,8 +799,8 @@ function! OperatorWrapper(type, callback)
 
     silent execute a:callback
 
-    let &selection = sel_save
-    call setreg(v:register, reg_save)
+    let &selection = l:sel_save
+    call setreg(v:register, l:reg_save)
 endfunction
 
 " -------------------------------
@@ -808,20 +808,20 @@ endfunction
 " -------------------------------
 
 let g:urlRanges = [[0, 32], [34, 38], [43, 44], [47, 47], [58, 64], [91, 94], [96, 96], [123, 127], [128, 255]]
-let g:urlRangeCount = len(urlRanges)
+let g:urlRangeCount = len(g:urlRanges)
 
 " does a binary search for whether or not the current character is in the url encoding range
 function! UrlEncodeCharInternal(charByte, lower, upper)
-    let idx = a:lower + (a:upper - a:lower) / 2
+    let l:idx = a:lower + (a:upper - a:lower) / 2
 
     if a:lower > a:upper
         return 0
     endif
 
-    if a:charByte < g:urlRanges[idx][0]
-        return UrlEncodeCharInternal(a:charByte, a:lower, idx - 1)
-    elseif a:charByte > g:urlRanges[idx][1]
-        return UrlEncodeCharInternal(a:charByte, idx + 1, a:upper)
+    if a:charByte < g:urlRanges[l:idx][0]
+        return UrlEncodeCharInternal(a:charByte, a:lower, l:idx - 1)
+    elseif a:charByte > g:urlRanges[l:idx][1]
+        return UrlEncodeCharInternal(a:charByte, l:idx + 1, a:upper)
     endif
 
     return 1
@@ -834,53 +834,53 @@ endfunction
 
 " url encodes the current register
 function! UrlEncodeRegister()
-    let newStr = ''
-    let i = 0
-    let reg_val = getreg(v:register)
+    let l:newStr = ''
+    let l:i = 0
+    let l:reg_val = getreg(v:register)
 
     while 1
-        let newChar = reg_val[i]
-        let byteVal = char2nr(newChar)
+        let l:newChar = l:reg_val[l:i]
+        let l:byteVal = char2nr(l:newChar)
 
-        if byteVal == 0
+        if l:byteVal == 0
             break
         endif
 
-        if UrlEncodeChar(byteVal)
-            let newChar = '%' . printf('%02X', byteVal)
+        if UrlEncodeChar(l:byteVal)
+            let l:newChar = '%' . printf('%02X', l:byteVal)
         endif
 
-        let newStr .= newChar
-        let i += 1
+        let l:newStr .= l:newChar
+        let l:i += 1
     endwhile
 
-    call setreg(v:register, newStr)
+    call setreg(v:register, l:newStr)
 endfunction
 
 " url decodes the current register
 function! UrlDecodeRegister()
-    let newStr = ''
-    let i = 0
-    let reg_val = getreg(v:register)
+    let l:newStr = ''
+    let l:i = 0
+    let l:reg_val = getreg(v:register)
 
     while 1
-        let newChar = reg_val[i]
-        let byteVal = char2nr(newChar)
+        let l:newChar = l:reg_val[l:i]
+        let l:byteVal = char2nr(l:newChar)
 
-        if byteVal == 0
+        if l:byteVal == 0
             break
         endif
 
-        if newChar ==# '%'
-            let newChar = nr2char(str2nr(reg_val[i+1:i+2], 16))
-            let i += 2
+        if l:newChar ==# '%'
+            let l:newChar = nr2char(str2nr(l:reg_val[l:i+1:l:i+2], 16))
+            let l:i += 2
         endif
 
-        let newStr .= newChar
-        let i += 1
+        let l:newStr .= l:newChar
+        let l:i += 1
     endwhile
 
-    call setreg(v:register, newStr)
+    call setreg(v:register, l:newStr)
 endfunction
 
 " -------------------------------
@@ -1042,10 +1042,10 @@ endfunction
 
 " gets the complement of two sets
 function! ComplementRegister()
-    let A = uniq(sort(split(getreg(v:register), "\n")))
-    let B = uniq(sort(split(getreg(input('Enter register: ')), "\n")))
-    call filter(A, 'index(B, v:val) < 0')
-    call setreg(v:register, join(A, "\n"))
+    let l:A = uniq(sort(split(getreg(v:register), "\n")))
+    let l:B = uniq(sort(split(getreg(input('Enter register: ')), "\n")))
+    call filter(l:A, 'index(l:B, v:val) < 0')
+    call setreg(v:register, join(l:A, "\n"))
 endfunction
 
 " TODO: fix this function
@@ -1077,8 +1077,8 @@ endfunction
 
 " replace input lines with a sequence of numbers
 function! SequenceRegister()
-    let linecount=len(split(getreg(v:register), "\n"))
-    call setreg(v:register, system('seq ' . linecount, getreg(v:register)))
+    let l:linecount=len(split(getreg(v:register), "\n"))
+    call setreg(v:register, system('seq ' . l:linecount, getreg(v:register)))
 endfunction
 
 " joins newline separated values with spaces
@@ -1088,8 +1088,8 @@ endfunction
 
 " joins newline separated values with user specified delimiter
 function! JoinSeparatorRegister()
-    let delimiter = input('Enter delimiter: ')
-    call setreg(v:register, join(split(getreg(v:register), "\n"), delimiter))
+    let l:delimiter = input('Enter delimiter: ')
+    call setreg(v:register, join(split(getreg(v:register), "\n"), l:delimiter))
 endfunction
 
 " removes duplicates
@@ -1145,8 +1145,8 @@ endfunction
 
 " splits up values
 function! SplitRegister()
-    let delimiter = input('Enter delimiter: ')
-    call setreg(v:register, join(split(getreg(v:register), delimiter), "\n"))
+    let l:delimiter = input('Enter delimiter: ')
+    call setreg(v:register, join(split(getreg(v:register), l:delimiter), "\n"))
 endfunction
 
 " executes and replaces given commands
@@ -1158,32 +1158,32 @@ endfunction
 
 " performs a regex substitution on the given text
 function! SubstituteRegisterRegister()
-    let pat = getreg(input('Enter pattern register: '))
-    let sub = getreg(input('Enter substitution register: '))
-    let flags = input('Enter flags: ')
-    let list = split(getreg(v:register), "\n")
-    let size = len(list)
-    let i = 0
-    while i < size
-        let list[i] = substitute(list[i], pat, sub, flags)
-        let i += 1
+    let l:pat = getreg(input('Enter pattern register: '))
+    let l:sub = getreg(input('Enter substitution register: '))
+    let l:flags = input('Enter flags: ')
+    let l:list = split(getreg(v:register), "\n")
+    let l:size = len(l:list)
+    let l:i = 0
+    while l:i < l:size
+        let l:list[l:i] = substitute(l:list[l:i], l:pat, l:sub, l:flags)
+        let l:i += 1
     endwhile
-    call setreg(v:register, join(list, "\n"))
+    call setreg(v:register, join(l:list, "\n"))
 endfunction
 
 " performs a regex substitution on the given text
 function! SubstituteRegister()
-    let pat = input('Enter pattern: ')
-    let sub = input('Enter substitution: ')
-    let flags = input('Enter flags: ')
-    let list = split(getreg(v:register), "\n")
-    let size = len(list)
-    let i = 0
-    while i < size
-        let list[i] = substitute(list[i], pat, sub, flags)
-        let i += 1
+    let l:pat = input('Enter pattern: ')
+    let l:sub = input('Enter substitution: ')
+    let l:flags = input('Enter flags: ')
+    let l:list = split(getreg(v:register), "\n")
+    let l:size = len(l:list)
+    let l:i = 0
+    while l:i < l:size
+        let l:list[l:i] = substitute(l:list[l:i], l:pat, l:sub, l:flags)
+        let l:i += 1
     endwhile
-    call setreg(v:register, join(list, "\n"))
+    call setreg(v:register, join(l:list, "\n"))
 endfunction
 
 " evaluates mathematical expressions
@@ -1208,8 +1208,8 @@ endfunction
 
 " creates a table from comma separated arguments
 function! TableSeparatorRegister()
-    let delimiter = input('Enter delimiter: ')
-    call setreg(v:register, system('column -s' . shellescape(delimiter) .' -t', getreg(v:register)))
+    let l:delimiter = input('Enter delimiter: ')
+    call setreg(v:register, system('column -s' . shellescape(l:delimiter) .' -t', getreg(v:register)))
 endfunction
 
 " converts cpp name mangled strings to their pretty counterparts
@@ -1256,7 +1256,7 @@ command! -nargs=0 Write write !sudo tee % > /dev/null
 " -------------------------------
 
 " leader
-let mapleader="\\"
+let g:mapleader="\\"
 
 " escape
 inoremap jk <Esc>

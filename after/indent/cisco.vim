@@ -29,9 +29,9 @@ let s:begin_context=[
 
 function! GetCiscoIndent()
     return 1
-    let prev_lnum = v:lnum - 1
+    let l:prev_lnum = v:lnum - 1
 
-    if prev_lnum == 0
+    if l:prev_lnum == 0
         return 0
     endif
 
@@ -39,20 +39,20 @@ function! GetCiscoIndent()
         return 0
     endif
 
-    let prev_line = getline(prev_lnum)
-    let prev_idt = indent(prev_lnum)
+    let l:prev_line = getline(l:prev_lnum)
+    let l:prev_idt = indent(l:prev_lnum)
 
-    if prev_line =~# '^[ ]*!'
+    if l:prev_line =~# '^[ ]*!'
         return 0
     endif
 
-    if prev_line =~# '^ '
-        return prev_idt
+    if l:prev_line =~# '^ '
+        return l:prev_idt
     endif
 
-    for pattern in s:begin_context
-        if prev_line =~# pattern
-            return prev_idt + &sw
+    for l:pattern in s:begin_context
+        if l:prev_line =~# l:pattern
+            return l:prev_idt + &shiftwidth
         endif
     endfor
 

@@ -15,7 +15,7 @@ function! s:cisco_fwd_top_section_visual()
 endfunction
 
 function! s:cisco_fwd_bot_section()
-    let lineno=search('[^!].*\n^!$', 'We')
+    let l:lineno=search('[^!].*\n^!$', 'We')
 endfunction
 
 function! s:cisco_fwd_bot_section_visual()

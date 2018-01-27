@@ -7,16 +7,16 @@ let g:ViewDoc_sed=[ 'ViewDoc_search' ]
 
 " parse sed lint output
 function! SyntaxCheckers_sed_sed_GetLocList() dict
-    let makeprg = self.makeprgBuild({
+    let l:makeprg = l:self.makeprgBuild({
                 \ 'exe' : 'sed',
                 \ 'args' : '-f'
                 \})
 
-    let errorformat = 'sed: file %f line %l: %m'
+    let l:errorformat = 'sed: file %f line %l: %m'
 
     return SyntasticMake({
-        \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat,
+        \ 'makeprg': l:makeprg,
+        \ 'errorformat': l:errorformat,
         \ 'returns': [0, 1] })
 endfunction
 

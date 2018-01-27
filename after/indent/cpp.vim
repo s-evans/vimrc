@@ -33,34 +33,34 @@ function! CppIndent()
         return 0
     endif
 
-    let cur_data = getline(v:lnum)
-    let cur_cidt = cindent(v:lnum)
-    let prev_line = v:lnum-1
-    let prev_data = getline(prev_line)
-    let prev_aidt = indent(prev_line)
+    let l:cur_data = getline(v:lnum)
+    let l:cur_cidt = cindent(v:lnum)
+    let l:prev_line = v:lnum-1
+    let l:prev_data = getline(l:prev_line)
+    let l:prev_aidt = indent(l:prev_line)
 
     " handle function templates
-    if prev_data =~ '^\s*template\s*<'
-        return prev_aidt
+    if l:prev_data =~# '^\s*template\s*<'
+        return l:prev_aidt
     endif
 
     " skip this case (namespace operator)
-    if cur_data =~ '^\s*::' || cur_data =~ '::\s*$'
-        return cur_cidt
+    if l:cur_data =~# '^\s*::' || l:cur_data =~# '::\s*$'
+        return l:cur_cidt
     endif
 
     " beginning with single colon (member init)
-    if cur_data =~ '^\s*:\s*'
-        return cur_cidt + &sw
+    if l:cur_data =~# '^\s*:\s*'
+        return l:cur_cidt + &shiftwidth
     endif
 
     " beginning with single comma (member init)
-    if cur_data =~ '^\s*,\s'
-        return prev_aidt
+    if l:cur_data =~# '^\s*,\s'
+        return l:prev_aidt
     endif
 
     " all other cases
-    return cur_cidt
+    return l:cur_cidt
 endfunction
 
 setlocal indentexpr=CppIndent()
