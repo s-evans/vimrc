@@ -16,9 +16,11 @@
 let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
+" Plug 'syntastic'
 Plug 'ConflictMotions'
 Plug 'CountJump'
 Plug 'a-vim' , { 'on' : [ 'A' , 'AS' , 'AV' , 'AT' , 'AN' , 'IH' , 'IHS' , 'IHT' , 'IHN' ] }
+Plug 'ale'
 Plug 'align'
 Plug 'bufexplorer'
 Plug 'camel_case_motion'
@@ -57,7 +59,6 @@ Plug 'python-mode' , { 'for' : 'python' }
 Plug 'snipmate'
 Plug 'sql-utilities'
 Plug 'startify'
-Plug 'syntastic'
 Plug 'tagbar' , { 'on' : 'TagbarToggle' }
 Plug 'textobj-between'
 Plug 'textobj-camel'

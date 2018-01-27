@@ -261,3 +261,6 @@
 [submodule "bundle/neoformat"]
 	path = bundle/neoformat
 	url = git://github.com/sbdchd/neoformat
+[submodule "bundle/ale"]
+	path = bundle/ale
+	url = git://github.com/w0rp/ale.git
