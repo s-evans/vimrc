@@ -5,5 +5,5 @@ endif
 
 " tidy support
 if executable('tidy')
-    let b:format_prg = 'tidy -q --show-errors 0 --show-warnings 0 --force-output --indent auto --vertical-space yes --tidy-mark no'
+    let b:format_prg = 'tidy -config ~/.htmltidyrc'
 endif
