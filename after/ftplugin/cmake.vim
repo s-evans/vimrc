@@ -11,3 +11,8 @@ endfunction
 let g:ViewDoc_cmake=[
             \ 'ViewDoc_help_custom',
             \ 'ViewDoc_DEFAULT' ]
+
+" cmake-format support
+if executable('cmake-format')
+    let b:format_prg = 'cmake-format <(cat)'
+endif
