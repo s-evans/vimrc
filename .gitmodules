@@ -250,17 +250,30 @@
 	path = bundle/omnisharp
 	url = git://github.com/OmniSharp/omnisharp-vim.git
 [submodule "bundle/dbext"]
+	ignore = dirty
 	path = bundle/dbext
 	url = git://github.com/vim-scripts/dbext.vim.git
 [submodule "bundle/align"]
+	ignore = dirty
 	path = bundle/align
 	url = git://github.com/vim-scripts/Align.git
 [submodule "bundle/sql-utilities"]
+	ignore = dirty
 	path = bundle/sql-utilities
 	url = git://github.com/vim-scripts/SQLUtilities.git
 [submodule "bundle/neoformat"]
+	ignore = dirty
 	path = bundle/neoformat
 	url = git://github.com/sbdchd/neoformat
 [submodule "bundle/ale"]
+	ignore = dirty
 	path = bundle/ale
 	url = git://github.com/w0rp/ale.git
+[submodule "bundle/complimentary"]
+	ignore = dirty
+	path = bundle/complimentary
+	url = git://github.com/fcpg/vim-complimentary.git
+[submodule "bundle/cmake-complete"]
+	ignore = dirty
+	path = bundle/cmake-complete
+	url = git://github.com/richq/vim-cmake-completion.git

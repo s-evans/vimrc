@@ -27,6 +27,8 @@ Plug 'camel_case_motion'
 Plug 'cctree' , { 'on' : 'CCTreeLoadDB' }
 Plug 'cisco-ios'
 Plug 'cmake' , { 'for' : 'cmake' }
+Plug 'cmake-complete'
+Plug 'complimentary'
 Plug 'dbext'
 Plug 'diff_movement' , { 'for' : [ 'diff' ] }
 Plug 'diffwindow_movement'
