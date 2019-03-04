@@ -445,7 +445,21 @@ endif
 " -------------------------------
 
 if has('python') && executable('python')
+    let s:python = 'python'
     python << 
+try:
+    from math import *
+    import vim
+    import sys
+except ImportError:
+    pass
+
+endif
+
+if has('python3') && executable('python3')
+    let g:gundo_prefer_python3 = 1
+    let s:python = 'python3'
+    python3 << 
 try:
     from math import *
     import vim
@@ -606,10 +620,10 @@ endif
 
 " solves the given mathemical expression and returns the result
 function! EvalMathExpression(exp)
-    execute "python sys.argv = [\"" . a:exp . "\"]"
     let l:out = ''
-    python sys.argv[0] = eval(sys.argv[0])
-    python vim.command("let out = \"" + str(sys.argv[0]) + "\"")
+    execute s:python . ' sys.argv = ["' . a:exp . '"]'
+    execute s:python . ' sys.argv[0] = eval(sys.argv[0])'
+    execute s:python . ' vim.command("let out = \"" + str(sys.argv[0]) + "\"")'
     return l:out
 endfunction
 
