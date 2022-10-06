@@ -106,12 +106,12 @@
 [submodule "bundle/textobj-between"]
 	ignore = dirty
 	path = bundle/textobj-between
-	url = git+ssh@git@github.com:s-evans/vim-textobj-between.git
+	url = https://github.com/s-evans/vim-textobj-between.git
 	; url = git+ssh://git@github.com/s-evans/vim-textobj-between.git
 [submodule "bundle/vim-snippets"]
 	path = bundle/vim-snippets
-	url = git+ssh@git@github.com:s-evans/vim-snippets.git
-	; url = git+ssh://git@github.com/s-evans/vim-snippets.git
+    ; url = git+ssh@git@github.com:s-evans/vim-snippets.git
+	url = git+ssh://git@github.com/s-evans/vim-snippets.git
 [submodule "bundle/textobj-line"]
 	ignore = dirty
 	path = bundle/textobj-line
@@ -232,7 +232,7 @@
 [submodule "bundle/vim-surround"]
 	ignore = dirty
 	path = bundle/vim-surround
-	url = git+ssh@git@github.com:tpope/vim-surround.git
+	url = https://github.com/tpope/vim-surround.git
 [submodule "bundle/phpcd"]
 	ignore = dirty
 	path = bundle/phpcd
