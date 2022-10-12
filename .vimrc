@@ -18,6 +18,9 @@ call plug#begin(s:my_vim_dir . '/bundle')
 
 " Plug 'syntastic'
 Plug 'ConflictMotions'
+Plug 'kotlin-vim'
+Plug 'vim-rzip'
+Plug 'javap-vim'
 Plug 'CountJump'
 Plug 'a-vim' , { 'on' : [ 'A' , 'AS' , 'AV' , 'AT' , 'AN' , 'IH' , 'IHS' , 'IHT' , 'IHN' ] }
 Plug 'ale'
@@ -50,7 +53,7 @@ Plug 'mediawiki'
 Plug 'neoformat'
 Plug 'nerdtree' , { 'on' : 'NERDTreeToggle' }
 Plug 'obsession'
-Plug 'omnisharp'
+" Plug 'omnisharp'
 Plug 'operator-replace'
 Plug 'operator-user'
 Plug 'php-indent'

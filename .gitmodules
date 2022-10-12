@@ -277,3 +277,12 @@
 	ignore = dirty
 	path = bundle/cmake-complete
 	url = git+ssh://git@github.com/richq/vim-cmake-completion.git
+[submodule "bundle/kotlin-vim"]
+	path = bundle/kotlin-vim
+	url = git+ssh://git@github.com:s-evans/kotlin-vim.git
+[submodule "bundle/javap-vim"]
+	path = bundle/javap-vim
+	url = https://github.com/udalov/javap-vim.git
+[submodule "bundle/vim-rzip"]
+	path = bundle/vim-rzip
+	url = https://github.com/lbrayner/vim-rzip.git
