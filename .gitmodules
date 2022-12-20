@@ -275,7 +275,7 @@
 	url = git+ssh://git@github.com/richq/vim-cmake-completion.git
 [submodule "bundle/kotlin-vim"]
 	path = bundle/kotlin-vim
-	url = git+ssh://git@github.com:s-evans/kotlin-vim.git
+	url = git@github.com:s-evans/kotlin-vim.git
 [submodule "bundle/javap-vim"]
 	path = bundle/javap-vim
 	url = https://github.com/udalov/javap-vim.git
