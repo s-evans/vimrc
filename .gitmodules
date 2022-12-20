@@ -102,15 +102,12 @@
 	ignore = dirty
 	path = bundle/cctree
 	url = git+ssh@git@github.com:s-evans/cctree.git
-	; url = git+ssh://git@github.com/s-evans/cctree.git
 [submodule "bundle/textobj-between"]
 	ignore = dirty
 	path = bundle/textobj-between
-	url = https://github.com/s-evans/vim-textobj-between.git
-	; url = git+ssh://git@github.com/s-evans/vim-textobj-between.git
+	url = git+ssh://git@github.com/s-evans/vim-textobj-between.git
 [submodule "bundle/vim-snippets"]
 	path = bundle/vim-snippets
-    ; url = git+ssh@git@github.com:s-evans/vim-snippets.git
 	url = git+ssh://git@github.com/s-evans/vim-snippets.git
 [submodule "bundle/textobj-line"]
 	ignore = dirty
@@ -152,7 +149,6 @@
 	ignore = dirty
 	path = bundle/cmake
 	url = git+ssh@git@github.com:s-evans/vim-cmake.git
-	; url = git+ssh://git@github.com/s-evans/vim-cmake.git
 [submodule "bundle/js-indent"]
 	ignore = dirty
 	path = bundle/js-indent
@@ -277,3 +273,12 @@
 	ignore = dirty
 	path = bundle/cmake-complete
 	url = git+ssh://git@github.com/richq/vim-cmake-completion.git
+[submodule "bundle/kotlin-vim"]
+	path = bundle/kotlin-vim
+	url = git+ssh://git@github.com:s-evans/kotlin-vim.git
+[submodule "bundle/javap-vim"]
+	path = bundle/javap-vim
+	url = https://github.com/udalov/javap-vim.git
+[submodule "bundle/vim-rzip"]
+	path = bundle/vim-rzip
+	url = https://github.com/lbrayner/vim-rzip.git

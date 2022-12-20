@@ -8,6 +8,9 @@ echo "Install directory = $DIRPATH"
 echo "Creating symbolic link for vimrc"
 ln -sf $DIRPATH/.vimrc ~/.vimrc
 
+echo "Creating config for ctags"
+cat $DIRPATH/kotlin.ctags > $HOME/.ctags
+
 echo "Pulling all git submodules"
 cd $DIRPATH
 git submodule update --init --recursive
