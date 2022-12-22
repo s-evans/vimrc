@@ -306,6 +306,12 @@ let g:syntastic_mode_map = {
     \}
 
 " -------------------------------
+" snipmate settings
+" -------------------------------
+
+let g:snipMate = { 'snippet_version' : 1 }
+
+" -------------------------------
 " ultisnips settings
 " -------------------------------
 
