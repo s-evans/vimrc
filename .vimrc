@@ -17,6 +17,7 @@ let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
 " Plug 'syntastic'
+Plug 'vim-android'
 Plug 'ConflictMotions'
 Plug 'kotlin-vim'
 Plug 'vim-rzip'
@@ -311,6 +312,12 @@ let g:syntastic_mode_map = {
     \ 'mode': 'active',
     \ 'passive_filetypes': ['c', 'cpp', 'python']
     \}
+
+" -------------------------------
+" snipmate settings
+" -------------------------------
+
+let g:snipMate = { 'snippet_version' : 1 }
 
 " -------------------------------
 " ultisnips settings
