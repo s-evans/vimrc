@@ -218,12 +218,20 @@ endif
 " cursor settings
 " -------------------------------
 
+highlight Cursor cterm=reverse term=reverse gui=reverse
+highlight iCursor cterm=reverse term=reverse gui=reverse
+highlight lCursor cterm=reverse term=reverse gui=reverse
 highlight CursorLine cterm=reverse term=reverse gui=reverse
 highlight StatusLineNC ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none term=none gui=none
 highlight StatusLine ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none term=none gui=none
 highlight VertSplit ctermfg=Black ctermbg=DarkCyan guibg=DarkCyan cterm=none term=none gui=none
 set fillchars=vert:\|,fold:-,stl:\-,stlnc:\ 
 set cursorline
+
+set guicursor=n-v-c:block-Cursor
+set guicursor+=i:ver100-iCursor
+set guicursor+=n-v-c:blinkon0
+set guicursor+=i:blinkwait10
 
 " -------------------------------
 " directory .vimrc settings
@@ -382,6 +390,8 @@ let g:no_viewdoc_abbrev=1
 
 " don't open anything if the term is not found
 let g:viewdoc_openempty=0
+
+let g:viewdoc_pydoc_cmd='pydoc3'
 
 function! ViewDoc_hlpviewer(topic, filetype, synid, ctx)
     if !exists('g:hlpviewer_exists')
