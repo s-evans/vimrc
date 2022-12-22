@@ -282,3 +282,6 @@
 [submodule "bundle/vim-rzip"]
 	path = bundle/vim-rzip
 	url = https://github.com/lbrayner/vim-rzip.git
+[submodule "bundle/vim-android"]
+	path = bundle/vim-android
+	url = https://github.com/hsanson/vim-android.git
