@@ -17,7 +17,7 @@ let s:my_vim_dir=fnamemodify(resolve(expand('<sfile>')), ':h')
 call plug#begin(s:my_vim_dir . '/bundle')
 
 " Plug 'syntastic'
-Plug 'vim-android'
+" Plug 'vim-android'
 Plug 'ConflictMotions'
 Plug 'kotlin-vim'
 Plug 'vim-rzip'
